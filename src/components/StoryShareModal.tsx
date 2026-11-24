@@ -232,7 +232,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                 {/* Modal Header */}
                 <div className="flex items-center justify-between border-b border-[rgb(var(--color-primary))]/15 px-4 py-2.5">
                     <div className="flex items-center gap-1.5">
-                        <Share2 className="w-4 h-4 text-[rgb(var(--color-primary))]" />
+                        <Share2 className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                         <h2 className="text-xs sm:text-sm font-bold tracking-tight">{t.storyShareTitle || "Bagikan ke Story"}</h2>
                     </div>
                     <button
@@ -258,7 +258,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                 className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.01]"
                             />
                             {isExporting && (
-                                <div className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/60 backdrop-blur-sm flex items-center justify-center text-[rgb(var(--color-primary-foreground))] text-[11px] font-bold gap-1.5 animate-in fade-in">
+                                <div className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/60 backdrop-blur-sm flex items-center justify-center text-[rgb(var(--color-primary-foreground))] text-xs font-bold gap-1.5 animate-in fade-in">
                                     <Sparkles className="w-3.5 h-3.5 animate-spin text-[rgb(var(--color-primary-strong))]" />
                                     <span>{t.storyShareCompressing || "Mengompres..."}</span>
                                 </div>
@@ -268,7 +268,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
 
                     {/* Status Message Notification */}
                     {statusMessage && (
-                        <div className="animate-in slide-in-from-top-1 rounded-lg border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 p-2 text-center text-[11px] font-medium text-[rgb(var(--color-primary-strong))]">
+                        <div className="animate-in slide-in-from-top-1 rounded-lg border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 p-2 text-center text-xs font-medium text-[rgb(var(--color-primary-strong))]">
                             {statusMessage}
                         </div>
                     )}
@@ -311,7 +311,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                         </div>
 
                         {/* Row 1: Font Scaling */}
-                        <div className="flex items-center gap-1.5 text-[11px]">
+                        <div className="flex items-center gap-1.5 text-xs">
                             {/* Font Size Pills */}
                             <div className={cn(
                                 "flex flex-1 items-center gap-0.5 p-0.5 rounded-xl border",
@@ -361,7 +361,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
 
                         {/* Row 2: Text Toggles Combined */}
                         {item.kind !== "achievement" && (
-                            <div className="grid grid-cols-3 gap-1 text-[10px]">
+                            <div className="grid grid-cols-3 gap-1 text-xs">
                             <button
                                 type="button"
                                 onClick={() => setShowArabic(!showArabic)}
@@ -444,7 +444,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                         )}
                         title={t.storyShareCopyTitle}
                     >
-                        {copied ? <Check className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" /> : <Copy className="w-3.5 h-3.5" />}
+                        {copied ? <Check className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" /> : <Copy className="w-3.5 h-3.5" />}
                     </button>
                 </div>
             </div>

@@ -192,7 +192,7 @@ export default function BookmarkEditDialog({
                                 {t.bookmarksMarkAsLastRead}
                             </p>
                             <p className={cn(
-                                "text-[10px]",
+                                "text-xs",
                                 'text-[rgb(var(--color-text-muted))]'
                             )}>
                                 {t.bookmarksUpdateProgress}

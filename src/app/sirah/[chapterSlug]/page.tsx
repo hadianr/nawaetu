@@ -62,7 +62,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                 </Link>
 
                 <span className={cn(
-                    "text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full border",
+                    "text-xs font-extrabold uppercase px-2.5 py-1 rounded-full border",
                     "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
                 )}>
                     {chapter.era}
@@ -150,7 +150,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                         )}>
                                             {sec.subbab}
                                         </h3>
-                                        <p className="text-[11px] text-[rgb(var(--color-text-muted))]">
+                                        <p className="text-xs text-[rgb(var(--color-text-muted))]">
                                             ⏱️ {t.sirahReaderReadMinutes.replace("{minutes}", String(Math.ceil(sec.content.join(" ").split(" ").length / 150)))}
                                             {sec.pageStart ? `, ${t.sirahPageShort} ${sec.pageStart}` : ""}
                                         </p>

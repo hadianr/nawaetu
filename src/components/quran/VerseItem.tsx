@@ -185,7 +185,7 @@ export default function VerseItem({
                                 onMouseEnter={prefetchShareDialog}
                                 onFocus={prefetchShareDialog}
                                 onClick={() => onShareClick(verse)}
-                                className="h-8 w-8 rounded-full text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary))]"
+                                className="h-8 w-8 rounded-full text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))]"
                             >
                                 <Share2 className="h-4 w-4" />
                             </Button>
@@ -241,19 +241,19 @@ export default function VerseItem({
                                     <span className={cn(
                                         "mb-2 cursor-pointer transition-colors duration-100",
                                         isPlayingVerse && word.position === activeWordIdx
-                                            ? "text-[rgb(var(--color-primary))] font-bold scale-105"
-                                            : "hover:text-[rgb(var(--color-primary))]"
+                                            ? "text-[rgb(var(--color-primary-strong))] font-bold scale-105"
+                                            : "hover:text-[rgb(var(--color-primary-strong))]"
                                     )}>
                                         {cleanedText}
                                     </span>
                                     <div className="flex flex-col items-center font-sans">
                                         {showTransliteration && word.transliteration?.text && (
-                                            <span className="text-[10px] md:text-xs text-[rgb(var(--color-primary-strong))] text-center leading-tight mb-1 opacity-80 group-hover:opacity-100">
+                                            <span className="text-xs md:text-xs text-[rgb(var(--color-primary-strong))] text-center leading-tight mb-1 opacity-80 group-hover:opacity-100">
                                                 {word.transliteration.text}
                                             </span>
                                         )}
                                         {word.translation?.text && (
-                                            <span className="text-[9px] md:text-[10px] text-[rgb(var(--color-text-muted))] text-center leading-tight max-w-[90px] group-hover:text-[rgb(var(--color-text))] line-clamp-2" title={word.translation.text}>
+                                            <span className="text-xs md:text-xs text-[rgb(var(--color-text-muted))] text-center leading-tight max-w-[90px] group-hover:text-[rgb(var(--color-text))] line-clamp-2" title={word.translation.text}>
                                                 {word.translation.text}
                                             </span>
                                         )}
@@ -299,7 +299,7 @@ export default function VerseItem({
 
                 <div className={activeTafsirVerse === verse.verse_key ? 'mt-6 p-5 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/5 to-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-primary))]/20 animate-in slide-in-from-top-2' : 'hidden'}>
                     <div className="flex items-center gap-2 mb-3">
-                        <Lightbulb className="h-4 w-4 text-[rgb(var(--color-primary))]" />
+                        <Lightbulb className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                         <h3 className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{t.quranBriefTafsir || "Brief Explanation"}</h3>
                     </div>
 
@@ -319,7 +319,7 @@ export default function VerseItem({
                                     onReadFullTafsir(verse.verse_key, tafsirData);
                                 }
                             }}
-                            className={`text-xs font-semibold mt-2 transition-colors ${tafsirData?.long && tafsirData?.long !== tafsirData?.short ? 'text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary))]/80' : 'hidden'}`}
+                            className={`text-xs font-semibold mt-2 transition-colors ${tafsirData?.long && tafsirData?.long !== tafsirData?.short ? 'text-[rgb(var(--color-primary-strong))] hover:text-[rgb(var(--color-primary-strong))]' : 'hidden'}`}
                         >
                             <span className="inline-flex items-center gap-1">{t.quranReadFullTafsir || "Read Full Explanation"} <AppIcon name="target" size="xs" tone="primary" /></span>
                         </button>

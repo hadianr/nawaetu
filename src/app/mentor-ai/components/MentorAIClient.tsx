@@ -470,12 +470,12 @@ export default function MentorAIClient() {
                                 Tanya Nawaetu
                             </h1>
                             <div className="flex items-center gap-2">
-                                <p className="text-[10px] text-[rgb(var(--color-primary-strong))] flex items-center gap-1">
+                                <p className="text-xs text-[rgb(var(--color-primary-strong))] flex items-center gap-1">
                                     <span className="w-1 h-1 rounded-full bg-[rgb(var(--color-primary))]" />
                                     Online
                                 </p>
                                 <span className={cn(
-                                    "text-[10px] px-1.5 py-0.5 rounded-full border flex items-center gap-1",
+                                    "text-xs px-1.5 py-0.5 rounded-full border flex items-center gap-1",
                                     dailyCount >= DAILY_LIMIT
                                         ? "bg-[rgb(var(--color-danger))]/20 text-[rgb(var(--color-danger))] border-[rgb(var(--color-danger))]/30"
                                         : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"
@@ -554,7 +554,7 @@ export default function MentorAIClient() {
                                     {prompt}
                                     <Send className={cn(
                                         "w-3 h-3 transition-all -translate-x-2 group-hover:translate-x-0",
-                                        "text-[rgb(var(--color-primary))] opacity-0 group-hover:opacity-100"
+                                        "text-[rgb(var(--color-primary-strong))] opacity-0 group-hover:opacity-100"
                                     )} />
                                 </button>
                             ))}
@@ -564,7 +564,7 @@ export default function MentorAIClient() {
                     // Chat Messages
                     <>
                         <div className="flex justify-center my-4 opacity-50">
-                            <span className="text-[10px] bg-[rgb(var(--color-surface-subtle))] px-2 py-1 rounded-full text-[rgb(var(--color-text-muted))] border border-[rgb(var(--color-border))]">
+                            <span className="text-xs bg-[rgb(var(--color-surface-subtle))] px-2 py-1 rounded-full text-[rgb(var(--color-text-muted))] border border-[rgb(var(--color-border))]">
                                 {messages.length > 0 && new Date(messages[0].timestamp).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
                             </span>
                         </div>

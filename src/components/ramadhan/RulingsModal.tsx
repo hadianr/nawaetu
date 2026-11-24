@@ -75,7 +75,7 @@ export default function RulingsModal({ open, onOpenChange }: RulingsModalProps) 
                             >
                                 <AppIcon name={cat.icon} size="sm" tone="primary" />
                                 <span>{cat.label}</span>
-                                <span className="text-[10px] opacity-60">({getAllRulingsByCategory(cat.id).length})</span>
+                                <span className="text-xs opacity-60">({getAllRulingsByCategory(cat.id).length})</span>
                             </button>
                         ))}
                     </div>

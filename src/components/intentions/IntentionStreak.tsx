@@ -121,7 +121,7 @@ export default function IntentionStreak({
                                 <span className="flex size-8 items-center justify-center">
                                     <AppIcon name={milestone.icon} size="md" tone={achieved ? "primary" : "muted"} />
                                 </span>
-                                <div className="text-[10px] font-medium">{milestone.label}</div>
+                                <div className="text-xs font-medium">{milestone.label}</div>
                             </div>
                         );
                     })}

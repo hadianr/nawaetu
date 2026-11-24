@@ -119,8 +119,8 @@ export default function MissionDetailDialog({
                             <div className="flex items-center gap-2">
                                 <DialogTitle className="text-xl font-bold font-sans">{mission.title}</DialogTitle>
                                 <span className={cn(
-                                    "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0 border",
-                                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/30"
+                                    "text-xs px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0 border",
+                                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/30"
                                 )}>
                                     {getRulingLabel(mission.ruling, t)}
                                 </span>
@@ -152,7 +152,7 @@ export default function MissionDetailDialog({
                                         value="guide"
                                         className={cn(
                                             "bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 focus-visible:ring-0 focus-visible:outline-none",
-                                            `${muted} hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100`
+                                            `${muted} hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary-strong))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100`
                                         )}
                                     >
                                         {t.mission_dialog_guide}
@@ -161,7 +161,7 @@ export default function MissionDetailDialog({
                                         value="info"
                                         className={cn(
                                             "bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 focus-visible:ring-0 focus-visible:outline-none",
-                                            `${muted} hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100`
+                                            `${muted} hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary-strong))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100`
                                         )}
                                     >
                                         {t.mission_dialog_info}
@@ -198,11 +198,11 @@ export default function MissionDetailDialog({
                                                         )}>
                                                             <TabsTrigger value="sendiri" className={cn(
                                                                 "text-xs h-6 px-3 transition-colors",
-                                                                "data-[state=active]:bg-[rgb(var(--color-surface))] data-[state=active]:text-[rgb(var(--color-primary))] text-[rgb(var(--color-text-muted))]"
+                                                                "data-[state=active]:bg-[rgb(var(--color-surface))] data-[state=active]:text-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-text-muted))]"
                                                             )}>{t.mission_dialog_sholat_sendiri}</TabsTrigger>
                                                             <TabsTrigger value="makmum" className={cn(
                                                                 "text-xs h-6 px-3 transition-colors",
-                                                                "data-[state=active]:bg-[rgb(var(--color-surface))] data-[state=active]:text-[rgb(var(--color-primary))] text-[rgb(var(--color-text-muted))]"
+                                                                "data-[state=active]:bg-[rgb(var(--color-surface))] data-[state=active]:text-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-text-muted))]"
                                                             )}>{t.mission_dialog_sholat_makmum}</TabsTrigger>
                                                         </TabsList>
                                                         <TabsContent value="sendiri" className="mt-0">
@@ -213,10 +213,10 @@ export default function MissionDetailDialog({
                                                                 <p className="text-base md:text-lg font-serif text-right mb-1.5 leading-relaxed">
                                                                     {content.niat.munfarid.arabic}
                                                                 </p>
-                                                                <p className="text-[11px] md:text-xs italic mb-1 text-[rgb(var(--color-primary))] font-medium">
+                                                                <p className="text-xs md:text-xs italic mb-1 text-[rgb(var(--color-primary-strong))] font-medium">
                                                                     {content.niat.munfarid.latin}
                                                                 </p>
-                                                                <p className="text-[9px] md:text-[10px] leading-tight text-[rgb(var(--color-text-muted))]">
+                                                                <p className="text-xs md:text-xs leading-tight text-[rgb(var(--color-text-muted))]">
                                                                     {content.niat.munfarid.translation}
                                                                 </p>
                                                             </div>
@@ -229,10 +229,10 @@ export default function MissionDetailDialog({
                                                                 <p className="text-base md:text-lg font-serif text-right mb-1.5 leading-relaxed">
                                                                     {content.niat.makmum.arabic}
                                                                 </p>
-                                                                <p className="text-[11px] md:text-xs italic mb-1 text-[rgb(var(--color-accent-strong))] font-medium">
+                                                                <p className="text-xs md:text-xs italic mb-1 text-[rgb(var(--color-accent-strong))] font-medium">
                                                                     {content.niat.makmum.latin}
                                                                 </p>
-                                                                <p className="text-[9px] md:text-[10px] leading-tight text-[rgb(var(--color-text-muted))]">
+                                                                <p className="text-xs md:text-xs leading-tight text-[rgb(var(--color-text-muted))]">
                                                                     {content.niat.makmum.translation}
                                                                 </p>
                                                             </div>
@@ -247,10 +247,10 @@ export default function MissionDetailDialog({
                                                         <p className="text-lg md:text-xl font-serif text-right mb-2 leading-relaxed">
                                                             {content.niat.munfarid.arabic}
                                                         </p>
-                                                        <p className="text-xs italic mb-1 text-[rgb(var(--color-primary))] font-medium">
+                                                        <p className="text-xs italic mb-1 text-[rgb(var(--color-primary-strong))] font-medium">
                                                             {content.niat.munfarid.latin}
                                                         </p>
-                                                        <p className="text-[10px] text-[rgb(var(--color-text-muted))]">
+                                                        <p className="text-xs text-[rgb(var(--color-text-muted))]">
                                                             {content.niat.munfarid.translation}
                                                         </p>
                                                     </div>
@@ -264,7 +264,7 @@ export default function MissionDetailDialog({
                                                 <div className="flex items-center justify-between text-xs uppercase tracking-wider font-bold text-[rgb(var(--color-text-muted))]">
                                                     <span>{(t as TranslationTree).mission_dialog_reading_of.replace('{current}', String(readingIndex + 1)).replace('{total}', String(content.readings.length))}</span>
                                                     {currentReading?.note && (
-                                                        <span className="font-bold text-[rgb(var(--color-primary))]">{currentReading.note}</span>
+                                                        <span className="font-bold text-[rgb(var(--color-primary-strong))]">{currentReading.note}</span>
                                                     )}
                                                 </div>
 
@@ -274,14 +274,14 @@ export default function MissionDetailDialog({
                                                 )}>
                                                     <div>
                                                         {currentReading?.title && (
-                                                            <h4 className="text-sm font-bold mb-2 text-[rgb(var(--color-primary))]">{currentReading.title}</h4>
+                                                            <h4 className="text-sm font-bold mb-2 text-[rgb(var(--color-primary-strong))]">{currentReading.title}</h4>
                                                         )}
                                                         <p className="text-xl md:text-2xl font-serif leading-[1.8] text-right">
                                                             {currentReading?.arabic}
                                                         </p>
                                                     </div>
                                                     <div className="space-y-2">
-                                                        <p className="text-sm italic text-[rgb(var(--color-primary))] font-medium">
+                                                        <p className="text-sm italic text-[rgb(var(--color-primary-strong))] font-medium">
                                                             {currentReading?.latin}
                                                         </p>
                                                         <p className="text-xs text-[rgb(var(--color-text-muted))]">
@@ -307,7 +307,7 @@ export default function MissionDetailDialog({
                                                         disabled={readingIndex === (content.readings.length - 1)}
                                                         className={cn(
                                                             "transition-colors shadow-sm",
-                                                            "bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] border border-[rgb(var(--color-border))]"
+                                                            "bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-border))]"
                                                         )}
                                                     >
                                                         {t.mission_dialog_next} <ChevronRight className="w-4 h-4 ml-1" />
@@ -325,7 +325,7 @@ export default function MissionDetailDialog({
                                                         <div key={idx} className="flex gap-3 text-sm">
                                                             <div className={cn(
                                                                 "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors border",
-                                                                "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary))]"
+                                                                "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))]"
                                                             )}>
                                                                 {idx + 1}
                                                             </div>
@@ -371,7 +371,7 @@ export default function MissionDetailDialog({
 
                                             return (
                                                 <div className="space-y-2">
-                                                    <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-primary))]">
+                                                    <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-primary-strong))]">
                                                         <BookOpen className="w-4 h-4" /> {t.mission_dialog_dalil_source}
                                                     </h3>
                                                     <div className={cn(
@@ -400,9 +400,9 @@ export default function MissionDetailDialog({
                                                                     )}
                                                                 >
                                                                     <span className={cn(
-                                                                        "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shrink-0 transition-colors inline-flex items-center justify-center leading-none",
+                                                                        "text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded shrink-0 transition-colors inline-flex items-center justify-center leading-none",
                                                                         isQuran
-                                                                            ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))]"
+                                                                            ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))]"
                                                                             : isHadith
                                                                             ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))]"
                                                                             : "bg-[rgb(var(--color-info))]/10 text-[rgb(var(--color-info))]"
@@ -423,7 +423,7 @@ export default function MissionDetailDialog({
                                                                             className={cn(
                                                                                 "inline-flex items-center gap-1.5 text-xs font-semibold leading-none transition-all hover:underline group",
                                                                                 isQuran
-                                                                                    ? "text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-strong))]"
+                                                                                    ? "text-[rgb(var(--color-primary-strong))] hover:text-[rgb(var(--color-primary-strong))]"
                                                                                     : isHadith
                                                                                     ? "text-[rgb(var(--color-accent-strong))] hover:text-[rgb(var(--color-accent-strong))]"
                                                                                     : "text-[rgb(var(--color-info))] hover:text-[rgb(var(--color-info))]"
@@ -463,14 +463,14 @@ export default function MissionDetailDialog({
                                         "mt-4 p-4 rounded-xl border w-full text-center",
                                         "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                                     )}>
-                                        <p className="text-xs font-bold mb-1 text-[rgb(var(--color-primary))]">{t.mission_dialog_dalil_label}</p>
+                                        <p className="text-xs font-bold mb-1 text-[rgb(var(--color-primary-strong))]">{t.mission_dialog_dalil_label}</p>
                                         {targetUrl ? (
                                             <Link
                                                 href={targetUrl}
                                                 onClick={() => onClose()}
                                                 className={cn(
                                                     "inline-flex items-center justify-center gap-1.5 text-sm italic font-semibold leading-none transition-all hover:underline group",
-                                                    "text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-strong))]"
+                                                    "text-[rgb(var(--color-primary-strong))] hover:text-[rgb(var(--color-primary-strong))]"
                                                 )}
                                             >
                                                 <span>{mission.dalil}</span>
@@ -501,10 +501,10 @@ export default function MissionDetailDialog({
                                     <AlertCircle className="w-4 h-4 shrink-0 text-[rgb(var(--color-danger))]" />
                                     <p className="text-xs font-bold text-[rgb(var(--color-danger))]">{t.home_mission_late_prayer_title}</p>
                                 </div>
-                                <p className="text-[10px] leading-tight italic text-[rgb(var(--color-danger))]/80">
+                                <p className="text-xs leading-tight italic text-[rgb(var(--color-danger))]">
                                     {t.home_mission_late_warning_quote}
                                 </p>
-                                <p className="text-[10px] mt-1 font-medium text-[rgb(var(--color-text-muted))]">
+                                <p className="text-xs mt-1 font-medium text-[rgb(var(--color-text-muted))]">
                                     {t.home_mission_late_warning_desc}
                                 </p>
                             </div>
@@ -517,7 +517,7 @@ export default function MissionDetailDialog({
                                 "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                             )}>
                                 <AlertCircle className="w-4 h-4 shrink-0 text-[rgb(var(--color-accent-strong))]" />
-                                <p className="text-[10px] leading-tight font-medium text-[rgb(var(--color-accent-strong))]/80">
+                                <p className="text-xs leading-tight font-medium text-[rgb(var(--color-accent-strong))]">
                                     {t.home_mission_late_notice}
                                 </p>
                             </div>
@@ -530,10 +530,10 @@ export default function MissionDetailDialog({
                                 "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                             )}>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <Sparkles className="w-4 h-4 shrink-0 text-[rgb(var(--color-primary))]" />
-                                    <p className="text-xs font-bold text-[rgb(var(--color-primary))]">{t.home_mission_early_prayer_title}</p>
+                                    <Sparkles className="w-4 h-4 shrink-0 text-[rgb(var(--color-primary-strong))]" />
+                                    <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))]">{t.home_mission_early_prayer_title}</p>
                                 </div>
-                                <p className="text-[10px] leading-tight italic font-medium text-[rgb(var(--color-primary))]/80">
+                                <p className="text-xs leading-tight italic font-medium text-[rgb(var(--color-primary-strong))]">
                                     {t.home_mission_early_praise_quote}
                                 </p>
                             </div>
@@ -543,7 +543,7 @@ export default function MissionDetailDialog({
                             <div className="flex flex-col gap-2">
                                 <Button className={cn(
                                     "w-full border cursor-default transition-all shadow-sm",
-                                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/20"
+                                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/20"
                                 )} disabled>
                                     <Check className="w-4 h-4 mr-2" /> {t.home_mission_completed_label}
                                 </Button>
@@ -578,7 +578,7 @@ export default function MissionDetailDialog({
                                     <Button
                                         variant="ghost"
                                         className={cn(
-                                            "w-full text-[10px] mt-1 transition-colors",
+                                            "w-full text-xs mt-1 transition-colors",
                                             "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/10"
                                         )}
                                         onClick={() => setIsConfirmingReset(true)}
@@ -602,7 +602,7 @@ export default function MissionDetailDialog({
                                         <Button
                                             key={idx}
                                             className={cn(
-                                                "flex-1 font-bold py-4 md:py-5 text-[11px] md:text-sm relative overflow-hidden group shadow-[var(--shadow-card)] transition-all",
+                                                "flex-1 font-bold py-4 md:py-5 text-xs md:text-sm relative overflow-hidden group shadow-[var(--shadow-card)] transition-all",
                                                 isHighReward
                                                     ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"
                                                     : "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-text))] border border-[rgb(var(--color-border))]"
@@ -619,7 +619,7 @@ export default function MissionDetailDialog({
                                                     {option.iconKey && <AppIcon name={option.iconKey} size="sm" tone={isHighReward ? "default" : "primary"} />}
                                                     {option.label}
                                                 </span>
-                                                <span className="text-[10px] font-bold opacity-80 text-[rgb(var(--color-primary-foreground))]">+{option.hasanahReward} Hasanah</span>
+                                                <span className="text-xs font-bold opacity-80 text-[rgb(var(--color-primary-foreground))]">+{option.hasanahReward} Hasanah</span>
                                             </div>
                                         </Button>
                                     );

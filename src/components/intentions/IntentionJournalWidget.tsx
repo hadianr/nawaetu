@@ -332,7 +332,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     <div className="flex items-center justify-between gap-1">
                         <div className="flex items-center gap-1.5 text-[rgb(var(--color-text-muted))] grayscale transition-colors group-hover:text-[rgb(var(--color-text))] min-w-0">
                             <Compass className="w-3 h-3 shrink-0 text-[rgb(var(--color-text-strong))]" />
-                            <span className="text-[9px] font-bold uppercase tracking-tight truncate text-[rgb(var(--color-text-strong))]">
+                            <span className="text-xs font-bold uppercase tracking-tight truncate text-[rgb(var(--color-text-strong))]">
                                 {selectedDate === DateUtils.today()
                                     ? t.intention_widget_title
                                     : t.intention_widget_history_title}
@@ -352,7 +352,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                             className="relative shrink-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-[rgb(var(--color-primary))]/10 transition-colors cursor-pointer group/date"
                         >
                             <Calendar className="w-3 h-3 transition-colors text-[rgb(var(--color-text-muted))] group-hover/date:text-[rgb(var(--color-text))]" />
-                            <span className="text-[9px] font-bold uppercase transition-colors text-[rgb(var(--color-text-muted))] group-hover/date:text-[rgb(var(--color-text))]">
+                            <span className="text-xs font-bold uppercase transition-colors text-[rgb(var(--color-text-muted))] group-hover/date:text-[rgb(var(--color-text))]">
                                 {new Date(selectedDate).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
                                     day: '2-digit',
                                     month: 'short',
@@ -431,8 +431,8 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                             "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10"
                                         )}
                                     >
-                                        <Moon className="w-3 h-3 text-[rgb(var(--color-primary))]" />
-                                        <span className="text-[9px] font-bold uppercase tracking-tight text-[rgb(var(--color-text))]">
+                                        <Moon className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
+                                        <span className="text-xs font-bold uppercase tracking-tight text-[rgb(var(--color-text))]">
                                             {t.intention_refleksi_btn}
                                         </span>
                                     </button>
@@ -446,7 +446,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                         )}
                                     >
                                         <CheckCircle2 className="w-3 h-3 text-[rgb(var(--color-success))]" />
-                                        <span className="text-[9px] font-bold uppercase text-[rgb(var(--color-success))]">
+                                        <span className="text-xs font-bold uppercase text-[rgb(var(--color-success))]">
                                             {t.intention_selesai_label}
                                         </span>
                                     </button>

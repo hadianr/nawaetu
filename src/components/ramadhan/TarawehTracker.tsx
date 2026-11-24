@@ -117,7 +117,7 @@ export default function TarawehTracker() {
                                     ${future ? "opacity-30 mix-blend-luminosity" : "hover:bg-[rgb(var(--color-surface-subtle))] active:scale-95"}
                                 `}
                             >
-                                <span className="text-[10px] text-[rgb(var(--color-text-muted))] leading-none mb-1 font-bold">{day}</span>
+                                <span className="text-xs text-[rgb(var(--color-text-muted))] leading-none mb-1 font-bold">{day}</span>
                                 <AppIcon name={dChoice === 8 ? "moon" : "sparkles"} size="xs" tone={dChoice ? "primary" : "muted"} className={!dChoice ? "opacity-0" : undefined} />
                             </button>
                         );
@@ -158,14 +158,14 @@ export default function TarawehTracker() {
                             >
                                 {/* Cancel affordance badge */}
                                 {isSelected && (
-                                    <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[rgb(var(--color-surface-subtle))] text-[8px] text-[rgb(var(--color-text-muted))] font-bold border border-[rgb(var(--color-border))]">
+                                    <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[rgb(var(--color-surface-subtle))] text-xs text-[rgb(var(--color-text-muted))] font-bold border border-[rgb(var(--color-border))]">
                                         <X className="h-2.5 w-2.5" />
                                     </span>
                                 )}
                                 <AppIcon name={choice === 8 ? "moon" : "sparkles"} size="md" tone={isSelected ? "primary" : "muted"} />
                                 <span className="font-semibold text-xs">{label}</span>
                                 {isSelected && (
-                                    <span className="text-[8px] opacity-60 -mt-0.5">ketuk untuk batal</span>
+                                    <span className="text-xs opacity-60 -mt-0.5">ketuk untuk batal</span>
                                 )}
                             </button>
                         );

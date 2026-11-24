@@ -100,7 +100,7 @@ const HadithCard = memo(function HadithCard({
                     {/* Badges Container (100% Full Top-Left Width) */}
                     <div className="flex items-center gap-1.5 min-w-0 overflow-x-auto no-scrollbar whitespace-nowrap">
                         <span className={cn(
-                            "text-[10px] px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
+                            "text-xs px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
                             isHighlighted
                                 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
                                 : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
@@ -108,7 +108,7 @@ const HadithCard = memo(function HadithCard({
                             {locale === "en" ? `${item.collection} No. ${item.hadithNumber}` : `HR. ${item.collection} No. ${item.hadithNumber}`}
                         </span>
                         <span className={cn(
-                            "text-[9px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider border flex items-center gap-0.5 whitespace-nowrap flex-shrink-0",
+                            "text-xs px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider border flex items-center gap-0.5 whitespace-nowrap flex-shrink-0",
                             item.authenticity === "Muttafaq 'Alaih"
                                 ? "bg-[rgb(var(--color-info))]/10 text-[rgb(var(--color-info))] border-[rgb(var(--color-info))]/25"
                                 : "bg-[rgb(var(--color-warning))]/10 text-[rgb(var(--color-warning))] border-[rgb(var(--color-warning))]/25"
@@ -132,7 +132,7 @@ const HadithCard = memo(function HadithCard({
                         title={expanded ? t.collapseDetail : t.expandDetail}
                     >
                         {expanded ? (
-                            <ChevronUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[rgb(var(--color-primary))]" />
+                            <ChevronUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[rgb(var(--color-primary-strong))]" />
                         ) : (
                             <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         )}
@@ -167,7 +167,7 @@ const HadithCard = memo(function HadithCard({
                         </p>
 
                         <p className={cn(
-                            "text-[11px] line-clamp-1 mt-0.5",
+                            "text-xs line-clamp-1 mt-0.5",
                             "text-[rgb(var(--color-text-muted))]"
                         )}>
                             &quot;{translation}&quot;
@@ -183,8 +183,8 @@ const HadithCard = memo(function HadithCard({
                     "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]"
                 )}>
                     {narratorText && (
-                        <p className="text-[11px] font-medium flex items-center gap-1.5 text-[rgb(var(--color-text-muted))]">
-                            <User className="w-3 h-3 text-[rgb(var(--color-primary))]" />
+                        <p className="text-xs font-medium flex items-center gap-1.5 text-[rgb(var(--color-text-muted))]">
+                            <User className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
                             <span>{narratorText}</span>
                         </p>
                     )}
@@ -207,7 +207,7 @@ const HadithCard = memo(function HadithCard({
                             "bg-gradient-to-b from-[rgb(var(--color-primary))] to-transparent"
                         )} />
                         {item.latin && (
-                            <p className="text-[11px] italic leading-relaxed font-serif text-[rgb(var(--color-text-muted))]">
+                            <p className="text-xs italic leading-relaxed font-serif text-[rgb(var(--color-text-muted))]">
                                 {item.latin}
                             </p>
                         )}
@@ -220,7 +220,7 @@ const HadithCard = memo(function HadithCard({
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={(e) => e.stopPropagation()}
-                                className="inline-block text-[10px] underline underline-offset-2 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))]"
+                                className="inline-block text-xs underline underline-offset-2 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))]"
                             >
                                 {t.hadithTranslationCredit || "Teks & terjemahan: HadeethEnc.com"}
                             </a>
@@ -233,10 +233,10 @@ const HadithCard = memo(function HadithCard({
                             "p-2.5 rounded-xl text-xs space-y-1 border",
                             "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-text))]"
                         )}>
-                            <p className="font-bold flex items-center gap-1 text-[10px] uppercase tracking-wider text-[rgb(var(--color-primary))]">
+                            <p className="font-bold flex items-center gap-1 text-xs uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
                                 <Sparkles className="w-3 h-3" /> {t.hadithTadabburTitle || "Tadabbur Hadits"}
                             </p>
-                            <p className="text-[11px] leading-relaxed">{(locale === "en" && item.explanationEn) ? item.explanationEn : item.explanation}</p>
+                            <p className="text-xs leading-relaxed">{(locale === "en" && item.explanationEn) ? item.explanationEn : item.explanation}</p>
                         </div>
                     )}
 
@@ -256,7 +256,7 @@ const HadithCard = memo(function HadithCard({
                                 "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25 hover:bg-[rgb(var(--color-primary))]/20"
                             )}
                         >
-                            <Share2 className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" />
+                            <Share2 className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
                             <span>{t.shareToStory || "Bagikan ke Story"}</span>
                         </button>
 
@@ -342,13 +342,13 @@ function HadithContent() {
                                     "p-2 rounded-xl border transition-colors",
                                     "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                                 )}>
-                                    <BookOpen className="w-5 h-5 text-[rgb(var(--color-primary))]" />
+                                    <BookOpen className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
                                 </div>
                                 <div>
                                     <h1 className="text-lg font-bold tracking-tight text-[rgb(var(--color-text-strong))]">
                                         {t.hadithLibraryTitle || "Perpustakaan Hadits"}
                                     </h1>
-                                    <p className="text-[11px] text-[rgb(var(--color-text-muted))]">
+                                    <p className="text-xs text-[rgb(var(--color-text-muted))]">
                                         {(t.hadithLibrarySubtitle || "{count} Hadits Shahih & Hasan Pilihan").replace("{count}", String(HADITH_LIBRARY.length))}
                                     </p>
                                 </div>
@@ -369,7 +369,7 @@ function HadithContent() {
 
                     {/* Filter count indicator */}
                     {(selectedTopic !== "all" || searchQuery) && (
-                        <p className="text-[11px] px-2 mb-2 text-[rgb(var(--color-text-muted))]">
+                        <p className="text-xs px-2 mb-2 text-[rgb(var(--color-text-muted))]">
                             {(t.hadithShowingCount || "Menampilkan {count} hadits").replace("{count}", String(filtered.length))}
                         </p>
                     )}

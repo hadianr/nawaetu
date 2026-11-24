@@ -219,7 +219,7 @@ export default function AudioCard({ t, muadzin, onMuadzinChange }: AudioCardProp
                         </div>
                         <div className="min-w-0">
                             <p className={cn(
-                                "text-[10px] uppercase tracking-wider font-bold mb-0.5",
+                                "text-xs uppercase tracking-wider font-bold mb-0.5",
                                 "text-[rgb(var(--color-text-muted))]"
                             )}>{t.muadzinLabel}</p>
                             <p className={cn(
@@ -255,7 +255,7 @@ export default function AudioCard({ t, muadzin, onMuadzinChange }: AudioCardProp
                                 <Play className="w-3 h-3 ml-0.5" />
                             )}
                         </Button>
-                        <ChevronDown className="w-4 h-4 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
+                        <ChevronDown className="w-4 h-4 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors" />
                     </div>
 
                     <Select value={muadzin} onValueChange={handleMuadzinChange}>

@@ -61,7 +61,7 @@ export function DhikrPresetSelector({
                     )}
                 >
                     <Settings2 className="h-4 w-4 text-[rgb(var(--color-text-muted))]" />
-                    <span className="text-[10px] font-medium text-[rgb(var(--color-text-muted))]">{t.tasbihSelectZikir}</span>
+                    <span className="text-xs font-medium text-[rgb(var(--color-text-muted))]">{t.tasbihSelectZikir}</span>
                 </Button>
             </DialogTrigger>
             <DialogContent className={cn(
@@ -88,8 +88,8 @@ export function DhikrPresetSelector({
                                         )}
                                     >
                                         <div className="flex flex-col items-start w-full overflow-hidden">
-                                            <span className="font-bold text-sm text-[rgb(var(--color-primary))] w-full truncate">{seq.label}</span>
-                                            <span className="text-[10px] text-[rgb(var(--color-text-muted))] mt-0.5 truncate w-full">Otomatis lanjut ke dzikir berikutnya</span>
+                                            <span className="font-bold text-sm text-[rgb(var(--color-primary-strong))] w-full truncate">{seq.label}</span>
+                                            <span className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5 truncate w-full">Otomatis lanjut ke dzikir berikutnya</span>
                                         </div>
                                     </Button>
                                 ))}
@@ -104,7 +104,7 @@ export function DhikrPresetSelector({
                             >
                                 <div className="flex items-center gap-2 flex-1">
                                     <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
-                                    <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-wider text-left">Harian</h3>
+                                    <h3 className="text-xs font-bold opacity-70 uppercase tracking-wider text-left">Harian</h3>
                                     <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
                                 </div>
                                 <ChevronDown className={cn("w-3.5 h-3.5 opacity-50 transition-transform duration-200", expandedCategory === "harian" ? "rotate-180" : "rotate-0")} />
@@ -125,9 +125,9 @@ export function DhikrPresetSelector({
                                         >
                                             <div className="flex flex-col items-start w-[80%] overflow-hidden">
                                                 <span className="font-bold text-sm w-full truncate">{p.label}</span>
-                                                <span className="text-[10px] text-[rgb(var(--color-text-muted))] truncate w-full mt-0.5">{p.latin}</span>
+                                                <span className="text-xs text-[rgb(var(--color-text-muted))] truncate w-full mt-0.5">{p.latin}</span>
                                             </div>
-                                            <span className="text-[10px] tabular-nums ml-2 shrink-0 text-[rgb(var(--color-text-muted))]">{p.target}x</span>
+                                            <span className="text-xs tabular-nums ml-2 shrink-0 text-[rgb(var(--color-text-muted))]">{p.target}x</span>
                                         </Button>
                                     ))}
                                 </div>
@@ -143,7 +143,7 @@ export function DhikrPresetSelector({
                                 >
                                     <div className="flex items-center gap-2 flex-1">
                                         <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
-                                        <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-wider text-left">{cat.label}</h3>
+                                        <h3 className="text-xs font-bold opacity-70 uppercase tracking-wider text-left">{cat.label}</h3>
                                         <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
                                     </div>
                                     <ChevronDown className={cn("w-3.5 h-3.5 opacity-50 transition-transform duration-200", expandedCategory === cat.id ? "rotate-180" : "rotate-0")} />
@@ -164,9 +164,9 @@ export function DhikrPresetSelector({
                                             >
                                                 <div className="flex flex-col items-start w-[80%] overflow-hidden">
                                                     <span className="font-bold text-sm w-full truncate">{p.label}</span>
-                                                <span className="text-[10px] text-[rgb(var(--color-text-muted))] truncate w-full mt-0.5">{p.latin}</span>
+                                                <span className="text-xs text-[rgb(var(--color-text-muted))] truncate w-full mt-0.5">{p.latin}</span>
                                                 </div>
-                                            <span className="text-[10px] tabular-nums ml-2 shrink-0 text-[rgb(var(--color-text-muted))]">{p.target}x</span>
+                                            <span className="text-xs tabular-nums ml-2 shrink-0 text-[rgb(var(--color-text-muted))]">{p.target}x</span>
                                             </Button>
                                         ))}
                                     </div>
@@ -183,7 +183,7 @@ export function DhikrPresetSelector({
                                 >
                                     <div className="flex items-center gap-2 flex-1">
                                         <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
-                                        <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-wider text-left">Berantai</h3>
+                                        <h3 className="text-xs font-bold opacity-70 uppercase tracking-wider text-left">Berantai</h3>
                                         <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
                                     </div>
                                     <ChevronDown className={cn("w-3.5 h-3.5 opacity-50 transition-transform duration-200", expandedCategory === "berantai" ? "rotate-180" : "rotate-0")} />
@@ -203,8 +203,8 @@ export function DhikrPresetSelector({
                                                 )}
                                             >
                                                 <div className="flex flex-col items-start w-full overflow-hidden">
-                                                    <span className="font-bold text-sm text-[rgb(var(--color-primary))] w-full truncate">{seq.label}</span>
-                                                    <span className="text-[10px] text-[rgb(var(--color-text-muted))] mt-0.5 truncate w-full">Otomatis lanjut ke dzikir berikutnya</span>
+                                                    <span className="font-bold text-sm text-[rgb(var(--color-primary-strong))] w-full truncate">{seq.label}</span>
+                                                    <span className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5 truncate w-full">Otomatis lanjut ke dzikir berikutnya</span>
                                                 </div>
                                             </Button>
                                         ))}

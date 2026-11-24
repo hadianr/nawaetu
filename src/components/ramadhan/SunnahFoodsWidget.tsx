@@ -44,7 +44,7 @@ export default function SunnahFoodsWidget() {
                     <button
                         type="button"
                         onClick={() => setActiveTab("iftar")}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-[11px] sm:text-xs font-bold transition-all ${activeTab === "iftar"
+                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-xs sm:text-xs font-bold transition-all ${activeTab === "iftar"
                             ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                             : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                             }`}
@@ -55,7 +55,7 @@ export default function SunnahFoodsWidget() {
                     <button
                         type="button"
                         onClick={() => setActiveTab("sahur")}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-[11px] sm:text-xs font-bold transition-all ${activeTab === "sahur"
+                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-xs sm:text-xs font-bold transition-all ${activeTab === "sahur"
                             ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                             : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                             }`}
@@ -83,7 +83,7 @@ export default function SunnahFoodsWidget() {
                             <h3 className="text-xs sm:text-sm font-bold text-[rgb(var(--color-text-strong))] leading-tight mb-1.5">
                                 {locale === "en" && food.name_en ? food.name_en : food.name}
                             </h3>
-                            <p className="text-[10px] sm:text-[11px] text-[rgb(var(--color-text-muted))] leading-relaxed font-medium">
+                            <p className="text-xs sm:text-xs text-[rgb(var(--color-text-muted))] leading-relaxed font-medium">
                                 {locale === "en" && food.description_en ? food.description_en : food.description}
                             </p>
                         </div>

@@ -84,7 +84,7 @@ export default function LailatulQadrCard() {
                         <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm sm:text-base leading-tight">
                             {t.lailatulQadrTitle}
                         </h3>
-                        <p className="text-[10px] font-medium mt-0.5 text-[rgb(var(--color-primary-strong))]/70">
+                        <p className="text-xs font-medium mt-0.5 text-[rgb(var(--color-primary-strong))]">
                             Lebih baik dari 1.000 bulan, QS. Al-Qadr: 3
                         </p>
                     </div>
@@ -112,13 +112,13 @@ export default function LailatulQadrCard() {
                         >
                             <AppIcon name="star" size="sm" tone="primary" /> {t.lailatulQadrTonightPossibility}
                         </p>
-                        <p className="text-[11px] text-[rgb(var(--color-text-muted))]">
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">
                             {t.lailatulQadrTonightMessage}
                         </p>
                     </div>
                 ) : daysUntilNext !== null ? (
                     <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 text-center">
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">
+                        <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">
                             {t.lailatulQadrIn.replace("{night}", String(nextNight))}
                         </p>
                         <p
@@ -133,7 +133,7 @@ export default function LailatulQadrCard() {
 
             {/* Night Grid */}
             <div className="px-4 mb-3">
-                <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] text-center mb-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] text-center mb-2">
                     {t.lailatulQadrSectionLabel}
                 </p>
 
@@ -222,7 +222,7 @@ export default function LailatulQadrCard() {
 
                                 {/* Night number */}
                                 <span
-                                    className={`mt-1 leading-none ${isOdd ? "text-xs font-bold" : "text-[10px] font-medium"}`}
+                                    className={`mt-1 leading-none ${isOdd ? "text-xs font-bold" : "text-xs font-medium"}`}
                                     style={{
                                         color: isDone 
                                         ? "rgb(var(--color-text-strong))"
@@ -241,7 +241,7 @@ export default function LailatulQadrCard() {
                 </div>
 
                 {/* Legend */}
-                <div className="flex items-center justify-center gap-4 mt-2 text-[9px] text-[rgb(var(--color-text-muted))]">
+                <div className="flex items-center justify-center gap-4 mt-2 text-xs text-[rgb(var(--color-text-muted))]">
                     <span className="flex items-center gap-1">
                         <AppIcon name="sparkles" size="sm" tone="primary" />{t.lailatulQadrOddNights}
                     </span>
@@ -267,7 +267,7 @@ export default function LailatulQadrCard() {
                         <p className="text-sm font-semibold text-[rgb(var(--color-text-strong))] leading-snug">
                             Panduan 10 Malam Terakhir
                         </p>
-                        <p className="text-[10px] text-[rgb(var(--color-text-muted))] mt-0.5">
+                        <p className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5">
                         I&apos;tikaf, Doa, Dzikir & Dalil Sahih
                         </p>
                     </div>

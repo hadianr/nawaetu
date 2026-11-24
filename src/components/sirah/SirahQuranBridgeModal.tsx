@@ -28,7 +28,7 @@ export function SirahQuranBridgeModal({ refData, onClose }: SirahQuranBridgeModa
             <div className="w-full max-w-md rounded-2xl border border-[rgb(var(--color-border))] p-5 shadow-[var(--shadow-floating)] transition-all bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text))]">
                 <div className="flex items-center justify-between border-b border-[rgb(var(--color-border))] pb-3 mb-4">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))]">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))]">
                             <BookOpen className="w-4 h-4" />
                         </div>
                         <div>

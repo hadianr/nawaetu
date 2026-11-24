@@ -126,7 +126,7 @@ const BottomNav = memo(function BottomNav() {
                                     </div>
                                     <span
                                         className={cn(
-                                            "text-[10px] font-extrabold tracking-tight transition-all duration-300",
+                                            "text-xs font-extrabold tracking-tight transition-all duration-300",
                                             isActive && "text-[rgb(var(--color-primary-strong))]"
                                         )}
                                         style={{ color: isActive ? "rgb(var(--color-primary-light))" : "rgb(var(--color-text-muted))" }}
@@ -155,7 +155,7 @@ const BottomNav = memo(function BottomNav() {
                                     isActive && "fill-[rgb(var(--color-primary))]/10 scale-110"
                                 )} />
                                 <span className={cn(
-                                    "text-[10px] transition-all",
+                                    "text-xs transition-all",
                                     isActive ? "font-bold" : "font-medium"
                                 )}>{label}</span>
                             </Link>

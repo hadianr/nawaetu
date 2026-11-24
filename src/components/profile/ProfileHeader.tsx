@@ -56,7 +56,7 @@ export function ProfileHeader({
             {/* Top Actions */}
             <div className="relative z-20 flex justify-between items-center p-4">
                 {!isAuthenticated ? (
-                    <div className="px-3 py-1 bg-[rgb(var(--color-background))]/30 backdrop-blur-md rounded-full border border-[rgb(var(--color-primary-foreground))]/20 text-[10px] items-center flex gap-1 text-[rgb(var(--color-primary-foreground))]">
+                    <div className="px-3 py-1 bg-[rgb(var(--color-background))]/30 backdrop-blur-md rounded-full border border-[rgb(var(--color-primary-foreground))]/20 text-xs items-center flex gap-1 text-[rgb(var(--color-primary-foreground))]">
                         <span className="w-2 h-2 rounded-full bg-[rgb(var(--color-text-muted))]"></span>
                         {translations.profileGuestMode}
                     </div>

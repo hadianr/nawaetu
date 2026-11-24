@@ -178,7 +178,7 @@ export default function AppOverlays() {
                             "font-bold",
                             "group-[.toast]:text-[rgb(var(--color-text-strong))]"
                         ),
-                        icon: "group-[.toast]:text-[rgb(var(--color-primary))]"
+                        icon: "group-[.toast]:text-[rgb(var(--color-primary-strong))]"
                     }
                 }}
             />

@@ -43,7 +43,7 @@ export default function ThemeCard({ t, currentTheme, handleThemeSelect }: ThemeC
     return (
         <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-2">
             <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 text-[rgb(var(--color-primary))]">
+                <div className="flex items-center gap-2 text-[rgb(var(--color-primary-strong))]">
                     <Palette className="w-4 h-4" />
                     <span className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.themeTitle}</span>
                 </div>

@@ -93,14 +93,14 @@ export default function QuranSettingsModal({
                                     className={`flex flex-col items-center justify-center h-16 rounded-xl text-sm font-bold transition-all ${scriptType === 'indopak' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}
                                 >
                                     <span className="font-bold text-xl mb-0.5 font-amiri">بِسْمِ</span>
-                                    <span className="text-[9px] md:text-[10px] uppercase tracking-wider">{t.quranScriptStandard}</span>
+                                    <span className="text-xs md:text-xs uppercase tracking-wider">{t.quranScriptStandard}</span>
                                 </button>
                                 <button
                                     onClick={() => setScriptType('tajweed')}
                                     className={`flex flex-col items-center justify-center h-16 rounded-xl text-sm font-bold transition-all ${scriptType === 'tajweed' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}
                                 >
                                     <span className="font-bold text-xl mb-0.5 font-amiri text-[rgb(var(--color-text-strong))] quran-tajweed-active"><span className="text-[rgb(var(--color-warning))]">بِسْ</span><span className="text-[rgb(var(--color-success))]">مِ</span></span>
-                                    <span className="text-[9px] md:text-[10px] uppercase tracking-wider">{t.quranScriptTajweed}</span>
+                                    <span className="text-xs md:text-xs uppercase tracking-wider">{t.quranScriptTajweed}</span>
                                 </button>
                             </div>
                         </div>
@@ -111,7 +111,7 @@ export default function QuranSettingsModal({
                             <div className="flex items-center justify-between p-4 rounded-2xl border border-[rgb(var(--color-primary))]/10 bg-[rgb(var(--color-primary))]/5 shadow-sm">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
-                                        <Type className="h-4 w-4 text-[rgb(var(--color-primary))]" />
+                                        <Type className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                                     </div>
                                     <span className="font-bold text-sm tracking-tight">{t.quranTransliteration}</span>
                                 </div>
@@ -120,7 +120,7 @@ export default function QuranSettingsModal({
                             <div className="flex items-center justify-between p-4 rounded-2xl border border-[rgb(var(--color-primary))]/10 bg-[rgb(var(--color-primary))]/5 shadow-sm">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
-                                        <BookOpen className="h-4 w-4 text-[rgb(var(--color-primary))]" />
+                                        <BookOpen className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                                     </div>
                                     <span className="font-bold text-sm tracking-tight">{t.quranWordByWord || "Terjemahan Per Kata"}</span>
                                 </div>
@@ -145,7 +145,7 @@ export default function QuranSettingsModal({
                                 <SelectTrigger className={`w-full bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/10 rounded-2xl h-14 md:h-12 shadow-sm ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-lg bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
-                                            {isPending ? <Loader2 className="h-4 w-4 animate-spin text-[rgb(var(--color-primary))]" /> : <Headphones className="h-4 w-4 text-[rgb(var(--color-primary))]" />}
+                                            {isPending ? <Loader2 className="h-4 w-4 animate-spin text-[rgb(var(--color-primary-strong))]" /> : <Headphones className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />}
                                         </div>
                                         <SelectValue placeholder={t.quranSelectQari} />
                                     </div>

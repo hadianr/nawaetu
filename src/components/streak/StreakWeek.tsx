@@ -62,7 +62,7 @@ export default function StreakWeek({ compact = false }: { compact?: boolean }) {
         <div className="grid grid-cols-7 gap-2" aria-label={String(t.streakLastSevenDays)}>
             {week.map((day) => (
                 <div key={day.key} className="space-y-1 text-center">
-                    <span className="text-[10px] font-semibold text-[rgb(var(--color-text-muted))]">{day.label}</span>
+                    <span className="text-xs font-semibold text-[rgb(var(--color-text-muted))]">{day.label}</span>
                     <span className={cn(
                         "flex aspect-square items-center justify-center rounded-full border text-xs",
                         day.protected

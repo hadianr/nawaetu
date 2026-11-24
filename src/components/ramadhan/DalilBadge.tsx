@@ -97,7 +97,7 @@ export default function DalilBadge({ dalil, variant = "inline", label }: DalilBa
                 >
                     <AppIcon name="scroll" size="xs" tone="primary" className="group-hover/dalil:scale-110 transition-transform" />
                     <span
-                        className={`text-[7px] sm:text-[8px] leading-none font-bold tracking-tight transition-colors ${variant === "pill" ? "text-[rgb(var(--color-primary-strong))] group-hover/dalil:text-[rgb(var(--color-primary))]" : "text-[rgb(var(--color-primary))] underline decoration-dotted underline-offset-2"}`}
+                        className={`text-xs sm:text-xs leading-none font-bold tracking-tight transition-colors ${variant === "pill" ? "text-[rgb(var(--color-primary-strong))] group-hover/dalil:text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-strong))] underline decoration-dotted underline-offset-2"}`}
                     >
                         {localizedShortRef}
                     </span>
@@ -146,13 +146,13 @@ export default function DalilBadge({ dalil, variant = "inline", label }: DalilBa
                     )}
 
                     <div className="rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))] p-4">
-                        <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{String(t.evidenceTranslation)}</p>
+                        <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{String(t.evidenceTranslation)}</p>
                         <DialogDescription className="text-[15px] leading-relaxed text-[rgb(var(--color-text))]">
                             &ldquo;{localizedTranslation}&rdquo;
                         </DialogDescription>
                     </div>
 
-                    <p className="text-[11px] font-medium uppercase leading-relaxed tracking-wider text-[rgb(var(--color-text-muted))]">
+                    <p className="text-xs font-medium uppercase leading-relaxed tracking-wider text-[rgb(var(--color-text-muted))]">
                         {localizedSource}
                     </p>
 

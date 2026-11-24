@@ -231,7 +231,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                             </div>
                             <div className="space-y-1">
                                 <h4 className="text-sm font-bold">{t.feedbackAuthRequired}</h4>
-                                <p className="text-[10px] leading-relaxed text-[rgb(var(--color-text-muted))]">
+                                <p className="text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">
                                     Masukan tidak anonim untuk mencegah spam dan mempermudah tindak lanjut.
                                 </p>
                             </div>
@@ -271,7 +271,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                         className={cn(
                                             "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all active:scale-[0.98]",
                                             type === "feature"
-                                                ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] border border-[rgb(var(--color-primary))]/25 shadow-[var(--shadow-card)]"
+                                                ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/25 shadow-[var(--shadow-card)]"
                                                 : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                                         )}
                                     >
@@ -322,7 +322,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                         )}
                                     >
                                         <Upload className="w-5 h-5 mb-1 text-[rgb(var(--color-text-muted))]" />
-                                        <span className="text-[10px] font-bold">
+                                        <span className="text-xs font-bold">
                                             {t.feedbackScreenshotDesc || `Unggah gambar pendukung (maks. 3, maks. 5MB per gambar)`}
                                         </span>
                                     </button>

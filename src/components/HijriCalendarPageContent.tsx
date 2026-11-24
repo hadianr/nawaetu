@@ -121,15 +121,15 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                     </Link>
                     <div className="min-w-0 flex-1">
                         <div className="flex min-w-0 items-center gap-2">
-                            <CalendarDays className="h-4 w-4 shrink-0 text-[rgb(var(--color-primary))] sm:h-5 sm:w-5" />
+                            <CalendarDays className="h-4 w-4 shrink-0 text-[rgb(var(--color-primary-strong))] sm:h-5 sm:w-5" />
                             <h1 className="truncate text-lg font-bold sm:text-2xl">{t.hijriCalendarTitle}</h1>
                             {monthTitle && (
-                                <span className="hidden shrink-0 rounded-full bg-[rgb(var(--color-primary))]/15 px-2 py-1 text-xs font-medium text-[rgb(var(--color-primary))] sm:inline-flex">
+                                <span className="hidden shrink-0 rounded-full bg-[rgb(var(--color-primary))]/15 px-2 py-1 text-xs font-medium text-[rgb(var(--color-primary-strong))] sm:inline-flex">
                                     {monthTitle}
                                 </span>
                             )}
                         </div>
-                        <p className="mt-0.5 flex items-center gap-1 truncate text-[11px] text-[rgb(var(--color-text-muted))] sm:mt-1 sm:text-xs">
+                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-[rgb(var(--color-text-muted))] sm:mt-1 sm:text-xs">
                             <MapPin className="h-3 w-3 shrink-0" />
                             {prayerData?.locationName || t.hijriCalendarYourLocation}
                         </p>
@@ -138,7 +138,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                         href="/settings#hijri-date"
                         aria-label={t.hijriCalendarAdjustDate}
                         className={cn(
-                            "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border text-[rgb(var(--color-primary))] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:w-auto sm:border-transparent sm:px-2 sm:text-xs sm:font-semibold sm:hover:underline",
+                            "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border text-[rgb(var(--color-primary-strong))] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:w-auto sm:border-transparent sm:px-2 sm:text-xs sm:font-semibold sm:hover:underline",
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 sm:border-transparent sm:bg-transparent",
                         )}
                     >
@@ -175,7 +175,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
 
                 {loading ? (
                     <div className={cn("flex min-h-96 flex-col items-center justify-center gap-3 rounded-2xl border", surface)}>
-                        <Loader2 className="h-8 w-8 animate-spin text-[rgb(var(--color-primary))]" />
+                        <Loader2 className="h-8 w-8 animate-spin text-[rgb(var(--color-primary-strong))]" />
                         <p className="text-sm text-[rgb(var(--color-text-muted))]">{t.hijriCalendarLoading}</p>
                     </div>
                 ) : error ? (
@@ -184,7 +184,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                         <p className="text-sm text-[rgb(var(--color-text-muted))]">
                             {error === "location_required" ? t.hijriCalendarLocationRequired : t.hijriCalendarLoadFailed}
                         </p>
-                        <button type="button" onClick={() => void fetchCalendar(viewMode)} className="min-h-11 text-sm font-semibold text-[rgb(var(--color-primary))] underline">
+                        <button type="button" onClick={() => void fetchCalendar(viewMode)} className="min-h-11 text-sm font-semibold text-[rgb(var(--color-primary-strong))] underline">
                             {t.hijriCalendarRetry}
                         </button>
                     </div>
@@ -201,7 +201,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                                 </button>
                             </div>
                             <div className="grid grid-cols-7 gap-1" role="grid" aria-label={monthTitle}>
-                                {weekdays.map(day => <div key={day} className="py-1 text-center text-[9px] font-bold uppercase text-[rgb(var(--color-text-muted))] sm:text-[10px]">{day}</div>)}
+                                {weekdays.map(day => <div key={day} className="py-1 text-center text-xs font-bold uppercase text-[rgb(var(--color-text-muted))] sm:text-xs">{day}</div>)}
                                 {Array.from({ length: firstWeekday }, (_, index) => <div key={`empty-${index}`} />)}
                                 {calendarData.map(day => {
                                     const events = getHijriEvents({ hijriDay: day.hijriDay, hijriMonth: day.hijriMonthNumber, gregorianWeekday: day.gregorianWeekday });
@@ -222,13 +222,13 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                                             )}
                                         >
                                             <span className="text-sm font-bold">{day.hijriDay}</span>
-                                            <span className={cn("text-[9px]", selected ? "text-[rgb(var(--color-primary-foreground))]/75" : "text-[rgb(var(--color-text-muted))]")}>{day.gregorianDay}</span>
+                                            <span className={cn("text-xs", selected ? "text-[rgb(var(--color-primary-foreground))]" : "text-[rgb(var(--color-text-muted))]")}>{day.gregorianDay}</span>
                                             {events.length > 0 && <span className={cn("absolute bottom-1 h-1.5 w-1.5 rounded-full", prohibited ? "bg-[rgb(var(--color-danger))]" : selected ? "bg-[rgb(var(--color-primary-foreground))]" : "bg-[rgb(var(--color-accent))]")} />}
                                         </button>
                                     );
                                 })}
                             </div>
-                            <div className="mt-3 flex flex-wrap gap-3 text-[10px] text-[rgb(var(--color-text-muted))]">
+                            <div className="mt-3 flex flex-wrap gap-3 text-xs text-[rgb(var(--color-text-muted))]">
                                 <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[rgb(var(--color-accent))]" />{t.hijriCalendarRecommended}</span>
                                 <span className="flex items-center gap-1.5"><AlertTriangle className="h-3 w-3 text-[rgb(var(--color-danger))]" />{t.hijriCalendarProhibited}</span>
                             </div>
@@ -236,10 +236,10 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
 
                         {selectedDay && (
                             <section className={cn("rounded-2xl border p-4 md:sticky md:top-4", surface)} aria-live="polite">
-                                <p className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.hijriCalendarSelectedDate}</p>
+                                <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.hijriCalendarSelectedDate}</p>
                                 <p className="mt-1 text-base font-bold">
                                     {selectedDay.hijriDay} {getHijriMonthName(selectedDay.hijriMonthNumber, locale)} {selectedDay.hijriYear}H
-                                    {selectedDay.isToday && <span className="ml-2 text-xs text-[rgb(var(--color-primary))]">{t.hijriCalendarToday}</span>}
+                                    {selectedDay.isToday && <span className="ml-2 text-xs text-[rgb(var(--color-primary-strong))]">{t.hijriCalendarToday}</span>}
                                 </p>
                                 <p className="text-xs text-[rgb(var(--color-text-muted))]">{dateFormatter.format(new Date(`${selectedDay.gregorianIso}T12:00:00`))}</p>
                                 <div className="mt-4 space-y-2">
@@ -259,7 +259,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                 ) : (
                     <section className={cn("overflow-hidden rounded-2xl border p-3 sm:p-5", surface)}>
                         <div className="overflow-x-auto">
-                            <div className="grid min-w-[430px] grid-cols-5 border-b border-current/10 py-2 text-center text-[10px] font-bold uppercase opacity-60">
+                            <div className="grid min-w-[430px] grid-cols-5 border-b border-current/10 py-2 text-center text-xs font-bold uppercase opacity-60">
                                 <span>{t.hijriCalendarHeaderHijri}</span><span>{t.hijriCalendarHeaderDate}</span><span>{t.hijriCalendarHeaderImsak}</span><span>{t.hijriCalendarHeaderFajr}</span><span>{t.hijriCalendarHeaderIftar}</span>
                             </div>
                             {calendarData.map(day => (
@@ -275,13 +275,13 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                 {historyEvents.length > 0 && (
                     <section className={cn("mt-4 rounded-2xl border p-4", surface)}>
                         <h2 className="flex items-center gap-2 text-sm font-bold">
-                            <BookOpen className="h-4 w-4 text-[rgb(var(--color-primary))]" />
+                            <BookOpen className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                             {t.hijriHistoryTitle}
                         </h2>
                         <ul className="mt-3 space-y-3">
                             {historyEvents.map(event => (
                                 <li key={event.slug} className="rounded-2xl bg-[rgb(var(--color-surface-subtle))] p-3">
-                                    <p className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
                                         {event.date && formatHistoryDate(event.date, locale)}
                                     </p>
                                     <p className="mt-0.5 text-sm font-semibold">{locale === "en" ? event.titleEn : event.titleId}</p>

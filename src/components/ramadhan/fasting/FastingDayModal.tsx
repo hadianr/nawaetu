@@ -142,7 +142,7 @@ export default function FastingDayModal({
                     <div>
                         <h2 className="font-bold text-[rgb(var(--color-text-strong))] text-sm sm:text-base">{modalTitle}</h2>
                         {gregorianDate && (
-                            <p className="text-[10px] text-[rgb(var(--color-text-muted))] mt-0.5">{gregorianDate}</p>
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5">{gregorianDate}</p>
                         )}
                     </div>
                     {/* Add Close button back for better mobile UX in full screen */}
@@ -159,7 +159,7 @@ export default function FastingDayModal({
 
                     {/* Status Picker — More compact grid */}
                     <div>
-                        <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
+                        <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
                             {t.fastingDayModalStatusLabel}
                         </p>
                         <div className="grid grid-cols-4 gap-1.5">
@@ -179,7 +179,7 @@ export default function FastingDayModal({
                                             }`}
                                     >
                                         <AppIcon name={meta.iconKey} size="md" tone="primary" className="mx-auto mb-1" />
-                                        <span className="text-[9px] font-bold leading-tight block">{label}</span>
+                                        <span className="text-xs font-bold leading-tight block">{label}</span>
                                     </button>
                                 );
                             })}
@@ -190,8 +190,8 @@ export default function FastingDayModal({
                     {requiresMadzhab && (
                         <div className="rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 p-4 space-y-3">
                             <div>
-                                <p className="text-[11px] font-bold text-[rgb(var(--color-primary-strong))] mb-1">{t.fastingMadzhabTitle}</p>
-                                <p className="text-[10px] text-[rgb(var(--color-text-muted))] leading-relaxed">{t.fastingMadzhabSubtitle}</p>
+                                <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] mb-1">{t.fastingMadzhabTitle}</p>
+                                <p className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed">{t.fastingMadzhabSubtitle}</p>
                             </div>
                             <div className="grid grid-cols-1 gap-2">
                                 {MADZHAB_OPTIONS.map((m) => (
@@ -205,24 +205,24 @@ export default function FastingDayModal({
                                     >
                                         <div className="flex items-center justify-between mb-1">
                                             <span className="font-bold text-xs">{m[`name${"Id"}` as "nameId"]}</span>
-                                            {m.suggestion && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[rgb(var(--color-warning))]/20 text-[rgb(var(--color-warning))] font-bold uppercase tracking-tighter">Suggestion</span>}
+                                            {m.suggestion && <span className="text-xs px-1.5 py-0.5 rounded-full bg-[rgb(var(--color-warning))]/20 text-[rgb(var(--color-warning))] font-bold uppercase tracking-tighter">Suggestion</span>}
                                         </div>
-                                        <p className="text-[10px] leading-relaxed opacity-60">
+                                        <p className="text-xs leading-relaxed opacity-60">
                                             {m.pregnantBreastfeedingNote}
                                         </p>
                                     </button>
                                 ))}
                             </div>
                             {!selectedMadzhab && (
-                                <p className="text-[10px] text-[rgb(var(--color-warning))] font-medium italic">{t.fastingConsequenceChoiceNote}</p>
+                                <p className="text-xs text-[rgb(var(--color-warning))] font-medium italic">{t.fastingConsequenceChoiceNote}</p>
                             )}
                         </div>
                     )}
 
                     {/* Consequence Preview */}
                     <div className={`flex items-center justify-between gap-2 rounded-xl border px-4 py-3 ${consequenceBg}`}>
-                        <span className="text-[rgb(var(--color-text-muted))] text-[11px] font-medium">{t.fastingDayModalRuling}</span>
-                        <span className={`text-[11px] font-bold uppercase tracking-wider ${consequenceColor}`}>
+                        <span className="text-[rgb(var(--color-text-muted))] text-xs font-medium">{t.fastingDayModalRuling}</span>
+                        <span className={`text-xs font-bold uppercase tracking-wider ${consequenceColor}`}>
                             {consequenceLabel}
                         </span>
                     </div>
@@ -230,14 +230,14 @@ export default function FastingDayModal({
                     {/* Dalil + Translation */}
                     {selectedStatus !== "fasting" && statusMeta && (
                         <div className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-4 py-4 space-y-2.5">
-                            <p className="text-[10px] text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-wider">
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-wider">
                                 {t.fastingDayModalDalilLabel}
                             </p>
                             <p className="text-[12px] text-[rgb(var(--color-primary-light,var(--color-primary)))] font-semibold leading-relaxed">
                                 {statusMeta.dalil}
                             </p>
                             {statusMeta.dalilTranslation && (
-                                <p className="text-[11px] text-[rgb(var(--color-text-muted))] italic leading-relaxed">
+                                <p className="text-xs text-[rgb(var(--color-text-muted))] italic leading-relaxed">
                                     &ldquo;{statusMeta.dalilTranslation}&rdquo;
                                 </p>
                             )}
@@ -246,7 +246,7 @@ export default function FastingDayModal({
 
                     {/* Note */}
                     <div>
-                        <p className="text-[11px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
+                        <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
                             {t.fastingDayModalNoteLabel}
                         </p>
                         <textarea

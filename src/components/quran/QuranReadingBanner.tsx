@@ -97,7 +97,7 @@ export default function QuranReadingBanner() {
                             <BookOpen className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.tilawahBannerTitle}</p>
+                            <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.tilawahBannerTitle}</p>
                             <p className="text-sm font-bold leading-tight truncate text-[rgb(var(--color-text-strong))]">
                                 {dailyTotalSeconds > 0 ? formatDuration(dailyTotalSeconds) : (
                                     <span className="font-medium text-xs text-[rgb(var(--color-text-muted))]">{t.tilawahBannerNoStart}</span>
@@ -109,7 +109,7 @@ export default function QuranReadingBanner() {
                     {/* Target toggle button */}
                     <button
                         onClick={() => setShowTargetPicker((prev) => !prev)}
-                        className="shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-xl border transition-all text-[10px] bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:text-[rgb(var(--color-text-strong))]"
+                        className="shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-xl border transition-all text-xs bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:text-[rgb(var(--color-text-strong))]"
                     >
                         <Target className="w-3 h-3" />
                         <span className="whitespace-nowrap">{targetMinutes < 60 ? `${targetMinutes}${t.unitMinute}` : `1${t.unitHour}`}</span>
@@ -132,7 +132,7 @@ export default function QuranReadingBanner() {
                                 )}
                             >
                                 <span className="block">{opt.label}</span>
-                                <span className="block text-[9px] opacity-60 mt-0.5">{opt.longLabel}</span>
+                                <span className="block text-xs opacity-60 mt-0.5">{opt.longLabel}</span>
                             </button>
                         ))}
                     </div>
@@ -153,7 +153,7 @@ export default function QuranReadingBanner() {
 
                 {/* Status row */}
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-[10px] text-[rgb(var(--color-text-muted))]">
+                    <div className="flex items-center gap-1 text-xs text-[rgb(var(--color-text-muted))]">
                         <Clock className="w-3 h-3" />
                         {isCompleted ? (
                             <span className="font-bold text-[rgb(var(--color-success))]">{t.tilawahTargetReached}</span>
@@ -162,7 +162,7 @@ export default function QuranReadingBanner() {
                         )}
                     </div>
                     <span className={cn(
-                        "text-[10px] font-bold",
+                        "text-xs font-bold",
                         isCompleted ? "text-[rgb(var(--color-success))]" : "text-[rgb(var(--color-text-muted))]"
                     )}>
                         {progress}%

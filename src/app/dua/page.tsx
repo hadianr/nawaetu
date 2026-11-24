@@ -123,7 +123,7 @@ const DuaCard = memo(function DuaCard({
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5 min-w-0 overflow-x-auto no-scrollbar whitespace-nowrap">
                         <span className={cn(
-                            "text-[10px] px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
+                            "text-xs px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
                             isHighlighted
                                 ? "bg-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]"
                                 : "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border-[rgb(var(--color-accent))]/25"
@@ -132,7 +132,7 @@ const DuaCard = memo(function DuaCard({
                         </span>
 
                         {reciteCountText && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider bg-[rgb(var(--color-success))]/10 text-[rgb(var(--color-success))] border border-[rgb(var(--color-success))]/25 whitespace-nowrap flex-shrink-0">
+                            <span className="text-xs px-1.5 py-0.5 rounded font-bold uppercase tracking-wider bg-[rgb(var(--color-success))]/10 text-[rgb(var(--color-success))] border border-[rgb(var(--color-success))]/25 whitespace-nowrap flex-shrink-0">
                                 {reciteCountText}
                             </span>
                         )}
@@ -174,7 +174,7 @@ const DuaCard = memo(function DuaCard({
                         <p className="text-xs font-semibold line-clamp-1 leading-snug text-[rgb(var(--color-text-strong))]">
                             {title}
                         </p>
-                        <p className="text-[11px] line-clamp-1 mt-0.5 text-[rgb(var(--color-text-muted))]">
+                        <p className="text-xs line-clamp-1 mt-0.5 text-[rgb(var(--color-text-muted))]">
                             &ldquo;{translation}&rdquo;
                         </p>
                     </div>
@@ -202,7 +202,7 @@ const DuaCard = memo(function DuaCard({
                             "bg-gradient-to-b from-[rgb(var(--color-accent))] to-transparent"
                         )} />
                         {item.latin && (
-                            <p className="text-[11px] italic leading-relaxed font-serif text-[rgb(var(--color-text-muted))]">
+                            <p className="text-xs italic leading-relaxed font-serif text-[rgb(var(--color-text-muted))]">
                                 {item.latin}
                             </p>
                         )}
@@ -217,11 +217,11 @@ const DuaCard = memo(function DuaCard({
                             "p-2.5 rounded-xl text-xs space-y-1 border",
                             "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20 text-[rgb(var(--color-text))]"
                         )}>
-                            <p className="font-bold flex items-center gap-1 text-[10px] uppercase tracking-wider text-[rgb(var(--color-accent-strong))]">
+                            <p className="font-bold flex items-center gap-1 text-xs uppercase tracking-wider text-[rgb(var(--color-accent-strong))]">
                                 <Sparkles className="w-3 h-3" />
                                 {t.duaVirtueLabel || "Keutamaan Doa"}
                             </p>
-                            <p className="text-[11px] leading-relaxed">{virtueText}</p>
+                            <p className="text-xs leading-relaxed">{virtueText}</p>
                         </div>
                     )}
 
@@ -373,7 +373,7 @@ function DuaContent() {
                                 <h1 className="text-lg font-bold tracking-tight text-[rgb(var(--color-text-strong))]">
                                     {t.duaLibraryTitle || "Kumpulan Doa & Dzikir"}
                                 </h1>
-                                <p className="text-[11px] text-[rgb(var(--color-text-muted))]">
+                                <p className="text-xs text-[rgb(var(--color-text-muted))]">
                                     {(t.duaLibrarySubtitle || "{count} Doa Pilihan dari Al-Qur'an & Sunnah").replace("{count}", String(DUA_LIBRARY.length))}
                                 </p>
                             </div>
@@ -400,7 +400,7 @@ function DuaContent() {
 
                     {/* Filter count */}
                     {(selectedOccasion !== "all" || searchQuery) && (
-                        <p className="text-[11px] px-2 mb-2 text-[rgb(var(--color-text-muted))]">
+                        <p className="text-xs px-2 mb-2 text-[rgb(var(--color-text-muted))]">
                             {(t.duaShowingCount || "Menampilkan {count} doa").replace("{count}", String(filtered.length))}
                         </p>
                     )}

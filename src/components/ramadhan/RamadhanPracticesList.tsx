@@ -70,7 +70,7 @@ export default function RamadhanPracticesList() {
                                 <AppIcon name={practice.iconKey} size="lg" tone="primary" className="shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="font-semibold text-[rgb(var(--color-text-strong))] text-xs sm:text-sm">{localizedTitle}</p>
-                                    <p className="text-[10px] sm:text-xs text-[rgb(var(--color-text-muted))] truncate">{localizedDesc}</p>
+                                    <p className="text-xs sm:text-xs text-[rgb(var(--color-text-muted))] truncate">{localizedDesc}</p>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
                                     <DalilBadge dalil={practice.dalil} variant="pill" />
@@ -88,7 +88,7 @@ export default function RamadhanPracticesList() {
                                     {/* Tips */}
                                     {localizedTips && localizedTips.length > 0 && (
                                         <div className="rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] p-4 shadow-[var(--shadow-card)] backdrop-blur-sm">
-                                            <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-4">
+                                            <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-4">
                                                 {t.practicesTipsLabel}
                                             </p>
                                             <ul className="space-y-1.5">

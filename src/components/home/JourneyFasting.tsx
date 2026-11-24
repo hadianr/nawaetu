@@ -74,7 +74,7 @@ export default function JourneyFasting({ adjustment, onVisible }: { adjustment: 
                 <LottieMoment
                     src="/lottie/lights.lottie"
                     className="size-14 shrink-0"
-                    fallback={<AnimatedCheck className="size-6 shrink-0 text-[rgb(var(--color-primary))]" />}
+                    fallback={<AnimatedCheck className="size-6 shrink-0 text-[rgb(var(--color-primary-strong))]" />}
                 />
                 {String(t.journeyQadhaCleared)}
             </motion.div>

@@ -72,10 +72,10 @@ export default function DailySpiritWidget() {
                             )}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]/70 leading-none">
+                            <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))] leading-none">
                                 {isHadith ? t.spiritualHadithTitle : t.spiritualDuaTitle}
                             </span>
-                            <span className="text-[11px] font-medium mt-0.5 text-[rgb(var(--color-text-muted))]">{localizedCategory}</span>
+                            <span className="text-xs font-medium mt-0.5 text-[rgb(var(--color-text-muted))]">{localizedCategory}</span>
                         </div>
                     </div>
 
@@ -98,7 +98,7 @@ export default function DailySpiritWidget() {
                                 <Copy className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
                             )}
                             {isCopied && (
-                                <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[rgb(var(--color-success))] text-[10px] font-bold text-[rgb(var(--color-primary-foreground))] px-2 py-0.5 rounded-md animate-in fade-in slide-in-from-bottom-2 whitespace-nowrap">
+                                <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[rgb(var(--color-success))] text-xs font-bold text-[rgb(var(--color-primary-foreground))] px-2 py-0.5 rounded-md animate-in fade-in slide-in-from-bottom-2 whitespace-nowrap">
                                     {t.spiritualCopied}
                                 </span>
                             )}
@@ -120,7 +120,7 @@ export default function DailySpiritWidget() {
                     <div className="relative space-y-1.5">
                         <div className="absolute -left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[rgb(var(--color-primary))]/40 to-transparent rounded-full" />
                         {item.content.latin && (
-                            <p className="text-[10px] font-medium italic leading-relaxed pl-3 text-[rgb(var(--color-text-muted))]">
+                            <p className="text-xs font-medium italic leading-relaxed pl-3 text-[rgb(var(--color-text-muted))]">
                                 {item.content.latin}
                             </p>
                         )}
@@ -134,7 +134,7 @@ export default function DailySpiritWidget() {
                         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[rgb(var(--color-border))] to-transparent" />
                         <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
                             <Sparkles className="w-2.5 h-2.5 text-[rgb(var(--color-accent-strong))]" />
-                            <span className="text-[9px] font-bold uppercase tracking-wider whitespace-nowrap text-[rgb(var(--color-text-muted))]">
+                            <span className="text-xs font-bold uppercase tracking-wider whitespace-nowrap text-[rgb(var(--color-text-muted))]">
                                 {item.content.source}
                             </span>
                         </div>
@@ -147,7 +147,7 @@ export default function DailySpiritWidget() {
                     href="/hadith"
                     className="group flex items-center justify-between px-4 py-2.5 border-t border-[rgb(var(--color-border))] transition-colors hover:bg-[rgb(var(--color-primary))]/5"
                 >
-                    <span className="text-[11px] font-semibold transition-colors text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))]">
+                    <span className="text-xs font-semibold transition-colors text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))]">
                         {isHadith ? t.hadithExploreLink : t.hadithExploreLinkDua}
                     </span>
                     <ChevronRight className="w-3.5 h-3.5 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] group-hover:translate-x-0.5 transition-all" />

@@ -42,7 +42,7 @@ export function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
                         ? "bg-[rgb(var(--color-surface-subtle))]"
                         : "bg-[rgb(var(--color-primary))]/20"
                 )}>
-                    {isUser ? <User className="w-4 h-4 text-[rgb(var(--color-text-muted))]" /> : <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary))]" />}
+                    {isUser ? <User className="w-4 h-4 text-[rgb(var(--color-text-muted))]" /> : <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />}
                 </div>
 
                 {/* Bubble */}
@@ -66,9 +66,9 @@ export function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
                         );
                     })()}
                     <span className={cn(
-                        "text-[9px] mt-1 block text-right font-medium",
+                        "text-xs mt-1 block text-right font-medium",
                         isUser
-                            ? "text-[rgb(var(--color-primary-foreground))]/80"
+                            ? "text-[rgb(var(--color-primary-foreground))]"
                             : "text-[rgb(var(--color-text-muted))]"
                     )}>
                         {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

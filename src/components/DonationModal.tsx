@@ -196,7 +196,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                         <div className={cn(
                                             "font-bold",
                                             !isCustomMode && selectedAmount === option.value
-                                                ? "text-[rgb(var(--color-primary))]"
+                                                ? "text-[rgb(var(--color-primary-strong))]"
                                                 : "text-[rgb(var(--color-text-strong))]"
                                         )}>
                                             {option.label}
@@ -220,7 +220,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                             <span className={cn(
                                                 "font-bold",
                                                 isCustomMode
-                                                    ? "text-[rgb(var(--color-primary))]"
+                                                    ? "text-[rgb(var(--color-primary-strong))]"
                                                     : "text-[rgb(var(--color-text-strong))]"
                                             )}>
                                                 Nominal Lainnya
@@ -251,7 +251,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                             autoFocus
                                         />
                                     </div>
-                                    <p className="text-[10px] text-[rgb(var(--color-text-muted))] px-1 italic">Minimal Rp 5.000 (Ketentuan Payment Gateway)</p>
+                                    <p className="text-xs text-[rgb(var(--color-text-muted))] px-1 italic">Minimal Rp 5.000 (Ketentuan Payment Gateway)</p>
                                 </div>
                             )}
 
@@ -273,7 +273,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                 )}
                             </Button>
 
-                            <p className="text-[10px] text-center text-[rgb(var(--color-text-muted))]">
+                            <p className="text-xs text-center text-[rgb(var(--color-text-muted))]">
                                 Powered by Mayar.id - Aman & Terverifikasi
                             </p>
                         </div>

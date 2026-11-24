@@ -27,7 +27,7 @@ export default function SettingsPage() {
         <Suspense fallback={
             <div className="flex min-h-screen items-center justify-center bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text-strong))]">
                 <div className="flex flex-col items-center gap-4">
-                    <RefreshCcw className="w-8 h-8 animate-spin text-[rgb(var(--color-primary))]" />
+                    <RefreshCcw className="w-8 h-8 animate-spin text-[rgb(var(--color-primary-strong))]" />
                     <p className="text-sm animate-pulse">Memuat Pengaturan...</p>
                 </div>
             </div>

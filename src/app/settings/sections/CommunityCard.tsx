@@ -36,7 +36,7 @@ export default function CommunityCard({ t, setShowFeedbackModal }: CommunityCard
                 <div className="flex items-center gap-2 mb-1">
                     <MessageSquarePlus className={cn(
                         "w-4 h-4",
-                        "text-[rgb(var(--color-primary))]"
+                        "text-[rgb(var(--color-primary-strong))]"
                     )} />
                     <span className={cn(
                         "text-sm font-bold",
@@ -44,7 +44,7 @@ export default function CommunityCard({ t, setShowFeedbackModal }: CommunityCard
                     )}>{t.feedbackCardTitle}</span>
                 </div>
                 <p className={cn(
-                    "text-[10px] leading-relaxed",
+                    "text-xs leading-relaxed",
                     "text-[rgb(var(--color-text-muted))]"
                 )}>
                     {t.feedbackCardDesc}

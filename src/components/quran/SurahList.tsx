@@ -205,7 +205,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                             "bg-[rgb(var(--color-primary))]"
                                         )} />
                                         <span className={cn(
-                                            "text-[10px] font-bold uppercase tracking-wider",
+                                            "text-xs font-bold uppercase tracking-wider",
                                             "text-[rgb(var(--color-primary-strong))]"
                                         )}>
                                             {t.quranLastRead}
@@ -250,7 +250,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                         )}>{t.quranNoHistory}</h3>
                         <p className={cn(
                             "text-xs font-medium uppercase tracking-wider",
-                            "text-[rgb(var(--color-primary-strong))]/70"
+                            "text-[rgb(var(--color-primary-strong))]"
                         )}>{t.quranStartReading}</p>
                     </div>
                 )}
@@ -281,7 +281,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                         )}>
                             <Bookmark className={cn(
                                 "h-5 w-5 transition-colors",
-                                bookmarkCount > 0 ? "fill-current" : "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))]"
+                                bookmarkCount > 0 ? "fill-current" : "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))]"
                             )} />
                         </div>
 
@@ -407,7 +407,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                             {chapter.name_simple}
                                         </Link>
                                         <span className={cn(
-                                            "text-[10px] truncate transition-colors",
+                                            "text-xs truncate transition-colors",
                                             isLastRead
                                                 ? "text-[rgb(var(--color-primary-strong))]"
                                                 : "text-[rgb(var(--color-text-muted))]"
@@ -420,7 +420,7 @@ export default function SurahList({ chapters }: SurahListProps) {
 
                             <div className="flex items-end justify-between w-full pointer-events-none">
                                 <p className={cn(
-                                    "text-[9px] font-medium uppercase tracking-wider transition-colors",
+                                    "text-xs font-medium uppercase tracking-wider transition-colors",
                                     "text-[rgb(var(--color-text-muted))]"
                                 )}>
                                     {chapter.verses_count} {t.quranVerseCount}, {chapter.revelation_place === "Makkah" ? t.quranMakkah : t.quranMadinah}

@@ -146,7 +146,7 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
                     "p-3 text-center border-t border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]"
                 )}>
                     <p className={cn(
-                        "text-[10px] text-[rgb(var(--color-text-muted))]"
+                        "text-xs text-[rgb(var(--color-text-muted))]"
                     )}>
                         {t.mosqueFinderButton}
                     </p>

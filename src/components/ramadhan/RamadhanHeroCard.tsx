@@ -137,7 +137,7 @@ export default function RamadhanHeroCard() {
                     <div>
                         <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
                             <AppIcon name="moon" size="md" tone="primary" />
-                            <span className="text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider sm:tracking-wider text-[rgb(var(--color-text-muted))]">
+                            <span className="text-xs sm:text-xs font-semibold uppercase tracking-wider sm:tracking-wider text-[rgb(var(--color-text-muted))]">
                                 {data?.hijriDate ? `${data.hijriDay} ${data.hijriMonth} ${hijriYear}H` : `${t.ramadhanLabel} ${hijriYear}H`}
                             </span>
                         </div>
@@ -160,7 +160,7 @@ export default function RamadhanHeroCard() {
 
                 {/* Progress bar */}
                 <div className="mb-3 sm:mb-4">
-                    <div className="flex justify-between text-[10px] sm:text-xs text-[rgb(var(--color-text-muted))] mb-1">
+                    <div className="flex justify-between text-xs sm:text-xs text-[rgb(var(--color-text-muted))] mb-1">
                         <span>{t.ramadhanDay1}</span>
                         <span className="font-medium" style={{ color: "rgb(var(--color-primary-strong) / 0.8)" }}>{progress}% {t.ramadhanCompleted}</span>
                         <span>{t.ramadhanDay30}</span>
@@ -186,7 +186,7 @@ export default function RamadhanHeroCard() {
                 {/* Motivational text */}
                 <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 mb-2 sm:px-4 sm:py-3 sm:mb-3 backdrop-blur-md shadow-[var(--shadow-card)]">
                     <div className="flex items-center justify-between gap-2">
-                        <p className="text-[10px] sm:text-xs text-[rgb(var(--color-text-strong))] leading-relaxed font-bold">
+                        <p className="text-xs sm:text-xs text-[rgb(var(--color-text-strong))] leading-relaxed font-bold">
                             {periodData.text}
                         </p>
                         <DalilBadge dalil={periodData.dalil} variant="pill" />

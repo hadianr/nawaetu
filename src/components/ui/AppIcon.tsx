@@ -85,7 +85,7 @@ const SIZE_CLASSES: Record<AppIconSize, string> = {
 const TONE_CLASSES: Record<AppIconTone, string> = {
     default: "text-[rgb(var(--color-text))]",
     muted: "text-[rgb(var(--color-text-muted))]",
-    primary: "text-[rgb(var(--color-primary))]",
+    primary: "text-[rgb(var(--color-primary-strong))]",
     success: "text-[rgb(var(--color-success))]",
     warning: "text-[rgb(var(--color-warning))]",
     danger: "text-[rgb(var(--color-danger))]",

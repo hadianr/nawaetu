@@ -95,7 +95,7 @@ export default function TajweedLegend() {
                             className="w-full flex items-center justify-between p-3 rounded-xl border transition-all group bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-ring))]"
                         >
                             <div className="flex items-center gap-2">
-                                <Info className="w-4 h-4 text-[rgb(var(--color-primary))]" />
+                                <Info className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                                 <span className="text-sm font-bold transition-colors text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))]">
                                     {t.quranTajweedGuide || "Panduan Kode Warna Tajwid"}
                                 </span>
@@ -122,7 +122,7 @@ export default function TajweedLegend() {
                                 <div className={cn("w-3 h-3 rounded-full mt-1.5 shrink-0", rule.color)} />
                                 <div>
                                     <h4 className="text-sm font-bold leading-none mb-1 text-[rgb(var(--color-text-strong))]">{rule.name}</h4>
-                                    <p className="text-[10px] font-medium mb-0.5 uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{rule.desc}</p>
+                                    <p className="text-xs font-medium mb-0.5 uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{rule.desc}</p>
                                     <p className="text-xs text-[rgb(var(--color-primary-strong))] italic">{rule.instruction}</p>
                                 </div>
                             </div>

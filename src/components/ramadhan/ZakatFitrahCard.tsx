@@ -47,13 +47,13 @@ export default function ZakatFitrahCard() {
                     {currentPhase === 1 && (
                         <div className="flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-success))]/30 bg-[rgb(var(--color-success))]/10 px-2.5 py-1 backdrop-blur-sm">
                             <Clock className="h-3.5 w-3.5 text-[rgb(var(--color-success))]" />
-                            <span className="text-[10px] font-semibold text-[rgb(var(--color-success))]">Waktu Mubah</span>
+                            <span className="text-xs font-semibold text-[rgb(var(--color-success))]">Waktu Mubah</span>
                         </div>
                     )}
                     {currentPhase === 3 && (
                         <div className="flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-warning))]/30 bg-[rgb(var(--color-warning))]/10 px-2.5 py-1 backdrop-blur-sm">
                             <AlertCircle className="h-3.5 w-3.5 text-[rgb(var(--color-warning))]" />
-                            <span className="text-[10px] font-semibold text-[rgb(var(--color-warning))]">Waktu Afdhal</span>
+                            <span className="text-xs font-semibold text-[rgb(var(--color-warning))]">Waktu Afdhal</span>
                         </div>
                     )}
                 </div>
@@ -67,15 +67,15 @@ export default function ZakatFitrahCard() {
                             <Clock className="h-3.5 w-3.5" /> Panduan Waktu Pembayaran
                         </h4>
                         <div className="space-y-1.5">
-                            <div className={`flex items-start gap-2 text-[10px] ${currentPhase === 1 ? 'text-[rgb(var(--color-success))]' : 'text-[rgb(var(--color-text-muted))]'}`}>
+                            <div className={`flex items-start gap-2 text-xs ${currentPhase === 1 ? 'text-[rgb(var(--color-success))]' : 'text-[rgb(var(--color-text-muted))]'}`}>
                                 <div className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${currentPhase === 1 ? 'bg-[rgb(var(--color-success))]' : 'bg-[rgb(var(--color-border))]/20'}`} />
                                 <div><strong className="font-semibold">Waktu Mubah (Boleh):</strong> Sejak awal Ramadhan hingga hari terakhir Ramadhan.</div>
                             </div>
-                            <div className={`flex items-start gap-2 text-[10px] ${currentPhase === 2 ? 'text-[rgb(var(--color-warning))]' : 'text-[rgb(var(--color-text-muted))]'}`}>
+                            <div className={`flex items-start gap-2 text-xs ${currentPhase === 2 ? 'text-[rgb(var(--color-warning))]' : 'text-[rgb(var(--color-text-muted))]'}`}>
                                 <div className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${currentPhase === 2 ? 'bg-[rgb(var(--color-warning))]' : 'bg-[rgb(var(--color-border))]/20'}`} />
                                 <div><strong className="font-semibold">Waktu Wajib:</strong> Sejak terbenam matahari (Maghrib) di akhir Ramadhan.</div>
                             </div>
-                            <div className={`flex items-start gap-2 text-[10px] ${currentPhase === 3 ? 'text-[rgb(var(--color-success))]' : 'text-[rgb(var(--color-text-muted))]'}`}>
+                            <div className={`flex items-start gap-2 text-xs ${currentPhase === 3 ? 'text-[rgb(var(--color-success))]' : 'text-[rgb(var(--color-text-muted))]'}`}>
                                 <div className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${currentPhase === 3 ? 'bg-[rgb(var(--color-success))]' : 'bg-[rgb(var(--color-border))]/20'}`} />
                                 <div><strong className="font-semibold">Waktu Afdhal (Utama):</strong> Sesudah shalat Subuh hingga sebelum shalat Idul Fitri dimulai.</div>
                             </div>
@@ -113,7 +113,7 @@ export default function ZakatFitrahCard() {
                             <h4 className="mb-1 font-semibold text-[rgb(var(--color-text-strong))] text-xs">
                                 {t.zakatFoodTitle || "Bentuk Makanan"}
                             </h4>
-                            <p className="text-[10px] text-[rgb(var(--color-text-muted))] leading-relaxed line-clamp-4">
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed line-clamp-4">
                                 {t.zakatFoodDesc || "Zakat dibayarkan berupa makanan pokok yang mengenyangkan menurut kebiasaan masyarakat setempat (seperti beras, gandum, kurma, dll)."}
                             </p>
                         </div>
@@ -126,7 +126,7 @@ export default function ZakatFitrahCard() {
                             <h4 className="mb-1 font-semibold text-[rgb(var(--color-text-strong))] text-xs">
                                 {t.zakatMoneyTitle || "Membayar dengan Uang"}
                             </h4>
-                            <p className="text-[10px] text-[rgb(var(--color-text-muted))] leading-relaxed line-clamp-4">
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed line-clamp-4">
                                 {t.zakatMoneyDesc || "Diperbolehkan membayar dengan uang yang senilai dengan harga makanan pokok (2,5 kg) untuk memudahkan penerima."}
                             </p>
                         </div>
@@ -140,10 +140,10 @@ export default function ZakatFitrahCard() {
                         <div className="font-arabic text-right text-lg text-[rgb(var(--color-text-strong))] mb-2 leading-loose" dir="rtl">
                             {doaMenerimaZakat.arabic}
                         </div>
-                        <div className="text-[10px] text-[rgb(var(--color-text-muted))] italic mb-1">
+                        <div className="text-xs text-[rgb(var(--color-text-muted))] italic mb-1">
                             &quot;{doaMenerimaZakat.latin}&quot;
                         </div>
-                        <div className="text-[10px] text-[rgb(var(--color-text-muted))] leading-relaxed">
+                        <div className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed">
                             Artinya: {doaMenerimaZakat.translation}
                         </div>
                     </div>

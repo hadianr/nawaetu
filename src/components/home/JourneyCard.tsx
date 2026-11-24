@@ -155,7 +155,7 @@ export default function JourneyCard() {
                     </div>
 
                     <div className="min-w-0 flex-1">
-                        <h2 className="truncate text-[11px] font-semibold uppercase tracking-wider text-[rgb(var(--color-text))]">
+                        <h2 className="truncate text-xs font-semibold uppercase tracking-wider text-[rgb(var(--color-text))]">
                             {String(t.journeyTitle)}
                         </h2>
                         {/* Plain text, not a pill: it names the phase; it is not a button. */}
@@ -190,7 +190,7 @@ export default function JourneyCard() {
                             <LottieMoment
                                 src="/lottie/flame.lottie"
                                 className="size-8 shrink-0"
-                                fallback={<AnimatedCheck className="size-5 shrink-0 text-[rgb(var(--color-primary))]" />}
+                                fallback={<AnimatedCheck className="size-5 shrink-0 text-[rgb(var(--color-primary-strong))]" />}
                             />
                             {String(t.journeyDoneShort)}
                         </motion.div>
@@ -249,7 +249,7 @@ export default function JourneyCard() {
                         className="mt-3 flex min-h-11 w-full items-center gap-3 rounded-xl text-left outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]"
                     >
                         <Flame
-                            className={`size-5 shrink-0 ${doneToday ? "fill-current text-[rgb(var(--color-primary))]" : "text-[rgb(var(--color-text-muted))]"}`}
+                            className={`size-5 shrink-0 ${doneToday ? "fill-current text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-text-muted))]"}`}
                             aria-hidden="true"
                         />
                         <span className="min-w-0 flex-1">

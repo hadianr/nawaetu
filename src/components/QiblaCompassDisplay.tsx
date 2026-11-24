@@ -230,7 +230,7 @@ const CompassDisplay = memo(({
                 </div>
 
                 <div className={cn(
-                    "mt-3 max-w-xs md:max-w-md text-[9px] md:text-xs leading-relaxed border rounded-lg px-3 py-2 backdrop-blur-sm transition-all",
+                    "mt-3 max-w-xs md:max-w-md text-xs md:text-xs leading-relaxed border rounded-lg px-3 py-2 backdrop-blur-sm transition-all",
                     "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] shadow-[var(--shadow-card)]"
                 )}>
                     <div className="space-y-1">

@@ -62,12 +62,12 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
                         <AppIcon name="hands" size="md" tone="primary" className="group-hover/niat:scale-110 transition-transform" />
                     )}
                     <div className="flex-1 text-left min-w-0 pr-2">
-                        <p className="text-xs sm:text-sm font-bold text-[rgb(var(--color-text-strong))] group-hover/niat:text-[rgb(var(--color-primary))] transition-colors truncate">
+                        <p className="text-xs sm:text-sm font-bold text-[rgb(var(--color-text-strong))] group-hover/niat:text-[rgb(var(--color-primary-strong))] transition-colors truncate">
                             {localizedTitle}
                         </p>
                         {/* Show recommendation badge if source mentions "Sahih" or "Paling Dianjurkan" */}
                         {(localizedSource?.includes('Sahih') || localizedSource?.includes('Paling Dianjurkan') || localizedSource?.includes('Most Recommended')) && (
-                            <span className="inline-block mt-0.5 px-1.5 py-0.5 text-[9px] font-semibold rounded-md" style={{
+                            <span className="inline-block mt-0.5 px-1.5 py-0.5 text-xs font-semibold rounded-md" style={{
                                 background: "rgb(var(--color-primary) / 0.2)",
                                 color: "rgb(var(--color-primary-strong))",
                                 border: "1px solid rgb(var(--color-primary) / 0.3)"
@@ -133,7 +133,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
 
                         {/* Translation */}
                         <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-4 backdrop-blur-sm shadow-[var(--shadow-card)]">
-                            <div className="text-[10px] font-bold uppercase tracking-wider mb-2.5 text-[rgb(var(--color-text-muted))]">
+                            <div className="text-xs font-bold uppercase tracking-wider mb-2.5 text-[rgb(var(--color-text-muted))]">
                                 {t.intention_translation}
                             </div>
                             <div className="text-sm text-[rgb(var(--color-text))] leading-relaxed font-normal" style={{
@@ -148,7 +148,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
                         {localizedSource && (
                             <div className="flex items-center gap-2 px-1">
                                 <span className="h-1 w-1 rounded-full bg-[rgb(var(--color-border))]" />
-                                <div className="text-[10px] font-medium text-[rgb(var(--color-text-muted))] uppercase tracking-wider leading-relaxed">
+                                <div className="text-xs font-medium text-[rgb(var(--color-text-muted))] uppercase tracking-wider leading-relaxed">
                                     {localizedSource}
                                 </div>
                             </div>

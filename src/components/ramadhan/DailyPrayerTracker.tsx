@@ -90,7 +90,7 @@ export default function DailyPrayerTracker() {
                     <AppIcon name="landmark" size="sm" tone="primary" />
                     <div>
                         <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm leading-tight">Sholat Harian</h3>
-                        <p className="text-[10px] text-[rgb(var(--color-text-muted))]">Lokasi & Sunnah Ramadhan</p>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">Lokasi & Sunnah Ramadhan</p>
                     </div>
                 </div>
                 {/* Stats pills */}
@@ -122,7 +122,7 @@ export default function DailyPrayerTracker() {
                                     isActive ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/40 scale-105" : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))]"
                                 }`}
                             >
-                                <span className="text-[10px] text-[rgb(var(--color-text-muted))] font-bold">{day}</span>
+                                <span className="text-xs text-[rgb(var(--color-text-muted))] font-bold">{day}</span>
                                 {hasLog ? <AppIcon name="shield-check" size="xs" tone="success" /> : <span className="h-3" aria-hidden="true" />}
                             </button>
                         );
@@ -145,11 +145,11 @@ export default function DailyPrayerTracker() {
                             const val = dayData?.[field] as boolean | null | undefined;
                             return (
                                 <div key={key} className="flex flex-col items-center gap-1">
-                            <span className="text-[9px] text-[rgb(var(--color-text-muted))] font-semibold uppercase">{label}</span>
+                            <span className="text-xs text-[rgb(var(--color-text-muted))] font-semibold uppercase">{label}</span>
                                     {/* Masjid button */}
                                     <button
                                         onClick={() => handlePrayerLocation(key, true)}
-                                        className={`w-full py-1.5 rounded-lg border text-[9px] font-semibold flex items-center justify-center gap-0.5 transition-all active:scale-95 ${
+                                        className={`w-full py-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-0.5 transition-all active:scale-95 ${
                                             val === true
                                                 ? "border-[rgb(var(--color-primary-light))]/50 bg-[rgb(var(--color-primary))]/25 text-[rgb(var(--color-primary-strong))]"
                                                 : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"
@@ -160,7 +160,7 @@ export default function DailyPrayerTracker() {
                                     {/* Rumah button */}
                                     <button
                                         onClick={() => handlePrayerLocation(key, false)}
-                                        className={`w-full py-1.5 rounded-lg border text-[9px] font-semibold flex items-center justify-center gap-0.5 transition-all active:scale-95 ${
+                                        className={`w-full py-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-0.5 transition-all active:scale-95 ${
                                             val === false
                                                 ? "border-[rgb(var(--color-warning))]/40 bg-[rgb(var(--color-warning))]/15 text-[rgb(var(--color-warning))]"
                                                 : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"
@@ -174,14 +174,14 @@ export default function DailyPrayerTracker() {
                     </div>
 
                     {/* Legend */}
-                    <div className="flex items-center justify-center gap-4 text-[9px] text-[rgb(var(--color-text-muted))]">
+                    <div className="flex items-center justify-center gap-4 text-xs text-[rgb(var(--color-text-muted))]">
                         <span className="flex items-center gap-1"><MapPin className="w-2.5 h-2.5" /> Masjid</span>
                         <span className="flex items-center gap-1"><Home className="w-2.5 h-2.5" /> Rumah</span>
                     </div>
 
                     {/* Sunnah Section */}
                     <div className="border-t border-[rgb(var(--color-border))] pt-3">
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] text-center mb-2">
+                        <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] text-center mb-2">
                             SHOLAT SUNNAH
                         </p>
                         <div className="grid grid-cols-4 gap-1.5">
@@ -198,7 +198,7 @@ export default function DailyPrayerTracker() {
                                         }`}
                                     >
                                         <AppIcon name={icon as AppIconName} size="sm" tone={isDone ? "success" : "muted"} />
-                                        <span className={`text-[8px] font-semibold mt-1 ${isDone ? "text-[rgb(var(--color-success))]" : "text-[rgb(var(--color-text-muted))]"}`}>
+                                        <span className={`text-xs font-semibold mt-1 ${isDone ? "text-[rgb(var(--color-success))]" : "text-[rgb(var(--color-text-muted))]"}`}>
                                             {label}
                                         </span>
                                         {isDone && <AppIcon name="shield-check" size="xs" tone="success" className="mt-0.5" />}

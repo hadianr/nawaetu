@@ -81,7 +81,7 @@ export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
                         <ArrowLeft className="h-5 w-5" />
                     </Link>
                     <div className="min-w-0">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+                        <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
                             {(t.historyChapterLabel || "Bab {order}").replace("{order}", String(chapter.order))}
                             {chapter.date && ` · ${formatHistoryDate(chapter.date, locale)}`}
                         </p>
@@ -109,7 +109,7 @@ export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
                                     </summary>
                                     <p dir="rtl" lang="ar" className="mt-2 text-right font-arabic text-lg leading-[2] text-[rgb(var(--color-text-strong))]">{hadith.arabic}</p>
                                 </details>
-                                <figcaption className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-[rgb(var(--color-text-muted))]">
+                                <figcaption className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[rgb(var(--color-text-muted))]">
                                     <span className="inline-flex items-center gap-1 font-semibold">
                                         <ShieldCheck className="h-3 w-3" />
                                         {isEn ? hadith.attributionEn : hadith.attributionId} · {isEn ? hadith.gradeEn : hadith.gradeId}
@@ -138,7 +138,7 @@ export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
                     </Link>
                 )}
 
-                <p className="text-[11px] leading-relaxed text-[rgb(var(--color-text-muted))]">{t.historyNarrativeNote}</p>
+                <p className="text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{t.historyNarrativeNote}</p>
 
                 <nav className="grid grid-cols-2 gap-2" aria-label={t.historyAllChapters}>
                     {prev ? (

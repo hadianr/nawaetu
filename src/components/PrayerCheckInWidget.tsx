@@ -310,7 +310,7 @@ export default function PrayerCheckInWidget() {
                 <div className="flex items-center justify-between mb-2 relative z-10 gap-1">
                     <div className="flex min-w-0 items-center gap-1.5">
                         <AppIcon name="landmark" size="sm" tone="primary" />
-                        <p className="truncate text-[10px] font-bold uppercase tracking-tight">
+                        <p className="truncate text-xs font-bold uppercase tracking-tight">
                             {isBackdated ? t.homePrayerCheckInHistoryTitle : t.homePrayerCheckInSectionTitle}
                         </p>
                     </div>
@@ -331,7 +331,7 @@ export default function PrayerCheckInWidget() {
                             className="relative min-h-11 min-w-11 shrink-0 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg hover:bg-[rgb(var(--color-primary))]/10 transition-colors cursor-pointer touch-manipulation group/date"
                         >
                             <Calendar className="w-3 h-3 text-[rgb(var(--color-text-muted))] transition-colors" />
-                            <span className="text-[9px] font-bold uppercase text-[rgb(var(--color-text-muted))] transition-colors">
+                            <span className="text-xs font-bold uppercase text-[rgb(var(--color-text-muted))] transition-colors">
                                 {new Date(selectedDate).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
                                     day: '2-digit',
                                     month: 'short',
@@ -359,9 +359,9 @@ export default function PrayerCheckInWidget() {
                         </label>
 
                         <div className={cn(
-                            "text-[9px] px-1.5 py-0.5 rounded-full font-bold border transition-colors whitespace-nowrap",
+                            "text-xs px-1.5 py-0.5 rounded-full font-bold border transition-colors whitespace-nowrap",
                             completedCount === 5
-                                ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary))]"
+                                ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))]"
                                 : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))]"
                         )}>
                             {completedCount}/5
@@ -419,16 +419,16 @@ export default function PrayerCheckInWidget() {
                                 )}
 
                                 <span className={cn(
-                                    "text-[9px] font-bold leading-none transition-colors",
+                                    "text-xs font-bold leading-none transition-colors",
                                         done
-                                        ? "text-[rgb(var(--color-primary))]"
+                                        ? "text-[rgb(var(--color-primary-strong))]"
                                         : isLocked
-                                                    ? "text-[rgb(var(--color-text-muted))]/40"
+                                                    ? "text-[rgb(var(--color-text-muted))]"
                                             : isActive
                                                 ? "text-[rgb(var(--color-text-strong))]"
                                                 : isUpcoming
                                                     ? "text-[rgb(var(--color-text-muted))]"
-                                            : "text-[rgb(var(--color-text-muted))]/70"
+                                            : "text-[rgb(var(--color-text-muted))]"
                                 )}>
                                     {prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
                                         ? getTranslation("prayerJumuah", "Jumat")
@@ -438,21 +438,21 @@ export default function PrayerCheckInWidget() {
                                 {/* Status hint below label */}
                                 {!done && !isLocked && (isActive || isLate) && (
                                     <span className={cn(
-                                        "text-[7px] font-bold leading-none",
+                                        "text-xs font-bold leading-none",
                                         isLate
-                                            ? "text-[rgb(var(--color-warning))]/80"
-                                            : "text-[rgb(var(--color-primary))]/70"
+                                            ? "text-[rgb(var(--color-warning))]"
+                                            : "text-[rgb(var(--color-primary-strong))]"
                                     )}>
                                         +{getHasanahReward(75)} Hasanah
                                     </span>
                                 )}
                                 {!done && isUpcoming && !isLocked && (
-                                    <span className="text-[7px] font-medium leading-none text-[rgb(var(--color-text-muted))]/70">
+                                    <span className="text-xs font-medium leading-none text-[rgb(var(--color-text-muted))]">
                                         {t.homePrayerCheckInUpcoming}
                                     </span>
                                 )}
                                 {isLocked && (
-                                    <span className="text-[7px] font-medium leading-none text-[rgb(var(--color-text-muted))]/50">
+                                    <span className="text-xs font-medium leading-none text-[rgb(var(--color-text-muted))]">
                                         <AppIcon name="lock" size="xs" tone="muted" />
                                     </span>
                                 )}
@@ -467,8 +467,8 @@ export default function PrayerCheckInWidget() {
                         "mt-2.5 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border relative z-10 transition-colors",
                         "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                     )}>
-                        <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary))]" />
-                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary))] text-center">
+                        <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
+                        <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] text-center">
                             {t.homePrayerCheckInDone}
                         </p>
                     </div>
@@ -480,17 +480,17 @@ export default function PrayerCheckInWidget() {
                         onClick={() => setShowSunnah(!showSunnah)}
                         className={cn(
                             "w-full flex items-center justify-between py-1 transition-colors group",
-                            "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary))]"
+                            "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))]"
                         )}
                     >
                         <div className="flex items-center gap-1.5">
                             <Sparkles className="w-3 h-3" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">
+                            <span className="text-xs font-bold uppercase tracking-wider">
                                 {t.sunnah_prayer_section_title || "Sunnah Prayers"}
                             </span>
                         </div>
                         <div className={cn(
-                            "text-[9px] font-bold px-2 py-0.5 rounded-full transition-colors",
+                            "text-xs font-bold px-2 py-0.5 rounded-full transition-colors",
                             "bg-[rgb(var(--color-surface-subtle))] group-hover:bg-[rgb(var(--color-primary))]/10"
                         )}>
                             <span className="inline-flex items-center gap-1"><AppIcon name={showSunnah ? "target" : "sparkles"} size="xs" tone="muted" /> {showSunnah ? "Hide" : "Show"}</span>
@@ -549,9 +549,9 @@ export default function PrayerCheckInWidget() {
                                             <span className={cn(
                                                 "text-[6.5px] font-bold uppercase text-center px-1 leading-[1.1] min-h-[16px] flex items-center justify-center",
                                                 done
-                                                    ? "text-[rgb(var(--color-primary))]"
+                                                    ? "text-[rgb(var(--color-primary-strong))]"
                                                     : isLate
-                                                        ? "text-[rgb(var(--color-warning))]/80"
+                                                        ? "text-[rgb(var(--color-warning))]"
                                                         : "text-[rgb(var(--color-text-muted))]"
                                             )}>
                                                 {getTranslation(prayer.i18n, prayer.i18n.split("_").pop())}
@@ -560,10 +560,10 @@ export default function PrayerCheckInWidget() {
                                             {/* Sunnah Hasanah Preview */}
                                             {!done && !isLocked && (isActive || isLate) && (
                                                 <span className={cn(
-                                                    "text-[6px] font-bold leading-none mt-0.5",
+                                                    "text-xs font-bold leading-none mt-0.5",
                                                     isLate
-                                                        ? "text-[rgb(var(--color-warning))]/70"
-                                                        : "text-[rgb(var(--color-primary))]/70"
+                                                        ? "text-[rgb(var(--color-warning))]"
+                                                        : "text-[rgb(var(--color-primary-strong))]"
                                                 )}>
                                                     +{getHasanahReward("hasanah" in prayer ? prayer.hasanah : 25)} Hasanah
                                                 </span>
@@ -609,7 +609,7 @@ export default function PrayerCheckInWidget() {
                                         ? t.homePrayerCheckInSheetTitle.replace("{prayer}", getTranslation("prayerJumuah", "Jumat"))
                                         : t.homePrayerCheckInSheetTitle.replace("{prayer}", getTranslation(sheet.prayer.i18n))}
                                 </p>
-                                <p className="text-[10px] font-medium text-[rgb(var(--color-text-muted))]">
+                                <p className="text-xs font-medium text-[rgb(var(--color-text-muted))]">
                                     {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
                                         ? (locale === "id" ? "Sholat Jumat wajib dilaksanakan secara berjamaah di masjid." : "Friday prayer is obligatory in congregation at the mosque.")
                                         : t.homePrayerCheckInSheetSubtitle}
@@ -635,7 +635,7 @@ export default function PrayerCheckInWidget() {
                                     <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-foreground))] relative">
                                         {locale === "id" ? "Berjamaah di Masjid" : "Congregation (Mosque)"}
                                     </span>
-                                    <span className="text-[10px] font-bold text-[rgb(var(--color-primary-foreground))]/80 relative">
+                                    <span className="text-xs font-bold text-[rgb(var(--color-primary-foreground))] relative">
                                         +{getHasanahReward(200)} Hasanah
                                     </span>
                                 </button>
@@ -654,7 +654,7 @@ export default function PrayerCheckInWidget() {
                                     >
                                         <AppIcon name="home" size="lg" tone="primary" className="group-active:scale-110 transition-transform" />
                                         <span className="text-xs font-bold uppercase tracking-wider">{t.homePrayerCheckInOptionSolo}</span>
-                                        <span className="text-[10px] font-bold text-[rgb(var(--color-text-muted))]">+{getHasanahReward(25)} Hasanah</span>
+                                        <span className="text-xs font-bold text-[rgb(var(--color-text-muted))]">+{getHasanahReward(25)} Hasanah</span>
                                     </button>
 
                                     {/* Berjamaah */}
@@ -671,7 +671,7 @@ export default function PrayerCheckInWidget() {
                                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
                                         <AppIcon name="landmark" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
                                         <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-foreground))] relative">{t.homePrayerCheckInOptionJamaah}</span>
-                                        <span className="text-[10px] font-bold text-[rgb(var(--color-primary-foreground))]/80 relative">+{getHasanahReward(75)} Hasanah</span>
+                                        <span className="text-xs font-bold text-[rgb(var(--color-primary-foreground))] relative">+{getHasanahReward(75)} Hasanah</span>
                                     </button>
                                 </>
                             )}
@@ -682,7 +682,7 @@ export default function PrayerCheckInWidget() {
                             "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                         )}>
                             <p className={cn(
-                                "text-[10px] text-center italic leading-relaxed font-bold",
+                                "text-xs text-center italic leading-relaxed font-bold",
                                 "text-[rgb(var(--color-text-muted))]"
                             )}>
                                 {t.homePrayerCheckInQuote}

@@ -53,7 +53,7 @@ export function DhikrControls({
                 )}
             >
                 <RotateCcw className="h-4 w-4 text-[rgb(var(--color-text-muted))]" />
-                <span className="text-[10px] font-medium text-[rgb(var(--color-text-muted))]">{t.tasbihReset}</span>
+                <span className="text-xs font-medium text-[rgb(var(--color-text-muted))]">{t.tasbihReset}</span>
             </Button>
 
             {children}
@@ -74,7 +74,7 @@ export function DhikrControls({
                 )}
             >
                 <Moon className="h-4 w-4 text-[rgb(var(--color-text-muted))]" />
-                <span className="text-[10px] font-medium text-[rgb(var(--color-text-muted))]">Mode Zen</span>
+                <span className="text-xs font-medium text-[rgb(var(--color-text-muted))]">Mode Zen</span>
             </Button>
 
             <Button
@@ -88,7 +88,7 @@ export function DhikrControls({
                 )}
             >
                 <FeedbackIcon className="h-4 w-4" />
-                <span className="text-[10px] font-medium uppercase tracking-tighter">
+                <span className="text-xs font-medium uppercase tracking-tighter">
                     {feedbackMode === 'sound' ? t.tasbihSound : t.tasbihMute}
                 </span>
             </Button>

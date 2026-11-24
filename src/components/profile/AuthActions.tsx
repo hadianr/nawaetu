@@ -86,7 +86,7 @@ export function AuthActions({
                             "w-8 h-8 rounded-full flex items-center justify-center transition-all",
                             "bg-[rgb(var(--color-primary))]/10"
                         )}>
-                            <Share2 className="w-4 h-4 transition-colors text-[rgb(var(--color-primary-strong))] group-hover:text-[rgb(var(--color-primary))]" />
+                            <Share2 className="w-4 h-4 transition-colors text-[rgb(var(--color-primary-strong))] group-hover:text-[rgb(var(--color-primary-strong))]" />
                         </div>
                         <span className="text-sm font-medium transition-colors text-[rgb(var(--color-text))] group-hover:text-[rgb(var(--color-text-strong))]">{translations.profileShareApp}</span>
                     </div>

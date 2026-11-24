@@ -101,7 +101,7 @@ export default function AboutPage() {
                 {/* What is Nawaetu */}
                 <section className="bg-[rgb(var(--color-surface))]/70 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
                     <h2 className="text-2xl sm:text-3xl font-bold mb-4 flex items-center gap-2">
-                        <Heart className="w-6 h-6 text-[rgb(var(--color-primary))]" />
+                        <Heart className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
                         Apa itu Nawaetu?
                     </h2>
                     <div className="space-y-4 text-[rgb(var(--color-text-muted))] leading-relaxed">
@@ -151,7 +151,7 @@ export default function AboutPage() {
                 <section className="bg-gradient-to-br from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-secondary))]/20 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
                     <div className="flex items-start gap-4 mb-4">
                         <div className="p-3 bg-[rgb(var(--color-primary))]/30 rounded-lg">
-                            <Zap className="w-6 h-6 text-[rgb(var(--color-primary))]" />
+                            <Zap className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
                         </div>
                         <div>
                             <h2 className="text-2xl sm:text-3xl font-bold mb-2">

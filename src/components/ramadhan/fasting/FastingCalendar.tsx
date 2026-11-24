@@ -129,7 +129,7 @@ export default function FastingCalendar({
                 >
                     <span className="text-sm">‹</span>
                     {canGoPrev && (
-                        <span className="text-[10px] text-[rgb(var(--color-text-muted))]">{availableYears[prevIdx]}H</span>
+                        <span className="text-xs text-[rgb(var(--color-text-muted))]">{availableYears[prevIdx]}H</span>
                     )}
                 </button>
 
@@ -142,7 +142,7 @@ export default function FastingCalendar({
                     aria-label="Next year"
                 >
                     {canGoNext && (
-                        <span className="text-[10px] text-[rgb(var(--color-text-muted))]">{availableYears[nextIdx]}H</span>
+                        <span className="text-xs text-[rgb(var(--color-text-muted))]">{availableYears[nextIdx]}H</span>
                     )}
                     <span className="text-sm">›</span>
                 </button>
@@ -184,7 +184,7 @@ export default function FastingCalendar({
                         >
                             {/* Day number */}
                             <span
-                                className="text-[11px] font-bold leading-none"
+                                className="text-xs font-bold leading-none"
                                 style={{
                                     color: isToday
                                         ? "rgb(var(--color-primary-light, var(--color-primary)))"
@@ -225,13 +225,13 @@ export default function FastingCalendar({
                                 className="w-2.5 h-2.5 rounded-sm border inline-block"
                                 style={{ background: item.bg, borderColor: item.border }}
                             />
-                            <span className="text-[9px] text-[rgb(var(--color-text-muted))]">{label}</span>
+                            <span className="text-xs text-[rgb(var(--color-text-muted))]">{label}</span>
                         </div>
                     );
                 })}
                 <div className="flex items-center gap-1">
-                    <span className="text-[10px]">⏳</span>
-                    <span className="text-[9px] text-[rgb(var(--color-text-muted))]">{t.fastingQadhaConsequenceQadha}</span>
+                    <span className="text-xs">⏳</span>
+                    <span className="text-xs text-[rgb(var(--color-text-muted))]">{t.fastingQadhaConsequenceQadha}</span>
                 </div>
             </div>
 

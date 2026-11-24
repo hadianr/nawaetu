@@ -188,7 +188,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                                     <p className="text-xs text-[rgb(var(--color-text-muted))] italic mb-2">
                                                         &quot;{getIntentionForType(recipient.type).latin}&quot;
                                                     </p>
-                                                    <p className="text-[10px] text-[rgb(var(--color-text-muted))] leading-relaxed">
+                                                    <p className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed">
                                                         Artinya: {getIntentionForType(recipient.type).translation}
                                                     </p>
                                                 </div>
@@ -204,7 +204,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                     <h3 className="text-sm font-medium text-[rgb(var(--color-text))]">Besaran Zakat Fitrah (per jiwa)</h3>
                                     <div className="group relative">
                                         <Info className="h-4 w-4 text-[rgb(var(--color-text-muted))] cursor-help" />
-                                        <div className="absolute bottom-full left-1/2 mb-2 w-48 -translate-x-1/2 scale-95 rounded-lg border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-2 text-[10px] leading-relaxed text-[rgb(var(--color-text))] opacity-0 shadow-[var(--shadow-floating)] transition-all group-hover:scale-100 group-hover:opacity-100 pointer-events-none z-10">
+                                        <div className="absolute bottom-full left-1/2 mb-2 w-48 -translate-x-1/2 scale-95 rounded-lg border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-2 text-xs leading-relaxed text-[rgb(var(--color-text))] opacity-0 shadow-[var(--shadow-floating)] transition-all group-hover:scale-100 group-hover:opacity-100 pointer-events-none z-10">
                                             Sesuaikan besaran dengan pengumuman BAZNAS kabupaten/kota atau DKM Masjid tempat tinggal Anda.
                                         </div>
                                     </div>
@@ -222,7 +222,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                             }`}
                                         >
                                             <span className="text-sm font-bold text-[rgb(var(--color-text-strong))]">Rp {rate.value.toLocaleString('id-ID')}</span>
-                                            <span className="text-[10px] text-[rgb(var(--color-text-muted))]">{rate.label}</span>
+                                            <span className="text-xs text-[rgb(var(--color-text-muted))]">{rate.label}</span>
                                         </button>
                                     ))}
                                     
@@ -244,7 +244,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                                 className="w-full bg-transparent text-sm font-bold text-[rgb(var(--color-text-strong))] outline-none"
                                             />
                                         </div>
-                                        <span className="text-[10px] text-[rgb(var(--color-text-muted))]">Nominal Custom (Lainnya)</span>
+                                        <span className="text-xs text-[rgb(var(--color-text-muted))]">Nominal Custom (Lainnya)</span>
                                     </div>
                                 </div>
                             </div>
@@ -263,7 +263,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                     </p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-[10px] text-[rgb(var(--color-text-muted))]">Sisa belum dibayar:</p>
+                                    <p className="text-xs text-[rgb(var(--color-text-muted))]">Sisa belum dibayar:</p>
                                     <p className="text-sm font-semibold text-[rgb(var(--color-warning))]">
                                         {recipients.filter(r => !r.isPaid).length} Orang
                                     </p>

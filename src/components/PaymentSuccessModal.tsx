@@ -127,14 +127,14 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
                         </div>
                         <div className={cn(
                             "absolute -bottom-2 -right-2 rounded-full p-2 shadow-[var(--shadow-card)] animate-bounce",
-                            "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-primary))]"
+                            "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-primary-strong))]"
                         )}>
                             <Heart className="w-4 h-4 fill-[rgb(var(--color-primary))]" />
                         </div>
                     </div>
 
                     <h2 className="text-2xl font-bold mb-2 text-[rgb(var(--color-text-strong))]">Alhamdulillah!</h2>
-                    <p className="text-[rgb(var(--color-primary))] font-bold mb-6">Pembayaran Berhasil</p>
+                    <p className="text-[rgb(var(--color-primary-strong))] font-bold mb-6">Pembayaran Berhasil</p>
 
                     <p className="text-sm leading-relaxed mb-8 text-[rgb(var(--color-text-muted))]">
                         Terima kasih, Orang Baik. Infaq Anda telah kami terima dan akan digunakan untuk operasional serta pengembangan aplikasi Nawaetu.

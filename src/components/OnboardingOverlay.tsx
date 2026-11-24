@@ -115,7 +115,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             src: "/lottie/mosque.lottie",
             loop: false,
             icon: Clock3,
-            color: "text-[rgb(var(--color-primary))]",
+            color: "text-[rgb(var(--color-primary-strong))]",
             bg: "bg-[rgb(var(--color-primary))]/10",
             border: "border-[rgb(var(--color-primary))]/20",
             title: translations.onboardingCardPrayerTitle,
@@ -323,7 +323,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                         <p className="text-sm text-[rgb(var(--color-text))] leading-relaxed">{slide.description}</p>
                         <div className="bg-[rgb(var(--color-surface-subtle))]/60 border border-[rgb(var(--color-border))]/15 rounded-xl p-3 flex items-start gap-3 mt-4">
                             <div className="bg-[rgb(var(--color-primary))]/10 rounded-full p-1 mt-0.5">
-                                <Check className="w-3 h-3 text-[rgb(var(--color-primary))]" />
+                                <Check className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
                             </div>
                             <p className="text-xs text-[rgb(var(--color-text-muted))] italic">{slide.highlight}</p>
                         </div>
@@ -366,7 +366,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             onKeyDown={(e) => e.key === 'Enter' && name.trim() && handleNext()}
                         />
                         {/* Fixed height so the greeting appearing never moves the input. */}
-                        <p aria-live="polite" className="h-5 text-sm font-semibold text-[rgb(var(--color-primary))]">
+                        <p aria-live="polite" className="h-5 text-sm font-semibold text-[rgb(var(--color-primary-strong))]">
                             {name.trim() && (
                                 <motion.span initial={reduced ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="inline-block">
                                     {String(translations.onboardingGreeting).replace("{name}", name.trim())}
@@ -380,7 +380,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
 
         if (step === 'setup-gender') {
             const options = [
-                { value: 'male', label: translations.onboardingMaleLabel, sub: translations.onboardingMaleSub, icon: "hands", tone: "primary", selected: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary))]" },
+                { value: 'male', label: translations.onboardingMaleLabel, sub: translations.onboardingMaleSub, icon: "hands", tone: "primary", selected: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-strong))]" },
                 { value: 'female', label: translations.onboardingFemaleLabel, sub: translations.onboardingFemaleSub, icon: "heart-handshake", tone: "primary", selected: "bg-[rgb(var(--color-primary-light))]/20 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-strong))]" },
             ] as const;
             const chooseGender = (value: "male" | "female") => {
@@ -414,7 +414,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                     <AppIcon name={option.icon} size="xl" tone={option.tone} />
                                     <div>
                                         <span className="font-bold block text-sm">{option.label}</span>
-                                        <span className="text-[10px] opacity-70">{option.sub}</span>
+                                        <span className="text-xs opacity-70">{option.sub}</span>
                                     </div>
                                     {gender === option.value && <AnimatedCheck className={cn("ml-auto w-5 h-5", option.check)} />}
                                 </motion.button>
