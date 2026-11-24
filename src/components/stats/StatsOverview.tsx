@@ -88,9 +88,9 @@ export function StatsOverview({
 
                         {/* Next Milestone - Inline & Clearer */}
                         {nextRank && (
-                            <div className="flex items-center justify-between gap-2 text-[9px] sm:text-[10px] bg-[rgb(var(--color-surface-subtle))] rounded-xl px-2.5 py-1 sm:py-1.5 mt-1 border border-[rgb(var(--color-border))]">
-                                <div className="flex items-center gap-1.5 truncate">
-                                    <span className="text-[8px] sm:text-[9px] font-bold uppercase text-[rgb(var(--color-text-muted))] tracking-tighter shrink-0 hidden xs:inline">
+                            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-xs bg-[rgb(var(--color-surface-subtle))] rounded-xl px-2.5 py-1 sm:py-1.5 mt-1 border border-[rgb(var(--color-border))]">
+                                <div className="flex min-w-0 items-center gap-1.5">
+                                    <span className="text-xs font-bold uppercase text-[rgb(var(--color-text-muted))] tracking-tighter shrink-0 hidden xs:inline">
                                         {t.stats.level.nextRankGoal}
                                     </span>
                                     <div className="flex items-center gap-1 truncate">
@@ -100,7 +100,7 @@ export function StatsOverview({
                                 </div>
                                 <div className="shrink-0 flex items-center gap-1.5">
                                     <div className="w-1 h-1 rounded-full bg-[rgb(var(--color-border))] hidden sm:block" />
-                                    <div className="font-bold text-[rgb(var(--color-primary-strong))] uppercase tracking-tighter">
+                                    <div className="font-bold text-[rgb(var(--color-primary-strong))]">
                                         {nextRank.levelsRemaining} {t.stats.level.levelsRemaining}
                                     </div>
                                 </div>
