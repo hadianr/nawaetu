@@ -503,7 +503,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                         <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Link href="/quran" className="flex items-center justify-center h-9 w-9 -ml-2 rounded-full transition-colors shrink-0 p-0 hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]">
+                                    <Link href="/quran" aria-label={String(t.quranBack)} className="flex items-center justify-center h-9 w-9 -ml-2 rounded-full transition-colors shrink-0 p-0 hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]">
                                         <ChevronLeft className="h-6 w-6" />
                                     </Link>
                                 </TooltipTrigger>
@@ -529,8 +529,8 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                             onClick={handleSurahPlay}
                                             className="flex items-center justify-center gap-1.5 h-9 w-9 md:w-auto md:px-4 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-strong))] transition-colors border border-[rgb(var(--color-primary))]/20 shrink-0 p-0"
                                         >
-                                            <Play className="h-3.5 w-3.5 fill-current flex-shrink-0" />
-                                            <span className="hidden md:inline text-xs font-bold leading-none">{t.quranPlaySurah}</span>
+                                            <Play className="h-3.5 w-3.5 fill-current flex-shrink-0" aria-hidden="true" />
+                                            <span className="sr-only md:not-sr-only text-xs font-bold leading-none">{t.quranPlaySurah}</span>
                                         </button>
                                     </TooltipTrigger>
                                     <TooltipContent side="bottom">{t.quranPlaySurah}</TooltipContent>

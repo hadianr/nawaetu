@@ -187,7 +187,7 @@ export function StatsHeader({ t, playerStats }: { t: TranslationTree; playerStat
         <div className="sticky top-0 z-10 bg-gradient-to-b from-[rgb(var(--color-surface))] to-transparent backdrop-blur-xl border-b border-[rgb(var(--color-border))]">
             <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild className="rounded-full text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]">
-                    <Link href="/"><ChevronLeft className="h-6 w-6" /></Link>
+                    <Link href="/" aria-label={String(t.quranBack)}><ChevronLeft className="h-6 w-6" aria-hidden="true" /></Link>
                 </Button>
                 <div className="flex-1">
                     <h1 className="text-xl font-bold">{t.stats.header.title}</h1>

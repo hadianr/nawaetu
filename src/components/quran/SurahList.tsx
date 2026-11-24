@@ -394,11 +394,11 @@ export default function SurahList({ chapters }: SurahListProps) {
                                             href={`/quran/${chapter.id}`}
                                             prefetch={false}
                                             onFocus={() => prefetchSurah(chapter.id)}
-                                            aria-label={`Buka detail surah ${chapter.name_simple}`}
+                                            aria-label={String(t.a11yOpenSurah).replace("{name}", chapter.name_simple)}
                                             className={cn(
                                                 "font-bold text-sm truncate transition-colors outline-none",
                                                 "after:absolute after:inset-0 after:rounded-xl after:content-['']",
-                                                "focus-visible:after:ring-2 focus-visible:after:ring-[rgb(var(--color-primary))]",
+                                                "focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[rgb(var(--color-ring))]",
                                                 isLastRead
                                                     ? "text-[rgb(var(--color-text-strong))]"
                                                     : "text-[rgb(var(--color-text))]"
@@ -434,6 +434,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                                     </span>
                                     {/* Quick Play Button - High Z-Index to stay above stretched link */}
                                     <button
+                                        type="button"
+                                        aria-label={String(t.a11yPlaySurah).replace("{name}", chapter.name_simple)}
                                         onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
@@ -444,7 +446,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                             "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/25 text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-foreground))] hover:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                                         )}
                                     >
-                                        <Play className="h-3 w-3 fill-current ml-0.5" />
+                                        <Play className="h-3 w-3 fill-current ml-0.5" aria-hidden="true" />
                                     </button>
                                 </div>
                             </div>

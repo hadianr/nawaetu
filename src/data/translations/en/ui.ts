@@ -67,4 +67,11 @@ export const uiEN = {
     calendarHijriHeader: "Hijri",
     dalilViewHadithDetails: "View hadith details",
     dalilViewDuaDetails: "View dua details",
+
+    // Accessible names for icon-only controls
+    a11yOpenSurah: "Open surah {name}",
+    a11yPlaySurah: "Play surah {name}",
+    a11yClose: "Close",
+    a11yPlayPreview: "Play preview",
+    a11yZenCount: "Count one dhikr",
 };

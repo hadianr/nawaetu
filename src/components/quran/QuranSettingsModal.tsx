@@ -62,8 +62,8 @@ export default function QuranSettingsModal({
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button className="h-9 w-9 p-0 flex items-center justify-center rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface))] hover:text-[rgb(var(--color-text-strong))] transition-all hover:border-[rgb(var(--color-primary))]/50 shrink-0">
-                    <Settings className="h-5 w-5" />
+                <button type="button" aria-label={String(t.quranSettingsTitle)} className="h-9 w-9 p-0 flex items-center justify-center rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface))] hover:text-[rgb(var(--color-text-strong))] transition-all hover:border-[rgb(var(--color-primary))]/50 shrink-0">
+                    <Settings className="h-5 w-5" aria-hidden="true" />
                 </button>
             </DialogTrigger>
             <DialogContent className="border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-xl max-w-sm max-h-[90vh] p-0 overflow-hidden flex flex-col quran-settings-modal text-[rgb(var(--color-text))]">
@@ -142,7 +142,7 @@ export default function QuranSettingsModal({
                         <div className="space-y-3">
                             <Label className="text-[rgb(var(--color-primary-strong))] text-xs font-bold uppercase tracking-wider ml-1">{t.quranSelectQari}</Label>
                             <Select value={currentReciterId?.toString()} onValueChange={handleReciterChange} disabled={isPending}>
-                                <SelectTrigger className={`w-full bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/10 rounded-2xl h-14 md:h-12 shadow-sm ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                <SelectTrigger aria-label={String(t.quranSelectQari)} className={`w-full bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/10 rounded-2xl h-14 md:h-12 shadow-sm ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-lg bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
                                             {isPending ? <Loader2 className="h-4 w-4 animate-spin text-[rgb(var(--color-primary-strong))]" /> : <Headphones className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />}

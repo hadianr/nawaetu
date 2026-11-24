@@ -81,7 +81,7 @@ export function PrayerConsistency({
                 </div>
 
                 {/* Scrollable Data Area */}
-                <div className="flex flex-1 justify-between gap-1.5 overflow-x-auto pb-4 scrollbar-hide">
+                <div tabIndex={0} role="region" aria-label={t.stats.heatmap.title.split("(")[0].trim()} className="flex flex-1 justify-between gap-1.5 overflow-x-auto pb-4 scrollbar-hide">
                     {displayedDays.slice().reverse().map((dateStr) => {
                         const completedSet = prayerMap[dateStr] || new Set();
                         const d = new Date(dateStr);

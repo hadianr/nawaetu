@@ -42,7 +42,7 @@ export default function LanguageCard({ t, locale, handleLocaleChange }: Language
             </div>
 
             <Select value={locale} onValueChange={handleLocaleChange}>
-                <SelectTrigger className="w-full bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]/20 text-[rgb(var(--color-text-strong))] h-11">
+                <SelectTrigger aria-label={String(t.languageTitle)} className="w-full bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]/20 text-[rgb(var(--color-text-strong))] h-11">
                     <SelectValue placeholder="Bahasa Indonesia">
                         {locale && LANGUAGE_OPTIONS.find(l => l.id === locale) ? (
                             <span className="flex items-center gap-2">

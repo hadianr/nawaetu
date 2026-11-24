@@ -33,6 +33,7 @@ interface AudioCardProps {
     t: {
         audioTitle: string;
         muadzinLabel: string;
+        a11yPlayPreview: string;
     };
     muadzin: string;
     onMuadzinChange: (value: string) => void;
@@ -240,6 +241,7 @@ export default function AudioCard({ t, muadzin, onMuadzinChange }: AudioCardProp
                                     ? "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] scale-110 shadow-[var(--shadow-card)]"
                                     : "bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))] hover:border-[rgb(var(--color-primary))]/30 hover:scale-105"
                             )}
+                            aria-label={t.a11yPlayPreview}
                             onPointerDown={(e) => e.stopPropagation()}
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -259,7 +261,7 @@ export default function AudioCard({ t, muadzin, onMuadzinChange }: AudioCardProp
                     </div>
 
                     <Select value={muadzin} onValueChange={handleMuadzinChange}>
-                        <SelectTrigger className="w-full h-full absolute inset-0 opacity-0 cursor-pointer [&>svg]:hidden z-10">
+                        <SelectTrigger aria-label={t.muadzinLabel} className="w-full h-full absolute inset-0 opacity-0 cursor-pointer [&>svg]:hidden z-10">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/20">

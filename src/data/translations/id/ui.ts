@@ -67,4 +67,11 @@ export const uiID = {
     calendarHijriHeader: "Hijriah",
     dalilViewHadithDetails: "Lihat rincian hadits",
     dalilViewDuaDetails: "Lihat rincian doa",
+
+    // Accessible names for icon-only controls
+    a11yOpenSurah: "Buka detail surah {name}",
+    a11yPlaySurah: "Putar surah {name}",
+    a11yClose: "Tutup",
+    a11yPlayPreview: "Putar contoh suara",
+    a11yZenCount: "Hitung satu dzikir",
 };

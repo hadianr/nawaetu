@@ -118,6 +118,7 @@ export default function VerseItem({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
+                                aria-label={String(isMasked ? (t.quranHafizModeOn || "Buka Ayat (Mode Hafalan)") : (t.quranHafizModeOff || "Tutup Ayat (Mode Hafalan)"))}
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setIsMasked(!isMasked)}
@@ -137,6 +138,7 @@ export default function VerseItem({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
+                                aria-label={String(t.quranPlayVerse || "Putar Ayat")}
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => onPlay(verse, false)}
@@ -159,6 +161,7 @@ export default function VerseItem({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
+                                aria-label={String(isBookmarked ? (t.quranRemoveBookmark || "Hapus Penanda") : (t.quranAddBookmark || "Tandai Ayat"))}
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => onBookmarkToggle(verse)}
@@ -180,6 +183,7 @@ export default function VerseItem({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
+                                aria-label={String(t.quranShareVerse || "Bagikan Ayat")}
                                 variant="ghost"
                                 size="icon"
                                 onMouseEnter={prefetchShareDialog}
@@ -198,6 +202,7 @@ export default function VerseItem({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
+                                aria-label={String(activeTafsirVerse === verse.verse_key ? (t.quranCloseTafsir || "Tutup Tafsir") : (t.quranShowTafsir || "Lihat Tafsir"))}
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => onTafsirToggle(verse.verse_key)}

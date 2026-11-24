@@ -242,8 +242,8 @@ export default function MisiPage() {
 
                 {/* Header */}
                 <div className="flex items-center gap-4">
-                    <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] transition-colors">
-                        <ArrowLeft className="w-6 h-6 text-[rgb(var(--color-text-strong))]" />
+                    <Link href="/" aria-label={String(t.quranBack)} className="p-2 -ml-2 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] transition-colors">
+                        <ArrowLeft className="w-6 h-6 text-[rgb(var(--color-text-strong))]" aria-hidden="true" />
                     </Link>
                     <div className="flex-1">
                         <h1 className="text-2xl font-bold text-[rgb(var(--color-text-strong))]">{t.home_mission_list_title}</h1>
