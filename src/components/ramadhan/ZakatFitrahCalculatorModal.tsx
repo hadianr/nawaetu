@@ -263,7 +263,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                     </p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-xs text-[rgb(var(--color-text-muted))]">Sisa belum dibayar:</p>
+                                    <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.zakatUnpaidRemaining}</p>
                                     <p className="text-sm font-semibold text-[rgb(var(--color-warning))]">
                                         {recipients.filter(r => !r.isPaid).length} Orang
                                     </p>
