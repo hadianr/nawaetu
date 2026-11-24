@@ -56,6 +56,8 @@ export function HasanahTrendChart({
                     {filters.map((f) => (
                         <button
                             key={f.id}
+                            type="button"
+                            aria-pressed={timeRange === f.id}
                             onClick={() => setTimeRange(f.id)}
                             className={cn(
                                 "px-1 py-1.5 rounded-lg text-xs sm:px-3 font-bold transition-all whitespace-nowrap text-center",
