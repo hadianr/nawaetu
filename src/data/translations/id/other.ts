@@ -583,6 +583,9 @@ export const otherID = {
     tanyaUntitled: "Percakapan Baru",
     tanyaDeleteChat: "Hapus percakapan",
     tanyaClose: "Tutup",
+    tanyaCredits: "kredit",
+    tanyaFriend: "Teman",
+    tanyaIntro: "Saya asisten AI Nawaetu. Ada yang bisa saya bantu terkait ibadah atau agama hari ini?",
 
     // Toast Messages
     toastMissionComplete: "Misi Selesai!",

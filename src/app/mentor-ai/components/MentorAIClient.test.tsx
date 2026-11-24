@@ -26,7 +26,7 @@ const ask = async (text: string) => {
     fireEvent.change(screen.getByPlaceholderText("Tulis pertanyaan"), { target: { value: text } });
     await act(async () => { fireEvent.submit(screen.getByPlaceholderText("Tulis pertanyaan").closest("form")!); });
 };
-const credits = () => Number(screen.getByText(/Credit$/).textContent?.replace(/\D/g, ""));
+const credits = () => Number(screen.getByText(/tanyaCredits$/).textContent?.replace(/\D/g, ""));
 
 describe("MentorAIClient daily credits", () => {
     beforeEach(() => {
