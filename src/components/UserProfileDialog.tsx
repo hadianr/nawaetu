@@ -204,7 +204,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] shadow-[var(--shadow-floating)]"
                 )}
             >
-                <DialogTitle className="sr-only">Profil Pengguna</DialogTitle>
+                <DialogTitle className="sr-only">{locale === 'id' ? 'Profil Pengguna' : 'User profile'}</DialogTitle>
 
                 <ProfileHeader
                     isAuthenticated={isAuthenticated}
@@ -230,7 +230,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     <div className="flex flex-col">
                                         <div className="flex items-center gap-2">
                                             <h2 className="text-xl font-bold leading-tight text-[rgb(var(--color-text-strong))]">{userName}</h2>
-                                            <button onClick={() => setIsEditing(true)} className="text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))] transition-colors">
+                                            <button type="button" onClick={() => setIsEditing(true)} aria-label={locale === 'id' ? 'Ubah profil' : 'Edit profile'} className="text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))] transition-colors">
                                                 <Edit2 className="w-3.5 h-3.5" />
                                             </button>
                                         </div>
