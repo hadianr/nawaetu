@@ -77,15 +77,16 @@ export default function HomeHeader() {
                     type="button"
                     onClick={refreshLocation}
                     className={cn(
-                        "flex min-h-11 w-[130px] shrink-0 items-center justify-center gap-2 rounded-full border px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:w-[160px]",
+                        "flex min-h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-full border px-0 xs:w-[130px] xs:px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:w-[160px]",
                         data?.isDefaultLocation
                             ? "border-[rgb(var(--color-warning))]/30 bg-[rgb(var(--color-warning))]/10 hover:bg-[rgb(var(--color-warning))]/20"
                             : "border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20",
                     )}
                 >
-                    <NavigationIcon className={cn("h-3.5 w-3.5 shrink-0", data?.isDefaultLocation ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-primary))]")} />
+                    <NavigationIcon className={cn("h-3.5 w-3.5 shrink-0", data?.isDefaultLocation ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-primary-strong))]")} />
+                    {/* Below 389px the pill is icon-only so the user's name keeps its room; the label stays for screen readers. */}
                     <span className={cn(
-                        "truncate text-[10px] font-bold uppercase tracking-wider",
+                        "sr-only truncate text-xs font-bold uppercase tracking-wider xs:not-sr-only",
                         data?.isDefaultLocation ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-primary-strong))]",
                     )}>
                         {locationLabel ? data?.isDefaultLocation ? t.homeSetLocationNow : locationLabel : t.hijriCalendarYourLocation}
