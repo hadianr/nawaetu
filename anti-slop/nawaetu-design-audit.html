@@ -147,7 +147,7 @@ footer { font-size: 0.875rem; color: var(--muted); border-top: 1px solid var(--b
   <h1>Nawaetu Design Audit</h1>
   <p class="lede"><strong>Nawaetu does not read as AI-generated design.</strong> It has a written direction, one semantic token layer across five themes, an icon registry and honest copy. What it has instead is drift: feature code has outgrown its own <code>design.md</code>, and the gaps show up as contrast failures, unnamed controls and 6 to 11px text.</p>
   <div class="status" role="note">
-    <p><b>Update, same day: 18 of 28 findings fixed.</b> All 15 high-priority findings, plus 14, 15 and 18, are fixed on a branch. A re-scan found 0 axe violations across 5 themes, 0 text under 12px and no overflow at 320px. See <a href="#after">After the fixes</a>.</p>
+    <p><b>Update, same day: all 28 findings fixed.</b> Each fix is its own commit on a branch. The final re-scan found 0 axe violations on 22 routes and in 50 runs across 5 themes, no blur, no text under 12px and no overflow at 320px. See <a href="#after">After the fixes</a>.</p>
   </div>
   <nav class="toc" aria-label="Sections">
     <a href="#after">After the fixes</a>
@@ -184,10 +184,14 @@ footer { font-size: 0.875rem; color: var(--muted); border-top: 1px solid var(--b
         <tr><th scope="row">Controls without a pointer cursor, surah page</th><td class="n">39 of 46</td><td class="n">0 of 46</td></tr>
         <tr><th scope="row">Danger button contrast, dark themes</th><td class="n">2.77:1</td><td class="n">9.41:1</td></tr>
         <tr><th scope="row">Input border contrast, lowest theme</th><td class="n">1.05:1</td><td class="n">3.85:1</td></tr>
+        <tr><th scope="row">Backdrop blur utilities</th><td class="n">118</td><td class="n">0</td></tr>
+        <tr><th scope="row">Files importing Lucide directly</th><td class="n">112</td><td class="n">0 (lint-enforced)</td></tr>
+        <tr><th scope="row">Off-rule Sparkles and lightning icons</th><td class="n">30+</td><td class="n">0</td></tr>
+        <tr><th scope="row">Uppercase tracked labels</th><td class="n">170</td><td class="n">metadata only</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="note">Still open: 11 blur, 12 Sparkles, 13 direct Lucide imports, 16 tracked uppercase, and the low-priority 17, 19 to 23. Locked missions stay dimmed on purpose (WCAG exempts inactive controls). Not clicked through control by control.</p>
+  <p class="note">Owner decisions: dials ENERGY 1 / RHYTHM 2 / MOTION 1, and uppercase kept only for short metadata. Deliberate exceptions: quiet card borders, metadata caps, emoji in share messages, and dimmed locked missions (WCAG exempts inactive controls). Not clicked through control by control.</p>
 </section>
 
 <section id="gate" aria-labelledby="gate-h">
@@ -577,7 +581,7 @@ footer { font-size: 0.875rem; color: var(--muted); border-top: 1px solid var(--b
     rb.appendChild(tr);
   });
 
-  var fixed = ["01","02","03","04","05","06","07","08","09","10","14","15","18","24","25","26","27","28"];
+  var fixed = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"];
   document.querySelectorAll(".finding").forEach(function (li) {
     var num = li.querySelector(".num");
     if (num && fixed.indexOf(num.textContent) !== -1) {
