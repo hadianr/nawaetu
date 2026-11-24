@@ -9,6 +9,7 @@ export const hijriCalendarEN = {
     hijriCalendarYourLocation: "Your location",
     hijriCalendarLoading: "Loading calendar...",
     hijriCalendarRetry: "Try again",
+    hijriCalendarUseLocation: "Use my location",
     hijriCalendarNoData: "No calendar data is available.",
     hijriCalendarLocationRequired: "Set your location to load the Hijri calendar.",
     hijriCalendarLoadFailed: "The Hijri calendar could not be loaded.",
