@@ -45,7 +45,7 @@ export default function JourneyAboutDialog({ open, onOpenChange, phase, dayNumbe
                 className="max-h-[calc(100dvh-7rem)] max-w-[min(26rem,calc(100%-2rem))] grid-rows-[auto_minmax(0,1fr)] gap-0 overflow-hidden border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-surface))] p-0 text-[rgb(var(--color-text-strong))] motion-reduce:animate-none"
             >
                 <JourneyHero
-                    title={<DialogTitle className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-foreground))]">{String(t.journeyAboutTitle)}</DialogTitle>}
+                    title={<DialogTitle className="text-xs font-bold text-[rgb(var(--color-primary-foreground))]">{String(t.journeyAboutTitle)}</DialogTitle>}
                     daysLeft={daysLeft}
                     sub={fill(t.journeyDayOf, { day: dayNumber, total: JOURNEY_DAYS })}
                 />
@@ -129,7 +129,7 @@ export default function JourneyAboutDialog({ open, onOpenChange, phase, dayNumbe
                     </ol>
 
                     <div className="rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 p-3">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{String(t.journeyAboutGoal)}</p>
+                        <p className="text-xs font-semibold text-[rgb(var(--color-text-muted))]">{String(t.journeyAboutGoal)}</p>
                         <DalilBadge dalil={JOURNEY_GOAL_EVIDENCE} variant="link" label={label(JOURNEY_GOAL_EVIDENCE)} />
                     </div>
 

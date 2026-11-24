@@ -205,7 +205,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                             "bg-[rgb(var(--color-primary))]"
                                         )} />
                                         <span className={cn(
-                                            "text-xs font-bold uppercase tracking-wider",
+                                            "text-xs font-bold",
                                             "text-[rgb(var(--color-primary-strong))]"
                                         )}>
                                             {t.quranLastRead}
@@ -249,7 +249,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                             "text-[rgb(var(--color-text-muted))]"
                         )}>{t.quranNoHistory}</h3>
                         <p className={cn(
-                            "text-xs font-medium uppercase tracking-wider",
+                            "text-xs font-medium",
                             "text-[rgb(var(--color-primary-strong))]"
                         )}>{t.quranStartReading}</p>
                     </div>
@@ -340,7 +340,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                     "text-[rgb(var(--color-text-strong))]"
                 )}>{t.quranSurahList}</h2>
                 <span className={cn(
-                    "text-xs font-medium uppercase tracking-wider",
+                    "text-xs font-medium",
                     "text-[rgb(var(--color-text-muted))]"
                 )}>
                     {filteredChapters.length} {t.quranSurahCount}

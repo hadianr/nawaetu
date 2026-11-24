@@ -186,7 +186,7 @@ export function SirahReaderView({
                         title={t.sirahReaderFontSize}
                     >
                         <Type className="w-3.5 h-3.5" />
-                        <span className="uppercase text-xs">{fontSize}</span>
+                        <span className=" text-xs">{fontSize}</span>
                     </button>
 
                     {/* TTS Button */}
@@ -229,7 +229,7 @@ export function SirahReaderView({
             {/* Title & Metadata */}
             <div className="space-y-2">
                 <p className={cn(
-                    "text-xs font-bold tracking-wider uppercase",
+                    "text-xs font-bold",
                     "text-[rgb(var(--color-primary-strong))]"
                 )}>
                     {section.chapterTitle}

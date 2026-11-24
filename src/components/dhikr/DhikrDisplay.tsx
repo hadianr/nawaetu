@@ -62,7 +62,7 @@ export function DhikrDisplay({
                         "text-[rgb(var(--color-text-strong))]"
                     )}>{t.tasbihTitle}</h2>
                     <p className={cn(
-                        "text-xs xs:text-xs uppercase tracking-wider",
+                        "text-xs xs:text-xs",
                         "text-[rgb(var(--color-text-muted))]"
                     )}>{t.tasbihSubtitle}</p>
                 </div>
@@ -79,7 +79,7 @@ export function DhikrDisplay({
                         </div>
                         <div className="mt-1 xs:mt-3 flex flex-col items-center">
                             <p className={cn(
-                                "font-extrabold text-xs xs:text-base tracking-tight uppercase",
+                                "font-extrabold text-xs xs:text-base tracking-tight",
                                 "text-[rgb(var(--color-primary-strong))]"
                             )}>
                                 {activeDhikr.latin}
@@ -132,7 +132,7 @@ export function DhikrDisplay({
                         )}
                     >
                         <span className={cn(
-                            "text-xs md:text-xs font-bold tracking-wider uppercase mb-0.5 xs:mb-1.5",
+                            "text-xs md:text-xs font-bold mb-0.5 xs:mb-1.5",
                             "text-[rgb(var(--color-primary-strong))]"
                         )}>
                             {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}

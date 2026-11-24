@@ -35,7 +35,7 @@ export default function EidCard() {
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-surface))] via-[rgb(var(--color-primary))]/10 to-[rgb(var(--color-surface))] -z-10" />
                 <div className="flex flex-col items-start gap-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))] filter drop-shadow-sm">
+                    <span className="text-xs font-bold text-[rgb(var(--color-primary-strong))] filter drop-shadow-sm">
                         {t.lebaranGreeting}
                     </span>
                     <span className="text-xl font-bold text-[rgb(var(--color-text-strong))] font-serif">

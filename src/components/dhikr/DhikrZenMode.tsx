@@ -115,7 +115,7 @@ export function DhikrZenMode({
 
             {/* Counter Content */}
             <div className="relative z-10 flex flex-col items-center pointer-events-none mt-[-10vh]">
-                <span className="text-[12px] md:text-sm font-bold tracking-wider uppercase mb-4 text-[rgb(var(--color-primary-strong))]">
+                <span className="text-[12px] md:text-sm font-bold mb-4 text-[rgb(var(--color-primary-strong))]">
                     {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
                 </span>
 
@@ -129,7 +129,7 @@ export function DhikrZenMode({
                     </span>
                 )}
 
-                <div className="mt-16 text-xs md:text-sm font-medium tracking-wider uppercase text-[rgb(var(--color-primary-strong))]">
+                <div className="mt-16 text-xs md:text-sm font-medium text-[rgb(var(--color-primary-strong))]">
                     {t.tasbihTap || "Ketuk Layar"}
                 </div>
             </div>
@@ -140,7 +140,7 @@ export function DhikrZenMode({
                 className="absolute bottom-8 right-6 z-[110] p-4 rounded-full active:scale-95 transition-all flex flex-col items-center gap-1.5 text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 hover:text-[rgb(var(--color-primary-strong))]"
             >
                 <FeedbackIcon className="w-5 h-5" />
-                <span className="text-xs font-medium uppercase tracking-tighter opacity-70">
+                <span className="text-xs font-medium tracking-tighter opacity-70">
                     {feedbackMode === 'sound' ? t.tasbihSound : t.tasbihMute}
                 </span>
             </button>

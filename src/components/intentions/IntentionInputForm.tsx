@@ -130,7 +130,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                                 <p className="text-sm md:text-base font-serif italic text-[rgb(var(--color-text-muted))] leading-relaxed">
                             &quot;{locale === 'id' ? dalil.textId : dalil.textEn}&quot;
                                 </p>
-                                <p className="text-xs font-medium text-[rgb(var(--color-primary-strong))] tracking-wider uppercase mt-2">
+                                <p className="text-xs font-medium text-[rgb(var(--color-primary-strong))] mt-2">
                                     — {locale === 'id' ? dalil.sourceId : dalil.sourceEn}
                                 </p>
                             </motion.div>

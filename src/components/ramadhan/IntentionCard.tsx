@@ -133,7 +133,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
 
                         {/* Translation */}
                         <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-4 shadow-[var(--shadow-card)]">
-                            <div className="text-xs font-bold uppercase tracking-wider mb-2.5 text-[rgb(var(--color-text-muted))]">
+                            <div className="text-xs font-bold mb-2.5 text-[rgb(var(--color-text-muted))]">
                                 {t.intention_translation}
                             </div>
                             <div className="text-sm text-[rgb(var(--color-text))] leading-relaxed font-normal" style={{
@@ -148,7 +148,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
                         {localizedSource && (
                             <div className="flex items-center gap-2 px-1">
                                 <span className="h-1 w-1 rounded-full bg-[rgb(var(--color-border))]" />
-                                <div className="text-xs font-medium text-[rgb(var(--color-text-muted))] uppercase tracking-wider leading-relaxed">
+                                <div className="text-xs font-medium text-[rgb(var(--color-text-muted))] leading-relaxed">
                                     {localizedSource}
                                 </div>
                             </div>

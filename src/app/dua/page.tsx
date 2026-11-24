@@ -217,7 +217,7 @@ const DuaCard = memo(function DuaCard({
                             "p-2.5 rounded-xl text-xs space-y-1 border",
                             "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20 text-[rgb(var(--color-text))]"
                         )}>
-                            <p className="font-bold flex items-center gap-1 text-xs uppercase tracking-wider text-[rgb(var(--color-accent-strong))]">
+                            <p className="font-bold flex items-center gap-1 text-xs text-[rgb(var(--color-accent-strong))]">
                                 <Sparkles className="w-3 h-3" />
                                 {t.duaVirtueLabel || "Keutamaan Doa"}
                             </p>

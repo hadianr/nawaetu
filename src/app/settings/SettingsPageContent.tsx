@@ -324,7 +324,7 @@ export default function SettingsPageContent() {
                         <div className="flex items-center justify-between w-full">
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
-                                <span className="text-xs uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.locationLabel}</span>
+                                <span className="text-xs text-[rgb(var(--color-text-muted))] font-bold">{t.locationLabel}</span>
                             </div>
                             <svg
                                 className={`w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] transition-all ${(isRefreshing || locationLoading) ? 'animate-spin text-[rgb(var(--color-primary-strong))]' : ''}`}
@@ -347,7 +347,7 @@ export default function SettingsPageContent() {
                             <div className="flex items-center justify-between w-full">
                                 <div className="flex items-center gap-2">
                                     <Clock className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
-                                    <span className="text-xs uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.methodLabel}</span>
+                                    <span className="text-xs text-[rgb(var(--color-text-muted))] font-bold">{t.methodLabel}</span>
                                 </div>
                                 <ChevronDown className="w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors" />
                             </div>
@@ -386,7 +386,7 @@ export default function SettingsPageContent() {
                         {/* Visual Layer */}
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
                             <div className="flex items-center justify-between w-full">
-                                <span className="text-xs uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.hijriAdjustmentLabel}</span>
+                                <span className="text-xs text-[rgb(var(--color-text-muted))] font-bold">{t.hijriAdjustmentLabel}</span>
                                 <ChevronDown className="w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors" />
                             </div>
                             <div>

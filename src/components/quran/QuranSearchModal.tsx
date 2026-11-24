@@ -90,7 +90,7 @@ export default function QuranSearchModal() {
 
                     {!isPending && results && results.results.length > 0 && (
                         <div className="space-y-4">
-                            <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] uppercase tracking-wider mb-2">
+                            <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] mb-2">
                                 {translations.quranSearchFound} {results.total_results} {translations.quranSearchAyat}
                             </p>
                             {results.results.map((verse) => (

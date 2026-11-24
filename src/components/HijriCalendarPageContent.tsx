@@ -236,7 +236,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
 
                         {selectedDay && (
                             <section className={cn("rounded-2xl border p-4 md:sticky md:top-4", surface)} aria-live="polite">
-                                <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.hijriCalendarSelectedDate}</p>
+                                <p className="text-xs font-bold text-[rgb(var(--color-text-muted))]">{t.hijriCalendarSelectedDate}</p>
                                 <p className="mt-1 text-base font-bold">
                                     {selectedDay.hijriDay} {getHijriMonthName(selectedDay.hijriMonthNumber, locale)} {selectedDay.hijriYear}H
                                     {selectedDay.isToday && <span className="ml-2 text-xs text-[rgb(var(--color-primary-strong))]">{t.hijriCalendarToday}</span>}
@@ -281,7 +281,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                         <ul className="mt-3 space-y-3">
                             {historyEvents.map(event => (
                                 <li key={event.slug} className="rounded-2xl bg-[rgb(var(--color-surface-subtle))] p-3">
-                                    <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+                                    <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))]">
                                         {event.date && formatHistoryDate(event.date, locale)}
                                     </p>
                                     <p className="mt-0.5 text-sm font-semibold">{locale === "en" ? event.titleEn : event.titleId}</p>

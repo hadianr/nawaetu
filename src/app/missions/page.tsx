@@ -268,7 +268,7 @@ export default function MisiPage() {
                 {/* Daily Missions */}
                 {dailyMissions.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider flex items-center gap-1.5"><AppIcon name="calendar" size="xs" tone="muted" /> {t.missionTabDaily}</h2>
+                        <h2 className="text-xs font-bold text-[rgb(var(--color-text-muted))] flex items-center gap-1.5"><AppIcon name="calendar" size="xs" tone="muted" /> {t.missionTabDaily}</h2>
                         <div className="space-y-2">
                             {dailyMissions.map(renderMission)}
                         </div>
@@ -278,7 +278,7 @@ export default function MisiPage() {
                 {/* Weekly Missions */}
                 {weeklyMissions.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider flex items-center gap-1.5"><AppIcon name="calendar" size="xs" tone="muted" /> {t.missionTabWeekly}</h2>
+                        <h2 className="text-xs font-bold text-[rgb(var(--color-text-muted))] flex items-center gap-1.5"><AppIcon name="calendar" size="xs" tone="muted" /> {t.missionTabWeekly}</h2>
                         <div className="space-y-2">
                             {weeklyMissions.map(renderMission)}
                         </div>
@@ -288,7 +288,7 @@ export default function MisiPage() {
                 {/* Tracker Missions */}
                 {trackerMissions.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider flex items-center gap-1.5"><AppIcon name="target" size="xs" tone="muted" /> {t.missionTabTracker || "Tracker"}</h2>
+                        <h2 className="text-xs font-bold text-[rgb(var(--color-text-muted))] flex items-center gap-1.5"><AppIcon name="target" size="xs" tone="muted" /> {t.missionTabTracker || "Tracker"}</h2>
                         <div className="space-y-2">
                             {trackerMissions.map(renderMission)}
                         </div>

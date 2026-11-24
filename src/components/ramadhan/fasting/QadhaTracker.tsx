@@ -66,7 +66,7 @@ export default function QadhaTracker({ pendingItems, onMarkDone }: QadhaTrackerP
         <div className="space-y-3">
             {/* Header badge */}
             <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold text-[rgb(var(--color-text-muted))] uppercase tracking-wider">{t.fastingQadhaTitle}</p>
+                <p className="text-xs font-semibold text-[rgb(var(--color-text-muted))]">{t.fastingQadhaTitle}</p>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[rgb(var(--color-warning))]/20 text-[rgb(var(--color-warning))] border border-[rgb(var(--color-warning))]/30">
                     {badgeLabel}
                 </span>

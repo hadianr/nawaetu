@@ -192,7 +192,7 @@ const CompassDisplay = memo(({
                 {/* 3. FIX: Text Animation (Scale + Glow) */}
                 <div className={`transition-all duration-500 transform ${aligned ? 'scale-105' : 'scale-100'}`}>
                     <h2 className={cn(
-                        "text-xl md:text-2xl lg:text-3xl font-bold tracking-wider transition-all duration-300 uppercase",
+                        "text-xl md:text-2xl lg:text-3xl font-bold transition-all duration-300",
                         aligned
                             ? "text-[rgb(var(--color-primary-strong))]"
                             : "text-[rgb(var(--color-text-muted))]"

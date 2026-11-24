@@ -61,7 +61,7 @@ export default function AudioPlayerBar({
         <div className="fixed bottom-24 left-0 right-0 z-40 pointer-events-none flex flex-col items-center gap-3 px-4">
             <div className="pointer-events-auto bg-[rgb(var(--color-surface))]/95 border border-[rgb(var(--color-border))] rounded-full p-2 pl-6 pr-2 flex items-center gap-4 shadow-[var(--shadow-floating)] animate-in slide-in-from-bottom-5">
                 <div className="flex flex-col">
-                    <span className="text-xs text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-wider">
+                    <span className="text-xs text-[rgb(var(--color-text-muted))] font-bold">
                         {t.quranNowPlaying || 'Now Playing'}
                     </span>
                     <span className="text-xs font-bold text-[rgb(var(--color-text-strong))]">

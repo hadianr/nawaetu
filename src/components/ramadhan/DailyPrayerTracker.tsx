@@ -145,7 +145,7 @@ export default function DailyPrayerTracker() {
                             const val = dayData?.[field] as boolean | null | undefined;
                             return (
                                 <div key={key} className="flex flex-col items-center gap-1">
-                            <span className="text-xs text-[rgb(var(--color-text-muted))] font-semibold uppercase">{label}</span>
+                            <span className="text-xs text-[rgb(var(--color-text-muted))] font-semibold">{label}</span>
                                     {/* Masjid button */}
                                     <button
                                         onClick={() => handlePrayerLocation(key, true)}
@@ -181,7 +181,7 @@ export default function DailyPrayerTracker() {
 
                     {/* Sunnah Section */}
                     <div className="border-t border-[rgb(var(--color-border))] pt-3">
-                        <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] text-center mb-2">
+                        <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] text-center mb-2">
                             SHOLAT SUNNAH
                         </p>
                         <div className="grid grid-cols-4 gap-1.5">

@@ -126,7 +126,7 @@ export default function IntentionPrompt({
                                         <p className="text-xs sm:text-xs md:text-sm font-serif italic leading-relaxed px-4 text-[rgb(var(--color-text-muted))]">
                             &quot;{isId ? dalil.textId : dalil.textEn}&quot;
                                         </p>
-                                        <p className="text-xs font-medium text-[rgb(var(--color-primary-strong))] opacity-80 tracking-wider uppercase">
+                                        <p className="text-xs font-medium text-[rgb(var(--color-primary-strong))] opacity-80">
                                             — {isId ? dalil.sourceId : dalil.sourceEn}
                                         </p>
                                     </motion.div>
@@ -161,7 +161,7 @@ export default function IntentionPrompt({
                     <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 relative z-10">
                         {/* Textarea */}
                         <div className="relative group">
-                            <label htmlFor="intention-prompt-text" className="text-xs font-serif font-medium mb-2 block text-center uppercase tracking-wider text-[rgb(var(--color-text-muted))]">
+                            <label htmlFor="intention-prompt-text" className="text-xs font-serif font-medium mb-2 block text-center text-[rgb(var(--color-text-muted))]">
                                 {t.intention_prompt_question}
                             </label>
                             <textarea
@@ -179,7 +179,7 @@ export default function IntentionPrompt({
                                 }}
                                 autoFocus
                             />
-                            <div className="absolute bottom-3 right-3 text-xs uppercase font-medium transition-colors text-[rgb(var(--color-text-muted))]">
+                            <div className="absolute bottom-3 right-3 text-xs font-medium transition-colors text-[rgb(var(--color-text-muted))]">
                                 {intentionText.length}/500
                             </div>
                         </div>
@@ -187,7 +187,7 @@ export default function IntentionPrompt({
                         {/* Inspiration Suggestions */}
                         <div className="pt-2">
                             <div className="flex items-center justify-between mb-3 px-1">
-                                <label className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.intention_need_inspiration}</label>
+                                <label className="text-xs font-bold text-[rgb(var(--color-text-muted))]">{t.intention_need_inspiration}</label>
                                 <button
                                     onClick={() => {
                                         const suggestions = t.intention_suggestions as string[];
@@ -196,7 +196,7 @@ export default function IntentionPrompt({
                                         ];
                                         handleSuggestionClick(randomSuggestion);
                                     }}
-                                    className="text-xs font-bold flex items-center gap-1 transition-colors uppercase tracking-wider text-[rgb(var(--color-primary-strong))] hover:text-[rgb(var(--color-primary-strong))]"
+                                    className="text-xs font-bold flex items-center gap-1 transition-colors text-[rgb(var(--color-primary-strong))] hover:text-[rgb(var(--color-primary-strong))]"
                                 >
                                     <AppIcon name="refresh" size="xs" tone="primary" />
                                     {t.intention_random_btn}

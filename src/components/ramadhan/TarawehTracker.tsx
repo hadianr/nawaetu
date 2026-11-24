@@ -128,7 +128,7 @@ export default function TarawehTracker() {
             {/* Active Day Action Area */}
             <div className="px-3 pb-3 sm:px-4 sm:pb-4 border-t border-[rgb(var(--color-border))] pt-3">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-[rgb(var(--color-text-muted))] uppercase tracking-wider">
+                    <span className="text-xs font-semibold text-[rgb(var(--color-text-muted))]">
                         {isToday ? t.fastingDayToday : `Hari ke-${viewDay}`}
                     </span>
                     {isFuture && <span className="text-xs text-[rgb(var(--color-text-muted))]">Belum Waktunya</span>}
