@@ -20,7 +20,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/context/LocaleContext";
 import QuranReadingBanner from "@/components/quran/QuranReadingBanner";

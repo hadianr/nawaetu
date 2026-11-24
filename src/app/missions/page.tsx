@@ -19,7 +19,7 @@
  */
 
 import { useCallback, useState, useEffect } from "react";
-import { ArrowLeft, Check, Trophy, AlertCircle, Clock } from "lucide-react";
+import { ArrowLeft, Check, Trophy, AlertCircle, Clock } from "@/components/ui/icons";
 import { getMissionsForGender, Mission, Gender, getLocalizedMission } from "@/data/missions";
 import { addHasanah } from "@/lib/habits/leveling";
 import { updateStreak } from "@/lib/habits/streak-utils";

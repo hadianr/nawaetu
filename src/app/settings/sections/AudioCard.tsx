@@ -17,7 +17,7 @@
  */
 
 import { useState, useRef, useEffect } from "react";
-import { Headphones, Volume2, Pause, Play, ChevronDown } from "lucide-react";
+import { Headphones, Volume2, Pause, Play, ChevronDown } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {

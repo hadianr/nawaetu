@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Check, Snowflake } from "lucide-react";
+import { Check, Snowflake } from "@/components/ui/icons";
 import StreakFlame from "@/components/streak/StreakFlame";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { useLocale } from "@/context/LocaleContext";

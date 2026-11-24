@@ -19,7 +19,7 @@
  */
 
 import { Button } from "@/components/ui/button";
-import { Compass } from "lucide-react";
+import { Compass } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import type { TranslationTree } from "@/context/LocaleContext";
 

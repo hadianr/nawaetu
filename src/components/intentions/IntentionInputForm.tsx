@@ -22,7 +22,7 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, BookHeart } from "lucide-react";
+import { Loader2, BookHeart } from "@/components/ui/icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { IntentionDalil, getRandomDalil } from "@/data/intention-dalils";
 import { guestHeaders } from "@/lib/guest-secret-client";

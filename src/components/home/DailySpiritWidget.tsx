@@ -20,7 +20,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { BookOpen, Quote, Copy, Check, ChevronRight, Share2 } from "lucide-react";
+import { BookOpen, Quote, Copy, Check, ChevronRight, Share2 } from "@/components/ui/icons";
 import { getSpiritualItemOfDay, SpiritualItem, getLocalizedContent } from "@/data/spiritual-content";
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Globe } from "lucide-react";
+import { Globe } from "@/components/ui/icons";
 import {
     Select,
     SelectContent,

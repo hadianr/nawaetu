@@ -20,7 +20,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Send, History, Lock, Plus, MessageCircle } from "lucide-react";
+import { ArrowLeft, Send, History, Lock, Plus, MessageCircle } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { getActivityRepository } from "@/core/repositories/activity.repository";
 import { getDisplayStreak } from "@/lib/habits/streak-utils";

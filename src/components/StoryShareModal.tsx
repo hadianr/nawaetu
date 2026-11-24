@@ -11,7 +11,7 @@
 
 import { useState, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { X, Share2, Download, Copy, Check, Loader2 } from "lucide-react";
+import { X, Share2, Download, Copy, Check, Loader2 } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { THEMES, resolveThemeId, type ThemeId } from "@/context/ThemeContext";
 import { getStorageService } from "@/core/infrastructure/storage";

@@ -23,7 +23,7 @@ import { trackQuranRead } from "@/lib/analytics/analytics";
 import { useQuranTimeTracker } from "@/hooks/useQuranTimeTracker";
 import { useFocusMode } from "@/hooks/useFocusMode";
 import { useTranslations } from "@/context/LocaleContext";
-import { BookOpen } from "lucide-react";
+import { BookOpen } from "@/components/ui/icons";
 import {
     QuranNiyyahScreen,
     QuranFocusBadge,

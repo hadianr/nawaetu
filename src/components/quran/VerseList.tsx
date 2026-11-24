@@ -23,7 +23,7 @@ import { useState, useRef, useEffect, useMemo, useCallback, useTransition } from
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuranAudio } from "@/hooks/useQuranAudio";
-import { Play, ChevronLeft, Loader2 } from "lucide-react";
+import { Play, ChevronLeft, Loader2 } from "@/components/ui/icons";
 import { getVerseTafsir, type TafsirContent } from '@/lib/quran/tafsir-api';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import dynamic from "next/dynamic";

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { X, MessageSquare, Trash2, Plus } from "lucide-react";
+import { X, MessageSquare, Trash2, Plus } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { ChatSession } from "@/lib/chat-storage";
 

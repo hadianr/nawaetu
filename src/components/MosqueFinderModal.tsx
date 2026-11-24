@@ -19,7 +19,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { X, MapPin, Tent, Building2, Car } from "lucide-react";
+import { X, MapPin, Tent, Building2, Car } from "@/components/ui/icons";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";

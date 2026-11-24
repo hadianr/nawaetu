@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Crown, Flame, Info, Gift } from "lucide-react";
+import { Crown, Flame, Info, Gift } from "@/components/ui/icons";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";

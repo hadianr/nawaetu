@@ -20,7 +20,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocale } from "@/context/LocaleContext";
-import { BookOpen, Calendar, Info } from "lucide-react";
+import { BookOpen, Calendar, Info } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import BrandIcon from "@/components/BrandIcon";
 

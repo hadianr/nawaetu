@@ -6,7 +6,7 @@
  */
 
 import Link from "next/link";
-import { BookOpen, ChevronRight } from "lucide-react";
+import { BookOpen, ChevronRight } from "@/components/ui/icons";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { cn } from "@/lib/utils";
 

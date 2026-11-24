@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { BookOpen, Clock, Target, ChevronDown } from "lucide-react";
+import { BookOpen, Clock, Target, ChevronDown } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "@/context/LocaleContext";
 

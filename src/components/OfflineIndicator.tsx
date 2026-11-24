@@ -21,7 +21,7 @@
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useLocale } from "@/context/LocaleContext";
 import { useEffect, useState } from "react";
-import { WifiOff } from "lucide-react";
+import { WifiOff } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 
 export default function OfflineIndicator() {

@@ -23,7 +23,7 @@ import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { X, Share, PlusSquare, Download } from "lucide-react";
+import { X, Share, PlusSquare, Download } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import BrandIcon from "@/components/BrandIcon";
 

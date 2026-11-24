@@ -20,7 +20,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { Copy, Share2 } from "lucide-react";
+import { Copy, Share2 } from "@/components/ui/icons";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import type { EvidenceData } from "@/data/ramadhan";

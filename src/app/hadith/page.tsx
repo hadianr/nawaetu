@@ -10,7 +10,7 @@
 import { useState, useMemo, useEffect, Suspense, memo } from "react";
 import TargetIdReader from "@/components/TargetIdReader";
 import dynamic from "next/dynamic";
-import { BookOpen, Quote, Copy, Check, ChevronDown, ChevronUp, ShieldCheck, User, Share2, ChevronDown as MoreIcon, Lightbulb } from "lucide-react";
+import { BookOpen, Quote, Copy, Check, ChevronDown, ChevronUp, ShieldCheck, User, Share2, ChevronDown as MoreIcon, Lightbulb } from "@/components/ui/icons";
 import { HADITH_LIBRARY, HadithItem, HADITH_TOPIC_DEFINITIONS, HadithTopic } from "@/data/hadiths";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";

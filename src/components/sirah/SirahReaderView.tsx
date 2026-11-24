@@ -19,7 +19,7 @@ import {
     ChevronLeft,
     ChevronRight,
     X,
-} from "lucide-react";
+} from "@/components/ui/icons";
 import Link from "next/link";
 import type { SirahSection, SirahQuranRef } from "@/data/sirah";
 import { SirahQuranBridgeModal } from "./SirahQuranBridgeModal";

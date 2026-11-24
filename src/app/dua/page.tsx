@@ -28,7 +28,7 @@ import {
     Play,
     Share2,
     ChevronDown as MoreIcon,
-} from "lucide-react";
+} from "@/components/ui/icons";
 import { DUA_LIBRARY, DuaItem, DUA_OCCASIONS } from "@/data/duas";
 import { getTranslationText, useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";

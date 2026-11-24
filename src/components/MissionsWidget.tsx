@@ -25,7 +25,7 @@
 
 import { useState, useEffect, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from "@/components/ui/icons";
 import { Mission } from "@/data/missions";
 import { addHasanah } from "@/lib/habits/leveling";
 import { updateStreak } from "@/lib/habits/streak-utils";

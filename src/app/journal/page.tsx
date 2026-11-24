@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { guestHeaders } from "@/lib/guest-secret-client";
-import { ChevronLeft, Book, ScrollText, Star, Calendar } from "lucide-react";
+import { ChevronLeft, Book, ScrollText, Star, Calendar } from "@/components/ui/icons";
 import IntentionStreak from "@/components/intentions/IntentionStreak";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";

@@ -19,7 +19,7 @@
  */
 
 import { Suspense } from "react";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw } from "@/components/ui/icons";
 import SettingsPageContent from "./SettingsPageContent";
 
 export default function SettingsPage() {

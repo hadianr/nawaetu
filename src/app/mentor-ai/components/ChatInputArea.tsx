@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Lock, Send } from "lucide-react";
+import { Lock, Send } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import type { TranslationTree } from "@/context/LocaleContext";
 

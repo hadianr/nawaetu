@@ -17,7 +17,7 @@
  */
 
 import { Button } from "@/components/ui/button";
-import { Settings, Share2, ChevronRight, LogOut } from "lucide-react";
+import { Settings, Share2, ChevronRight, LogOut } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 

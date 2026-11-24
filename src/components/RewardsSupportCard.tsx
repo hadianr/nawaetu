@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Gift } from "lucide-react";
+import { Gift } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 
 export default function RewardsSupportCard() {

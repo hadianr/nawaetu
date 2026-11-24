@@ -20,7 +20,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
+import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight, ShieldCheck } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { useSirahContentLang, useSirahPathPrefix } from "@/hooks/useSirahContentLang";
 import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";

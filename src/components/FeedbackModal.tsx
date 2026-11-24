@@ -27,7 +27,7 @@ import { Label } from "@/components/ui/label";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { signInWithGoogle } from "@/lib/auth-client";
-import { Bug, Lightbulb, Upload, X, ShieldAlert, MessageSquare } from "lucide-react";
+import { Bug, Lightbulb, Upload, X, ShieldAlert, MessageSquare } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { APP_CONFIG } from "@/config/app-config";

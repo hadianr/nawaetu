@@ -24,7 +24,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { Clock3, BookOpen, Flame, ChevronRight, Check, MapPin, Loader2, type LucideIcon } from "lucide-react";
+import { Clock3, BookOpen, Flame, ChevronRight, Check, MapPin, Loader2, type LucideIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/lib/haptic";
 import { useSession } from "next-auth/react";

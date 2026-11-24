@@ -18,7 +18,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Volume2, VolumeX, X } from "lucide-react";
+import { Volume2, VolumeX, X } from "@/components/ui/icons";
 import { DhikrPreset } from "./types";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";

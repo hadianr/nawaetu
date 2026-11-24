@@ -20,7 +20,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronLeft, Bookmark as BookmarkIcon, Trash2, Calendar, FileText } from "lucide-react";
+import { ChevronLeft, Bookmark as BookmarkIcon, Trash2, Calendar, FileText } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import type { Bookmark } from "@/lib/quran/bookmark-storage";

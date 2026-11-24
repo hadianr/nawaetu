@@ -19,7 +19,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { useSirahContentLang, useSirahPathPrefix } from "@/hooks/useSirahContentLang";
 import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";

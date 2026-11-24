@@ -19,7 +19,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import DhikrCounter from "@/components/DhikrCounter";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "@/components/ui/icons";
 import { pageMetadata } from "@/lib/seo";
 
 // ISR: Page shell is static, state is client-side — cache for 1 hour

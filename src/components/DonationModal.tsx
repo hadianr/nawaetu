@@ -20,7 +20,7 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Heart, Check, Sparkles, ExternalLink } from "lucide-react";
+import { Heart, Check, Sparkles, ExternalLink } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useInfaq } from "@/context/InfaqContext";

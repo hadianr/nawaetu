@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useState, useSyncExternalStore } from "react";
-import { Flame } from "lucide-react";
+import { Flame } from "@/components/ui/icons";
 import { useSession } from "next-auth/react";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";

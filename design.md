@@ -21,7 +21,7 @@ Use the existing implementation in this order:
 1. `src/context/ThemeContext.tsx` — theme IDs, modes, token values, persistence, and runtime application.
 2. `src/app/globals.css` — semantic CSS variables, shadcn aliases, focus, motion, and global layout behavior.
 3. `src/components/ui` — shared Radix/shadcn primitives.
-4. `src/components/ui/AppIcon.tsx` and `src/lib/icon-names.ts` — the icon registry and legacy-name mapping.
+4. `src/components/ui/AppIcon.tsx` and `src/lib/icon-names.ts` — the icon registry and legacy-name mapping; `src/components/ui/icons.ts` — the reviewed list of Lucide glyphs for places a registry name does not fit.
 5. `src/context/LocaleContext.tsx` and translation data — user-facing strings and accessible labels.
 6. Feature components — composition and content-specific behavior, not new global tokens.
 
@@ -122,14 +122,14 @@ Use existing components before writing markup. The `src/components/ui` layer is 
 - `Button`: semantic variants (`default`, `secondary`, `outline`, `ghost`, `destructive`, `link`) and 44px minimum target.
 - `Dialog`/Radix primitives: labeled title, description when useful, focus trap, escape/close behavior, and focus return.
 - `Input`, `Select`, `Switch`, `Tabs`, `Progress`, `Tooltip`: preserve their keyboard and ARIA behavior.
-- `AppIcon`: the only shared icon entry point for UI icons.
+- `AppIcon`: the shared entry point for UI icons. `@/components/ui/icons` supplies other Lucide glyphs; ESLint blocks importing `lucide-react` anywhere else.
 - Cards and feature components: compose shared surface, spacing, state, and typography rules; do not create a new card recipe for each route.
 
 Add a new reusable component only when the behavior or structure is repeated. Keep the API small and semantic. A component should own its states rather than forcing every caller to reimplement loading, empty, error, disabled, and selected styling.
 
 ## Icon policy
 
-UI must use the existing Lucide-based `AppIcon` registry. Use a named icon from `AppIconName`; use `resolveAppIconName` only at compatibility boundaries for persisted or remote legacy values. The registry provides consistent size, tone, and accessible labeling.
+UI must use the existing Lucide-based `AppIcon` registry, or a glyph from `@/components/ui/icons` when no registry name fits. Never import `lucide-react` directly. Use a named icon from `AppIconName`; use `resolveAppIconName` only at compatibility boundaries for persisted or remote legacy values. The registry provides consistent size, tone, and accessible labeling.
 
 - No emoji, Unicode symbol, or text glyph as a functional UI icon.
 - No inline one-off SVG when an existing registry icon fits.

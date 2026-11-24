@@ -1,4 +1,4 @@
-import { Flame } from "lucide-react";
+import { Flame } from "@/components/ui/icons";
 import LottieMoment from "@/components/ui/LottieMoment";
 import { cn } from "@/lib/utils";
 

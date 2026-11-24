@@ -20,7 +20,7 @@
 
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { APP_CONFIG } from "@/config/app-config";
 

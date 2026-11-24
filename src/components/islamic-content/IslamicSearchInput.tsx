@@ -6,7 +6,7 @@
  * Theme-aware styling, consistent focus ring color per accent.
  */
 
-import { Search } from "lucide-react";
+import { Search } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 
 interface IslamicSearchInputProps {

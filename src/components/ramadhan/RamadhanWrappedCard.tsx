@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import * as htmlToImage from "html-to-image";
-import { Download, Share2, Check, Loader2, X, Lightbulb } from "lucide-react";
+import { Download, Share2, Check, Loader2, X, Lightbulb } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";

@@ -18,7 +18,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Moon, Volume2, VolumeX } from "lucide-react";
+import { RotateCcw, Moon, Volume2, VolumeX } from "@/components/ui/icons";
 import type { TranslationTree } from "@/context/LocaleContext";
 
 export interface DhikrControlsProps {

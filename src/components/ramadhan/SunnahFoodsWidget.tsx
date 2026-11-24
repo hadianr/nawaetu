@@ -22,7 +22,7 @@ import { useState } from "react";
 import { SUNNAH_FOODS_SUHOOR, SUNNAH_FOODS_IFTAR } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 import { useLocale } from "@/context/LocaleContext";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "@/components/ui/icons";
 import { AppIcon } from "@/components/ui/AppIcon";
 
 export default function SunnahFoodsWidget() {

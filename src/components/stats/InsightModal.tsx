@@ -9,7 +9,7 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Flame, Target, BookOpen, Award, TrendingUp, Calendar, MessageSquare, Sparkles } from "lucide-react";
+import { Flame, Target, BookOpen, Award, TrendingUp, Calendar, MessageSquare, Sparkles } from "@/components/ui/icons";
 import { InsightKey, DailyActivity } from "@/hooks/useStatsInsights";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { AppIcon } from "@/components/ui/AppIcon";

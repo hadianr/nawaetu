@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Loader2, BookOpen } from "lucide-react";
+import { Search, Loader2, BookOpen } from "@/components/ui/icons";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { searchQuranAction } from "@/app/actions/quran";
 import type { SearchResponse } from "@/lib/quran/kemenag-api";

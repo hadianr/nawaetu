@@ -6,7 +6,7 @@
  */
 
 import { useState } from "react";
-import { Coins, Wheat, Calculator, HandHeart, Clock, ThumbsUp, AlertCircle } from "lucide-react";
+import { Coins, Wheat, Calculator, HandHeart, Clock, ThumbsUp, AlertCircle } from "@/components/ui/icons";
 import ZakatFitrahCalculatorModal from "./ZakatFitrahCalculatorModal";
 import { useLocale } from "@/context/LocaleContext";
 import DalilBadge from "./DalilBadge";

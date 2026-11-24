@@ -19,7 +19,7 @@
 import { Verse } from "./VerseList";
 import { AyahMarker } from "./AyahMarker";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { Play, Bookmark, EyeOff, Eye, Share2, Lightbulb, Loader2 } from "lucide-react";
+import { Play, Bookmark, EyeOff, Eye, Share2, Lightbulb, Loader2 } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";

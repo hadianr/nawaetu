@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown } from "@/components/ui/icons";
 import JourneyHero from "@/components/home/JourneyHero";
 import DalilBadge from "@/components/ramadhan/DalilBadge";
 import AnimatedCheck from "@/components/ui/AnimatedCheck";

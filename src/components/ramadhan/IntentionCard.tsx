@@ -19,7 +19,7 @@
  */
 
 import { useState } from "react";
-import { X, BookOpen } from "lucide-react";
+import { X, BookOpen } from "@/components/ui/icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import type { IntentionData } from "@/data/ramadhan";
 import { useLocale } from "@/context/LocaleContext";

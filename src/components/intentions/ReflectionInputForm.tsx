@@ -22,7 +22,7 @@ import { useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2 } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { guestHeaders } from "@/lib/guest-secret-client";

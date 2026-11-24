@@ -7,7 +7,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from "@/components/ui/icons";
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS } from "@/data/sirah";
 import { CONCISE_READ_KEY, getConciseReadableSections, isConciseSectionRead, readingMinutes } from "@/data/sirah/concise";
 import { cn } from "@/lib/utils";

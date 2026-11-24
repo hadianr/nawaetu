@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Gift, Heart, Mail, Send } from "lucide-react";
+import { ArrowLeft, Gift, Heart, Mail, Send } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { signInWithGoogle } from "@/lib/auth-client";

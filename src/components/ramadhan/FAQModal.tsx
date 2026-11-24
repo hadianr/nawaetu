@@ -21,7 +21,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { FAQ_DATA } from "@/data/ramadhan";

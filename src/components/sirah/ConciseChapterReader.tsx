@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Lightbulb, ShieldCheck } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Lightbulb, ShieldCheck } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { useSirahContentLang, useSirahPathPrefix } from "@/hooks/useSirahContentLang";
 import { cn } from "@/lib/utils";
