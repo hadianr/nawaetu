@@ -191,33 +191,6 @@
     overflow-x: clip;
   }
 
-  /* =====================================================================
-     DAYLIGHT THEME — Light Glassmorphism Design System
-     Background: --color-canvas (warm paper)
-     Surface: white/65 frosted glass
-     Text: multi-level hierarchy (dark, muted, placeholder)
-     Primary accent: Emerald (tetap sama seperti dark mode)
-     ===================================================================== */
-
-  /* [4] Borders: keep primary-colored borders (emerald) visible but slightly muted */
-  [data-theme="daylight"] [class*="border-[rgb(var(--color-primary))"] {
-    border-color: rgb(var(--color-primary) / 0.3) !important;
-  }
-
-  /* [7] GRADIENT SURFACES */
-
-  /* Profile card gradient (bg-gradient-to-r from-primary/20) */
-  /* We exclude small badges/icons (w-5, h-5, etc) so they stay solid and readable */
-  [data-theme="daylight"] [class*="from-[rgb(var(--color-primary))"]:not([class*="w-5"], [class*="h-5"], [class*="w-6"], [class*="h-6"], [class*="w-14"], [class*="h-14"]) {
-    --tw-gradient-from: rgb(var(--color-primary) / 0.12) !important;
-    --tw-gradient-to: rgb(var(--color-primary) / 0.05) !important;
-    background: linear-gradient(to bottom right, rgb(var(--color-primary) / 0.12), rgb(var(--color-primary) / 0.05)) !important;
-  }
-
-  /* ===== END DAYLIGHT THEME ===== */
-
-  /* ================================================= */
-
   /* Improve rendering performance */
   html {
     -webkit-font-smoothing: antialiased;
