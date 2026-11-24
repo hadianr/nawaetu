@@ -148,7 +148,7 @@ export default function AboutPage() {
                 </section>
 
                 {/* Gamification */}
-                <section className="bg-gradient-to-br from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-secondary))]/20 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
+                <section className="bg-[rgb(var(--color-primary))]/10 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
                     <div className="flex items-start gap-4 mb-4">
                         <div className="p-3 bg-[rgb(var(--color-primary))]/30 rounded-lg">
                             <Zap className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
@@ -280,7 +280,7 @@ export default function AboutPage() {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                         <Link
                             href="/"
-                            className="px-8 py-3 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-secondary))] rounded-lg font-bold hover:opacity-90 transition-opacity"
+                            className="px-8 py-3 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] rounded-lg font-bold hover:opacity-90 transition-opacity"
                         >
                             Mulai Sekarang
                         </Link>

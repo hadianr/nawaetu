@@ -39,7 +39,7 @@ export function ProfileHeader({
         <div className="relative flex-none">
             <div className={cn(
                 "h-24 w-full absolute top-0 left-0",
-                "bg-gradient-to-r from-[rgb(var(--color-primary))]/80 to-[rgb(var(--color-secondary))]/80"
+                "bg-[rgb(var(--color-primary))]"
             )}>
                 {/* Base Gradient & Noise */}
                 <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20"></div>
