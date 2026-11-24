@@ -1156,3 +1156,24 @@ body {
     min-width: 24px;
     min-height: 24px;
 }
+
+/* Surah rows and category cards are buttons; keep their card look. */
+button.list-item,
+button.category-card {
+    width: 100%;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+}
+
+button.list-item {
+    text-align: left;
+}
+
+.surah-details,
+.surah-name,
+.surah-meta,
+.category-title,
+.category-count {
+    display: block;
+}
