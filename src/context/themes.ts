@@ -118,11 +118,11 @@ const createTheme = (input: ThemeInput): Theme => {
             accentStrong: colors.accent,
             accentForeground: isLight ? "63 39 51" : "15 23 42",
             // Stock 400 shades disappear on pale surfaces, so light themes use the 700 shades (AA on paper).
-            info: isLight ? "29 78 216" : "96 165 250",
-            success: isLight ? "21 128 61" : "52 211 153",
-            warning: isLight ? "161 98 7" : "251 191 36",
-            danger: isLight ? "185 28 28" : "248 113 113",
-            dangerForeground: "255 255 255",
+            info: isLight ? "29 78 216" : "147 197 253",
+            success: isLight ? "22 101 52" : "52 211 153",
+            warning: isLight ? "133 77 14" : "251 191 36",
+            danger: isLight ? "153 27 27" : "252 165 165",
+            dangerForeground: isLight ? "255 255 255" : "15 23 42",
             // Keep dark-theme borders quiet; components may add opacity on top.
             border: isLight ? "226 232 240" : "51 65 85",
             ring: colors.primaryLight,
@@ -197,7 +197,7 @@ export const THEMES: Record<ThemeId, Theme> = {
             text: "52 64 58",
             textMuted: "90 102 95",
             primaryStrong: "14 99 66",
-            accentStrong: "138 99 22",
+            accentStrong: "115 82 18",
             accentForeground: "23 33 28",
             border: "228 223 211",
             ring: "21 128 87",
@@ -223,6 +223,10 @@ export const THEMES: Record<ThemeId, Theme> = {
             accent: "147 197 253", // blue-300
             background: "3 7 18", // very dark blue
             surface: "30 41 59", // slate-800 with blue tint
+        },
+        tokens: {
+            // blue-400 is 4.4:1 on a primary-tinted card; blue-300 keeps text at AA.
+            primaryStrong: "147 197 253",
         },
     }),
     sunset: createTheme({

@@ -20,7 +20,7 @@ export type ChartConfig = {
 
 const theme = {
     light: "",
-    dark: ".dark",
+    dark: "[data-color-mode=\"dark\"]",
 } as const
 
 // --- Helpers ---

@@ -2,7 +2,7 @@
 
 @plugin "tailwindcss-animate";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where([data-color-mode="dark"], [data-color-mode="dark"] *));
 
 .prayer-date-input {
   color-scheme: dark;
@@ -64,12 +64,12 @@
   --color-primary-strong: 14 99 66;
   --color-primary-foreground: 255 255 255;
   --color-accent: 184 137 46;
-  --color-accent-strong: 138 99 22;
+  --color-accent-strong: 115 82 18;
   --color-accent-foreground: 23 33 28;
   --color-info: 29 78 216;
-  --color-success: 21 128 61;
-  --color-warning: 161 98 7;
-  --color-danger: 185 28 28;
+  --color-success: 22 101 52;
+  --color-warning: 133 77 14;
+  --color-danger: 153 27 27;
   --color-danger-foreground: 255 255 255;
   --color-border: 228 223 211;
   --color-ring: 21 128 87;
@@ -107,7 +107,8 @@
   --accent-foreground: rgb(var(--color-accent-foreground));
   --destructive: rgb(var(--color-danger));
   --border: rgb(var(--color-border) / 0.16);
-  --input: rgb(var(--color-border) / 0.22);
+  /* Control boundaries need 3:1 against their surface; the quiet border token does not reach it. */
+  --input: rgb(var(--color-text-muted) / 0.85);
   --ring: rgb(var(--color-ring));
   --chart-1: rgb(var(--color-primary));
   --chart-2: rgb(var(--color-info));
@@ -150,7 +151,7 @@
   --accent: rgb(var(--color-primary-light));
   --accent-foreground: rgb(var(--color-primary-strong));
   --border: rgb(var(--color-border));
-  --input: rgb(var(--color-border));
+  --input: rgb(var(--color-text-muted) / 0.85);
   --ring: rgb(var(--color-ring));
 }
 
@@ -163,6 +164,22 @@
   :focus-visible {
     outline: 2px solid rgb(var(--color-ring));
     outline-offset: 2px;
+  }
+
+  /* Tailwind v4 resets buttons to the default cursor; controls should still read as clickable. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"],
+  [role="switch"],
+  summary,
+  label[for],
+  select:not(:disabled) {
+    cursor: pointer;
+  }
+
+  :disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
   }
 
   html,
@@ -316,33 +333,6 @@
     }
   }
 
-  /* Mobile-specific optimizations for small devices */
-  @media (max-width: 390px) {
-
-    /* Reduce padding on very small screens */
-    .px-3 {
-      @apply px-2;
-    }
-
-    .py-3 {
-      @apply py-2;
-    }
-
-    /* Reduce gap spacing */
-    .gap-3 {
-      @apply gap-2;
-    }
-
-    /* Optimize font sizes for readability */
-    .text-xs {
-      font-size: 0.7rem;
-    }
-
-    .text-sm {
-      font-size: 0.8rem;
-    }
-  }
-
   /* Improve touch targets for mobile */
   @media (max-width: 768px) {
 
@@ -468,11 +458,6 @@ nav {
   textarea {
     font-size: 16px !important;
   }
-}
-
-/* Primary as text: Blossom's blush primary is 2.2:1 on its surface, so light themes use the deep shade. */
-[data-color-mode="light"] [class*="text-[rgb(var(--color-primary))]"] {
-  color: rgb(var(--color-primary-strong)) !important;
 }
 
 /* Card elevation is a semantic decision shared by every light surface. */
