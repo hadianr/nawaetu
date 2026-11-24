@@ -29,10 +29,9 @@ export default function DynamicTitle() {
     useEffect(() => {
         if (!t) return;
 
-        // Default title
-        let pageTitle = `Nawaetu: ${t.aboutTagline || "Begin with intention"}`;
-
-        // Map pathnames to translations
+        // Only client-rendered pages without their own metadata get a title here; every other page
+        // keeps the title its server metadata set (overwriting it gave them all the home title).
+        let pageTitle: string | null = null;
         if (pathname === "/") {
             pageTitle = `Nawaetu: ${t.aboutTagline || "Begin with intention"}`;
         } else if (pathname === "/quran") {
@@ -47,7 +46,12 @@ export default function DynamicTitle() {
             pageTitle = `${t.aboutWhatIsTitle ? t.aboutWhatIsTitle.split("?")[0] : "About"} - Nawaetu`;
         } else if (pathname === "/qibla") {
             pageTitle = `${t.navQibla || "Qibla"} - Nawaetu`;
+        } else if (pathname === "/journal") {
+            pageTitle = `${t.intention_journal_title || "Journal"} - Nawaetu`;
+        } else if (pathname === "/bookmarks") {
+            pageTitle = `${t.bookmarksTitle || "Bookmarks"} - Nawaetu`;
         }
+        if (!pageTitle) return;
 
         // Next.js might reset title on soft nav, so we set it
         // slightly after rendering or use basic mutation
