@@ -22,6 +22,7 @@ import { db, transactionDb } from "@/db";
 import { inSequence } from "@/lib/db-sequential";
 import { users, bookmarks, intentions, pushSubscriptions, userReadingState } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { isLocale } from "@/lib/validations/sync";
 
 export const maxDuration = 30;
 
@@ -69,6 +70,7 @@ export async function GET() {
         for (const key of allowedSettings) {
             if (key in currentSettings) {
                 const val = currentSettings[key];
+                if (key === 'locale' && !isLocale(val)) continue;
                 if ((typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') && val.toString().length < 500) {
                     sanitized[key] = val;
                 } else if (key === 'adhanPreferences' && typeof val === 'object' && val !== null && Object.keys(val).length < 20) {
@@ -123,6 +125,7 @@ export async function PATCH(req: NextRequest) {
         for (const key of allowedSettings) {
             if (key in incomingSettings) {
                 const val = incomingSettings[key];
+                if (key === 'locale' && !isLocale(val)) continue;
                 // Primitive validation
                 if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
                     if (val.toString().length < 500) {
