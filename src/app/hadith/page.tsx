@@ -98,7 +98,7 @@ const HadithCard = memo(function HadithCard({
                 {/* Top Row: Badges on Left, Single Lightweight Chevron on Right */}
                 <div className="flex items-center justify-between gap-2">
                     {/* Badges Container (100% Full Top-Left Width) */}
-                    <div className="flex items-center gap-1.5 min-w-0 overflow-x-auto no-scrollbar whitespace-nowrap">
+                    <div className="flex flex-wrap items-center gap-1.5 min-w-0">
                         <span className={cn(
                             "text-xs px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
                             isHighlighted

@@ -259,8 +259,8 @@ export default function SettingsPageContent() {
             <div className="w-full max-w-none space-y-6 xl:max-w-md">
                 {/* Header */}
                 <div className="flex items-center gap-4">
-                    <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] transition-colors">
-                        <ArrowLeft className="w-6 h-6 text-[rgb(var(--color-text-strong))]" />
+                    <Link href="/" aria-label={String(t.quranBack)} className="p-2 -ml-2 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] transition-colors">
+                        <ArrowLeft className="w-6 h-6 text-[rgb(var(--color-text-strong))]" aria-hidden="true" />
                     </Link>
                     <h1 className="text-2xl font-bold text-[rgb(var(--color-text-strong))]">{t.title}</h1>
                 </div>
@@ -341,7 +341,7 @@ export default function SettingsPageContent() {
                         </p>
                     </button>
 
-                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px]">
+                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[rgb(var(--color-ring))] bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px]">
                         {/* Visual Layer - Exact copy of Location card structure */}
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
                             <div className="flex items-center justify-between w-full">
@@ -358,7 +358,7 @@ export default function SettingsPageContent() {
 
                         {/* Functional Layer - Invisible Select covering the whole card */}
                         <Select value={calculationMethod} onValueChange={handleCalculationMethodChange}>
-                            <SelectTrigger className="absolute inset-0 w-full h-full bg-transparent border-none shadow-none focus:ring-0 z-10 opacity-0 cursor-pointer">
+                            <SelectTrigger aria-label={String(t.methodLabel)} className="absolute inset-0 w-full h-full bg-transparent border-none shadow-none focus:ring-0 z-10 opacity-0 cursor-pointer">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/20">
@@ -382,7 +382,7 @@ export default function SettingsPageContent() {
                         <span className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.hijriDateTitle}</span>
                     </div>
 
-                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px]">
+                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[rgb(var(--color-ring))] bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px]">
                         {/* Visual Layer */}
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
                             <div className="flex items-center justify-between w-full">
@@ -403,7 +403,7 @@ export default function SettingsPageContent() {
 
                         {/* Functional Layer */}
                         <Select value={hijriAdjustment} onValueChange={handleHijriAdjustmentChange}>
-                            <SelectTrigger className="absolute inset-0 w-full h-full bg-transparent border-none shadow-none focus:ring-0 z-10 opacity-0 cursor-pointer">
+                            <SelectTrigger aria-label={String(t.hijriAdjustmentLabel)} className="absolute inset-0 w-full h-full bg-transparent border-none shadow-none focus:ring-0 z-10 opacity-0 cursor-pointer">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/20">

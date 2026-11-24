@@ -65,10 +65,12 @@ export function ProfileHeader({
                 )}
 
                 <button
+                    type="button"
+                    aria-label={String(t.a11yClose)}
                     onClick={onClose}
                     className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgb(var(--color-background))]/30 backdrop-blur-md border border-[rgb(var(--color-primary-foreground))]/20 hover:bg-[rgb(var(--color-primary-foreground))]/10 transition-colors"
                 >
-                    <X className="w-4 h-4 text-[rgb(var(--color-primary-foreground))]" />
+                    <X className="w-4 h-4 text-[rgb(var(--color-primary-foreground))]" aria-hidden="true" />
                 </button>
             </div>
 

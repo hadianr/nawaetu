@@ -38,7 +38,6 @@ export function ContentLangToggle({ className, hideLabel }: { className?: string
                             key={o.value}
                             type="button"
                             aria-pressed={active}
-                            aria-label={o.name}
                             title={o.name}
                             onClick={() => choose(o.value)}
                             className={cn(
@@ -49,6 +48,8 @@ export function ContentLangToggle({ className, hideLabel }: { className?: string
                             )}
                         >
                             {o.short}
+                            {/* Visible code first so voice users can say what they see. */}
+                            <span className="sr-only"> {o.name}</span>
                         </button>
                     );
                 })}

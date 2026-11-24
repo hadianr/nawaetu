@@ -144,8 +144,8 @@ export default function JournalPage() {
             {/* Header */}
             <div className="sticky top-0 z-10 backdrop-blur-md border-b bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))]">
                 <div className="w-full max-w-none mx-auto px-4 py-4 flex items-center justify-between xl:max-w-md">
-                    <Link href="/" className="p-2 -ml-2 rounded-full transition-colors hover:bg-[rgb(var(--color-surface-subtle))]">
-                        <ChevronLeft className="w-6 h-6 text-[rgb(var(--color-text-muted))]" />
+                    <Link href="/" aria-label={String(t.quranBack)} className="p-2 -ml-2 rounded-full transition-colors hover:bg-[rgb(var(--color-surface-subtle))]">
+                        <ChevronLeft className="w-6 h-6 text-[rgb(var(--color-text-muted))]" aria-hidden="true" />
                     </Link>
                     <h1 className="text-lg font-bold">{t.intention_journal_title}</h1>
                     <div className="w-10" /> {/* Spacer for balance */}

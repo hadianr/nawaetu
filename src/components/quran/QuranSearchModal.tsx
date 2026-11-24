@@ -45,8 +45,9 @@ export default function QuranSearchModal() {
                         "bg-[rgb(var(--color-surface))]/80 border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-primary))]/40"
                     )}
                 >
-                    <BookOpen className="h-4 w-4" />
-                    <span className="hidden sm:inline">{translations.quranSearchVerses}</span>
+                    <BookOpen className="h-4 w-4" aria-hidden="true" />
+                    {/* Label stays in the accessibility tree on mobile, where only the icon shows. */}
+                    <span className="sr-only sm:not-sr-only">{translations.quranSearchVerses}</span>
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-xl p-0 overflow-hidden flex flex-col max-h-[85vh] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]">

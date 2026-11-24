@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Volume2, VolumeX, X } from "lucide-react";
 import { DhikrPreset } from "./types";
@@ -50,11 +50,20 @@ export function DhikrZenMode({
 }: DhikrZenModeProps) {
     const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
+    useEffect(() => {
+        if (!isZenMode) return;
+        const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setIsZenMode(false); };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [isZenMode, setIsZenMode]);
+
     if (!isZenMode || typeof document === 'undefined') return null;
 
     const FeedbackIcon = { sound: Volume2, none: VolumeX }[feedbackMode] || Volume2;
 
     const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
+        // Enter or Space on the focused button arrives as a click with no pointer position.
+        if (!('touches' in e) && e.detail === 0) { handleIncrement(); return; }
         const id = Date.now();
         const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
         const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
@@ -71,7 +80,13 @@ export function DhikrZenMode({
             "bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text-strong))]"
         )}>
             {/* Full screen tap area */}
-            <div className="absolute inset-0 cursor-pointer transition-colors active:bg-[rgb(var(--color-primary))]/10" onClick={handleClick} />
+            <button
+                type="button"
+                autoFocus
+                aria-label={String(t.a11yZenCount)}
+                className="absolute inset-0 transition-colors active:bg-[rgb(var(--color-primary))]/10 focus-visible:-outline-offset-4"
+                onClick={handleClick}
+            />
 
             {/* Ripples */}
             {ripples.map(ripple => (
@@ -90,10 +105,12 @@ export function DhikrZenMode({
 
             {/* Close Button */}
             <button
+                type="button"
+                aria-label={String(t.a11yClose)}
                 onClick={() => setIsZenMode(false)}
                 className="absolute top-8 right-6 z-[110] p-4 rounded-full active:scale-95 transition-all text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 hover:text-[rgb(var(--color-primary-strong))]"
             >
-                <X className="w-8 h-8" />
+                <X className="w-8 h-8" aria-hidden="true" />
             </button>
 
             {/* Counter Content */}

@@ -57,7 +57,7 @@ export default function ProfileCard({
 
     return (
         <UserProfileDialog onProfileUpdate={refreshProfile}>
-            <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
+            <button type="button" className="w-full text-left p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
                 <div className="relative">
                     <div className={cn(
                         "h-12 w-12 rounded-full border-2 flex items-center justify-center text-lg font-bold overflow-hidden p-0.5 transition-all",
@@ -85,8 +85,8 @@ export default function ProfileCard({
                         )}
                     </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />
-            </div>
+                <ChevronRight className="w-5 h-5 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors flex-shrink-0" aria-hidden="true" />
+            </button>
         </UserProfileDialog>
     );
 }

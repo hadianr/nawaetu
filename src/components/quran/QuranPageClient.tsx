@@ -39,8 +39,8 @@ export default function QuranPageClient() {
         <main className="space-y-4">
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild className="rounded-full text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]">
-                    <Link href="/">
-                        <ChevronLeft className="h-6 w-6" />
+                    <Link href="/" aria-label={String(t.quranBack)}>
+                        <ChevronLeft className="h-6 w-6" aria-hidden="true" />
                     </Link>
                 </Button>
                 <div>

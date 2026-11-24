@@ -121,7 +121,7 @@ const DuaCard = memo(function DuaCard({
             <div className="px-3.5 py-3 sm:px-4 sm:py-3.5 space-y-1.5">
                 {/* Top Row: Badges + Chevron */}
                 <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 min-w-0 overflow-x-auto no-scrollbar whitespace-nowrap">
+                    <div className="flex flex-wrap items-center gap-1.5 min-w-0">
                         <span className={cn(
                             "text-xs px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
                             isHighlighted

@@ -101,8 +101,8 @@ export default function BookmarksPage() {
                         "rounded-full transition-colors",
                         "text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]"
                     )}>
-                        <Link href="/quran">
-                            <ChevronLeft className="h-6 w-6" />
+                        <Link href="/quran" aria-label={String(t.quranBack)}>
+                            <ChevronLeft className="h-6 w-6" aria-hidden="true" />
                         </Link>
                     </Button>
                     <div>
