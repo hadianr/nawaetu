@@ -28,10 +28,14 @@ export const SyncEntrySchema = z.object({
 export const SYNCABLE_SETTING_KEYS = ['theme', 'reciter', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'] as const;
 
 /** Keeps only allowed keys with short primitive values, or a small adhanPreferences object. */
+/** The app has two languages; anything else (such as a JSON-encoded "en") is corrupt and must not spread. */
+export const isLocale = (value: unknown): value is 'id' | 'en' => value === 'id' || value === 'en';
+
 export function sanitizeSyncedSettings(input: Record<string, unknown>): Record<string, unknown> {
     const clean: Record<string, unknown> = {};
     for (const key of SYNCABLE_SETTING_KEYS) {
         const value = input[key];
+        if (key === 'locale' && !isLocale(value)) continue;
         if (typeof value === 'string' || typeof value === 'number') {
             if (value.toString().length < 500) clean[key] = value;
         } else if (key === 'adhanPreferences' && typeof value === 'object' && value !== null && !Array.isArray(value)) {

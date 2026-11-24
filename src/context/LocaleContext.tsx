@@ -22,6 +22,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { BASE_SETTINGS_EN, BASE_SETTINGS_ID } from "@/data/translations/base";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { isLocale } from "@/lib/validations/sync";
 
 const DEFAULT_LOCALE = "id";
 
@@ -115,7 +116,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const storage = getStorageService();
-      let savedLocale = storage.getOptional(STORAGE_KEYS.SETTINGS_LOCALE) as string;
+      const stored = storage.getOptional(STORAGE_KEYS.SETTINGS_LOCALE);
+      let savedLocale = isLocale(stored) ? stored : null;
 
       if (!savedLocale) {
         // Smart Default: If no locale saved, detect browser language
@@ -145,7 +147,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // Listen for localStorage changes from other tabs/windows
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEYS.SETTINGS_LOCALE && e.newValue) {
+      if (e.key === STORAGE_KEYS.SETTINGS_LOCALE && isLocale(e.newValue)) {
         setLocaleState(e.newValue);
       }
     };

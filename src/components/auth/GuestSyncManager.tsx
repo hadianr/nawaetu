@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { isLocale } from "@/lib/validations/sync";
 import { toast } from "sonner";
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
@@ -220,7 +221,7 @@ async function hydrateFromServer(
                 const settings = data.profile.settings;
 
                 if (isValidSetting(settings.theme)) storage.set(STORAGE_KEYS.SETTINGS_THEME, settings.theme);
-                if (isValidSetting(settings.locale)) storage.set(STORAGE_KEYS.SETTINGS_LOCALE, settings.locale);
+                if (isLocale(settings.locale)) storage.set(STORAGE_KEYS.SETTINGS_LOCALE, settings.locale);
                 if (isValidSetting(settings.reciter)) storage.set(STORAGE_KEYS.SETTINGS_RECITER, settings.reciter);
                 if (isValidSetting(settings.muadzin)) storage.set(STORAGE_KEYS.SETTINGS_MUADZIN, settings.muadzin);
                 if (isValidSetting(settings.calculationMethod)) {
