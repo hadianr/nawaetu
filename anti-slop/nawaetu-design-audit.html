@@ -90,6 +90,7 @@ section > header { display: grid; gap: 0.5rem; }
 .verdict { font: 700 0.8125rem/1 var(--font-ui); letter-spacing: 0.04em; padding: 0.35rem 0.55rem; border-radius: 6px; align-self: start; }
 .verdict.fail { color: var(--high); background: var(--high-tint); }
 .verdict.pass { color: var(--pass); background: var(--pass-tint); }
+.verdict.partial { color: var(--medium); background: var(--subtle); }
 
 /* Filters */
 .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -197,13 +198,13 @@ footer { font-size: 0.875rem; color: var(--muted); border-top: 1px solid var(--b
 <section id="gate" aria-labelledby="gate-h">
   <header>
     <h2 id="gate-h">Delivery Gate</h2>
-    <p class="muted">antislop's four-block check. Any failing block means the design is not ready to ship as is.</p>
+    <p class="muted">antislop's four-block check, after the fixes. Each row shows what failed in the audit.</p>
   </header>
   <div class="gate">
-    <div><h3>1. Hard Gate</h3><span class="verdict fail">FAIL</span><p>R-02 em dashes, R-03 tap targets, R-25 contrast, R-32 keyboard, R-34 dead theme styles, R-39 names and landmarks.</p></div>
-    <div><h3>2. Purpose-Gate</h3><span class="verdict fail">FAIL</span><p>R-01 decorative gradients, R-04 default Sparkles, R-06 tracked uppercase, R-10 blur in 65 files, R-19 endless animation.</p></div>
-    <div><h3>3. Liveliness</h3><span class="verdict fail">FAIL</span><p>No dials declared. The focal point, the accent and an identity motif (Arabic script, emerald, warm paper) are all present.</p></div>
-    <div><h3>4. Craftsmanship and Quality Locks</h3><span class="verdict fail">FAIL</span><p>R-15 one generic CTA, R-29 off-palette colors, R-31 runtime CSS patches without a written reason.</p></div>
+    <div><h3>1. Hard Gate</h3><span class="verdict partial">PARTIAL</span><p>Every rule passes in the browser scan, except R-35. It asks for a recorded click-through of every control, and that was only done by automated scan. Before: FAIL on R-02 em dashes, R-03 tap targets, R-25 contrast, R-32 keyboard, R-34 dead theme styles, R-39 names and landmarks.</p></div>
+    <div><h3>2. Purpose-Gate</h3><span class="verdict pass">PASS</span><p>Gradients, Sparkles, uppercase, blur and motion each have a written rule in design.md. Before: FAIL on R-01, R-04, R-06, R-10, R-19.</p></div>
+    <div><h3>3. Liveliness</h3><span class="verdict pass">PASS</span><p>Dials are declared as ENERGY 1 / RHYTHM 2 / MOTION 1. There is one focal point per screen, one accent, and an identity motif of Arabic script, emerald and warm paper. Before: FAIL, no dials declared.</p></div>
+    <div><h3>4. Craftsmanship and Quality Locks</h3><span class="verdict pass">PASS</span><p>CTAs name their action, colors come from the token palette, and runtime CSS patches are gone. Before: FAIL on R-15, R-29, R-31.</p></div>
   </div>
 </section>
 
