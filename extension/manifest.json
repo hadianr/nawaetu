@@ -24,7 +24,6 @@
         "service_worker": "background.js"
     },
     "permissions": [
-        "storage",
         "geolocation",
         "notifications",
         "alarms",
