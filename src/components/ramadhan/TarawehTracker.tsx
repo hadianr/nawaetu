@@ -165,7 +165,7 @@ export default function TarawehTracker() {
                                 <AppIcon name={choice === 8 ? "moon" : "sparkles"} size="md" tone={isSelected ? "primary" : "muted"} />
                                 <span className="font-semibold text-xs">{label}</span>
                                 {isSelected && (
-                                    <span className="text-xs opacity-60 -mt-0.5">ketuk untuk batal</span>
+                                    <span className="text-xs opacity-60 -mt-0.5">{t.tarawehTapToUndo}</span>
                                 )}
                             </button>
                         );

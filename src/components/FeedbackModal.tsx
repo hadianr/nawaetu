@@ -151,7 +151,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!message.trim()) {
-            toast.error("Deskripsi masukan tidak boleh kosong.");
+            toast.error(t.feedbackEmptyError);
             return;
         }
 
