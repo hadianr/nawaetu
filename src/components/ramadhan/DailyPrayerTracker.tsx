@@ -8,27 +8,28 @@
 
 import { useState, useMemo } from "react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
+import { useLocale } from "@/context/LocaleContext";
 import { useRamadhanDailyLog, type DailyLogEntry, type PrayerKey, type SunnahKey } from "@/hooks/useRamadhanDailyLog";
 import { MapPin, Home } from "@/components/ui/icons";
 import { AppIcon } from "@/components/ui/AppIcon";
 import type { AppIconName } from "@/lib/icon-names";
 
-const FARDHU_PRAYERS: { key: PrayerKey; label: string; fieldTrue: string; fieldFalse: string }[] = [
-    { key: "fajr",    label: "Subuh",   fieldTrue: "fajrAtMasjid",    fieldFalse: "fajrAtMasjid" },
-    { key: "dhuhr",   label: "Dzuhur",  fieldTrue: "dhuhrAtMasjid",   fieldFalse: "dhuhrAtMasjid" },
-    { key: "asr",     label: "Ashar",   fieldTrue: "asrAtMasjid",     fieldFalse: "asrAtMasjid" },
-    { key: "maghrib", label: "Maghrib", fieldTrue: "maghribAtMasjid", fieldFalse: "maghribAtMasjid" },
-    { key: "isha",    label: "Isya",    fieldTrue: "ishaAtMasjid",    fieldFalse: "ishaAtMasjid" },
+const FARDHU_PRAYERS: { key: PrayerKey; labelKey: "prayerFajr" | "prayerDhuhr" | "prayerAsr" | "prayerMaghrib" | "prayerIsha"; fieldTrue: string; fieldFalse: string }[] = [
+    { key: "fajr",    labelKey: "prayerFajr",   fieldTrue: "fajrAtMasjid",    fieldFalse: "fajrAtMasjid" },
+    { key: "dhuhr",   labelKey: "prayerDhuhr",  fieldTrue: "dhuhrAtMasjid",   fieldFalse: "dhuhrAtMasjid" },
+    { key: "asr",     labelKey: "prayerAsr",   fieldTrue: "asrAtMasjid",     fieldFalse: "asrAtMasjid" },
+    { key: "maghrib", labelKey: "prayerMaghrib", fieldTrue: "maghribAtMasjid", fieldFalse: "maghribAtMasjid" },
+    { key: "isha",    labelKey: "prayerIsha",    fieldTrue: "ishaAtMasjid",    fieldFalse: "ishaAtMasjid" },
 ];
 
 const SUNNAH_PRAYERS = [
-    { key: "dhuha",       label: "Dhuha",          icon: "sun" },
-    { key: "rawatibQabl", label: "Qabliyah",        icon: "landmark" },
-    { key: "rawatibBad",  label: "Ba'diyah",        icon: "landmark" },
-    { key: "witir",       label: "Witir",           icon: "moon" },
-    { key: "istikharah",  label: "Istikharah",      icon: "hands" },
-    { key: "hajat",       label: "Hajat",           icon: "hands" },
-    { key: "taubat",      label: "Taubat",          icon: "droplets" },
+    { key: "dhuha",       labelKey: "dailySunnahDhuha",          icon: "sun" },
+    { key: "rawatibQabl", labelKey: "dailySunnahQabliyah",        icon: "landmark" },
+    { key: "rawatibBad",  labelKey: "dailySunnahBadiyah",        icon: "landmark" },
+    { key: "witir",       labelKey: "dailySunnahWitir",           icon: "moon" },
+    { key: "istikharah",  labelKey: "dailySunnahIstikharah",      icon: "hands" },
+    { key: "hajat",       labelKey: "dailySunnahHajat",           icon: "hands" },
+    { key: "taubat",      labelKey: "dailySunnahTaubat",          icon: "droplets" },
 ] as const;
 
 const LOCATION_KEY_MAP: Record<PrayerKey, keyof Pick<DailyLogEntry, "fajrAtMasjid" | "dhuhrAtMasjid" | "asrAtMasjid" | "maghribAtMasjid" | "ishaAtMasjid">> = {
@@ -41,6 +42,7 @@ const LOCATION_KEY_MAP: Record<PrayerKey, keyof Pick<DailyLogEntry, "fajrAtMasji
 
 export default function DailyPrayerTracker() {
     const { data } = usePrayerTimesContext();
+    const { t } = useLocale();
     const hijriYear = parseInt(data?.hijriDate?.split(" ").pop()?.replace("H", "") ?? "1447", 10);
     const currentHijriDay = data?.hijriDay ?? 1;
 
@@ -89,17 +91,17 @@ export default function DailyPrayerTracker() {
                 <div className="flex items-center gap-2">
                     <AppIcon name="landmark" size="sm" tone="primary" />
                     <div>
-                        <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm leading-tight">Sholat Harian</h3>
-                        <p className="text-xs text-[rgb(var(--color-text-muted))]">Lokasi & Sunnah Ramadhan</p>
+                        <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm leading-tight">{t.dailyPrayerTitle}</h3>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.dailyPrayerSubtitle}</p>
                     </div>
                 </div>
                 {/* Stats pills */}
                 <div className="flex gap-1.5">
                     <div className="rounded-full px-2 py-0.5 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-xs text-[rgb(var(--color-text-muted))]">
-                        <span className="text-[rgb(var(--color-primary-strong))]">{totalMasjidDays}</span>x Masjid
+                        <span className="text-[rgb(var(--color-primary-strong))]">{totalMasjidDays}</span>x {t.dailyPrayerMasjid}
                     </div>
                     <div className="rounded-full px-2 py-0.5 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-xs text-[rgb(var(--color-text-muted))]">
-                        <span className="text-[rgb(var(--color-primary-strong))]">{totalSunnahDone}</span> Sunnah
+                        <span className="text-[rgb(var(--color-primary-strong))]">{totalSunnahDone}</span> {t.dailyPrayerSunnahCount}
                     </div>
                 </div>
             </div>
@@ -117,6 +119,9 @@ export default function DailyPrayerTracker() {
                         return (
                             <button
                                 key={day}
+                                type="button"
+                                aria-pressed={isActive}
+                                aria-label={String(t.dailyPrayerDay).replace("{day}", String(day))}
                                 onClick={() => setViewDay(day)}
                                 className={`flex flex-col items-center rounded-xl px-3 py-1.5 border transition-all ${
                                     isActive ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/40 scale-105" : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))]"
@@ -131,16 +136,17 @@ export default function DailyPrayerTracker() {
             </div>
 
             {isFuture ? (
-                <div className="px-4 pb-4 text-center text-xs text-[rgb(var(--color-text-muted))] py-6">Belum waktunya</div>
+                <div className="px-4 pb-4 text-center text-xs text-[rgb(var(--color-text-muted))] py-6">{t.dailyPrayerNotYet}</div>
             ) : (
                 <div className="px-3 pb-3 sm:px-4 sm:pb-4 space-y-3 border-t border-[rgb(var(--color-border))] pt-3">
                     <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] text-center mb-1">
-                        Hari ke-{viewDay}: lokasi sholat wajib
+                        {String(t.dailyPrayerDayLocation).replace("{day}", String(viewDay))}
                     </p>
 
                     {/* Fardhu Prayer Location Grid */}
                     <div className="grid grid-cols-5 gap-1">
-                        {FARDHU_PRAYERS.map(({ key, label }) => {
+                        {FARDHU_PRAYERS.map(({ key, labelKey }) => {
+                            const label = String(t[labelKey]);
                             const field = LOCATION_KEY_MAP[key] as keyof typeof dayData;
                             const val = dayData?.[field] as boolean | null | undefined;
                             return (
@@ -148,6 +154,9 @@ export default function DailyPrayerTracker() {
                             <span className="text-xs text-[rgb(var(--color-text-muted))] font-semibold">{label}</span>
                                     {/* Masjid button */}
                                     <button
+                                        type="button"
+                                        aria-pressed={val === true}
+                                        aria-label={String(t.dailyPrayerAtMasjid).replace("{prayer}", label)}
                                         onClick={() => handlePrayerLocation(key, true)}
                                         className={`w-full py-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-0.5 transition-all active:scale-95 ${
                                             val === true
@@ -155,10 +164,13 @@ export default function DailyPrayerTracker() {
                                                 : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"
                                         }`}
                                     >
-                                        <MapPin className="w-2.5 h-2.5" />
+                                        <MapPin className="w-2.5 h-2.5" aria-hidden="true" />
                                     </button>
                                     {/* Rumah button */}
                                     <button
+                                        type="button"
+                                        aria-pressed={val === false}
+                                        aria-label={String(t.dailyPrayerAtHome).replace("{prayer}", label)}
                                         onClick={() => handlePrayerLocation(key, false)}
                                         className={`w-full py-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-0.5 transition-all active:scale-95 ${
                                             val === false
@@ -166,7 +178,7 @@ export default function DailyPrayerTracker() {
                                                 : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"
                                         }`}
                                     >
-                                        <Home className="w-2.5 h-2.5" />
+                                        <Home className="w-2.5 h-2.5" aria-hidden="true" />
                                     </button>
                                 </div>
                             );
@@ -175,21 +187,23 @@ export default function DailyPrayerTracker() {
 
                     {/* Legend */}
                     <div className="flex items-center justify-center gap-4 text-xs text-[rgb(var(--color-text-muted))]">
-                        <span className="flex items-center gap-1"><MapPin className="w-2.5 h-2.5" /> Masjid</span>
-                        <span className="flex items-center gap-1"><Home className="w-2.5 h-2.5" /> Rumah</span>
+                        <span className="flex items-center gap-1"><MapPin className="w-2.5 h-2.5" aria-hidden="true" /> {t.dailyPrayerMasjid}</span>
+                        <span className="flex items-center gap-1"><Home className="w-2.5 h-2.5" aria-hidden="true" /> {t.dailyPrayerHome}</span>
                     </div>
 
                     {/* Sunnah Section */}
                     <div className="border-t border-[rgb(var(--color-border))] pt-3">
                         <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] text-center mb-2">
-                            SHOLAT SUNNAH
+                            {t.dailyPrayerSunnahTitle}
                         </p>
                         <div className="grid grid-cols-4 gap-1.5">
-                            {SUNNAH_PRAYERS.map(({ key, label, icon }) => {
+                            {SUNNAH_PRAYERS.map(({ key, labelKey, icon }) => {
                                 const isDone = Boolean(dayData?.[key as keyof typeof dayData]);
                                 return (
                                     <button
                                         key={key}
+                                        type="button"
+                                        aria-pressed={isDone}
                                         onClick={() => handleSunnah(key)}
                                         className={`flex flex-col items-center justify-center rounded-xl py-2 border transition-all active:scale-95 ${
                                             isDone
@@ -199,7 +213,7 @@ export default function DailyPrayerTracker() {
                                     >
                                         <AppIcon name={icon as AppIconName} size="sm" tone={isDone ? "success" : "muted"} />
                                         <span className={`text-xs font-semibold mt-1 ${isDone ? "text-[rgb(var(--color-success))]" : "text-[rgb(var(--color-text-muted))]"}`}>
-                                            {label}
+                                            {String(t[labelKey])}
                                         </span>
                                         {isDone && <AppIcon name="shield-check" size="xs" tone="success" className="mt-0.5" />}
                                     </button>

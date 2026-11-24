@@ -193,6 +193,26 @@ export const ramadhanID = {
     wrappedRendering: "Nge-Render...",
     wrappedSaved: "Tersimpan",
     wrappedFooterQuote: "\"Taqabbalallahu minna wa minkum\"",
+
+    // Daily prayer tracker
+    dailyPrayerTitle: "Sholat harian",
+    dailyPrayerSubtitle: "Lokasi & sunnah Ramadhan",
+    dailyPrayerMasjid: "Masjid",
+    dailyPrayerHome: "Rumah",
+    dailyPrayerSunnahCount: "Sunnah",
+    dailyPrayerNotYet: "Belum waktunya",
+    dailyPrayerDay: "Hari ke-{day}",
+    dailyPrayerDayLocation: "Hari ke-{day}: lokasi sholat wajib",
+    dailyPrayerAtMasjid: "{prayer} di masjid",
+    dailyPrayerAtHome: "{prayer} di rumah",
+    dailyPrayerSunnahTitle: "Sholat sunnah",
+    dailySunnahDhuha: "Dhuha",
+    dailySunnahQabliyah: "Qabliyah",
+    dailySunnahBadiyah: "Ba'diyah",
+    dailySunnahWitir: "Witir",
+    dailySunnahIstikharah: "Istikharah",
+    dailySunnahHajat: "Hajat",
+    dailySunnahTaubat: "Taubat",
 } as const;
 
 export type RamadhanTranslationKeys = keyof typeof ramadhanID;
