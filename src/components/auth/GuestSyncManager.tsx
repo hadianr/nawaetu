@@ -22,7 +22,7 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { isLocale } from "@/lib/validations/sync";
+import { isLocale, unwrapSetting } from "@/lib/validations/sync";
 import { toast } from "sonner";
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
@@ -218,7 +218,9 @@ async function hydrateFromServer(
             }
 
             if (data.profile.settings) {
-                const settings = data.profile.settings;
+                const settings = Object.fromEntries(
+                    Object.entries(data.profile.settings).map(([key, value]) => [key, unwrapSetting(value)])
+                ) as typeof data.profile.settings;
 
                 if (isValidSetting(settings.theme)) storage.set(STORAGE_KEYS.SETTINGS_THEME, settings.theme);
                 if (isLocale(settings.locale)) storage.set(STORAGE_KEYS.SETTINGS_LOCALE, settings.locale);
