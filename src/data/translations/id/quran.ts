@@ -111,4 +111,6 @@ export const quranID = {
     unitHourLong: "jam",
     unitMinuteLong: "menit",
     unitSecondLong: "detik",
+    quranSirahContextLabel: "Konteks sejarah (Sirah Nabawiyah)",
+    quranSirahContextRead: "Baca Sirah",
 };
