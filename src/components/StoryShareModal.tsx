@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X, Share2, Download, Copy, Check, Loader2 } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { THEMES, resolveThemeId, type ThemeId } from "@/context/ThemeContext";
@@ -33,6 +33,9 @@ interface StoryShareModalProps {
 export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
     const { t, locale } = useLocale();
     const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
+    // Callers unmount this on close, before Radix can return focus; remember the trigger during render.
+    const [returnFocusTo] = useState(() => (typeof document === "undefined" ? null : document.activeElement as HTMLElement | null));
+    useEffect(() => () => { returnFocusTo?.focus(); }, [returnFocusTo]);
     // Starts on the theme the user already has; the swatches offer the other app themes.
     const [themeId, setThemeId] = useState<ThemeId>(() => resolveThemeId(getStorageService().getOptional(STORAGE_KEYS.SETTINGS_THEME)));
     const palette = useMemo(() => {
@@ -218,8 +221,11 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
 
     if (!mounted) return null;
 
-    return createPortal(
-        <div className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[rgb(var(--color-text-strong))]/75 animate-in fade-in duration-150">
+    // Radix supplies the dialog role, focus trap, Escape and focus return that design.md requires.
+    return (
+        <DialogPrimitive.Root open onOpenChange={(open) => { if (!open) onClose(); }}>
+            <DialogPrimitive.Portal>
+                <DialogPrimitive.Content aria-describedby={undefined} className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[rgb(var(--color-text-strong))]/75 animate-in fade-in duration-150">
             {/* Backdrop click to close */}
             <div className="absolute inset-0" onClick={onClose} />
 
@@ -233,7 +239,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                 <div className="flex items-center justify-between border-b border-[rgb(var(--color-primary))]/15 px-4 py-2.5">
                     <div className="flex items-center gap-1.5">
                         <Share2 className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
-                        <h2 className="text-xs sm:text-sm font-bold tracking-tight">{t.storyShareTitle || "Bagikan ke Story"}</h2>
+                        <DialogPrimitive.Title className="text-xs sm:text-sm font-bold tracking-tight">{t.storyShareTitle || "Bagikan ke Story"}</DialogPrimitive.Title>
                     </div>
                     <button
                         type="button"
@@ -430,6 +436,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                             "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                         )}
                         title={t.storyShareDownloadTitle}
+                        aria-label={t.storyShareDownloadTitle}
                     >
                         <Download className="w-3.5 h-3.5" />
                     </button>
@@ -443,12 +450,14 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                             "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                         )}
                         title={t.storyShareCopyTitle}
+                        aria-label={t.storyShareCopyTitle}
                     >
                         {copied ? <Check className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" /> : <Copy className="w-3.5 h-3.5" />}
                     </button>
                 </div>
             </div>
-        </div>,
-        document.body
+                </DialogPrimitive.Content>
+            </DialogPrimitive.Portal>
+        </DialogPrimitive.Root>
     );
 }
