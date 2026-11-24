@@ -9,7 +9,7 @@
 import { useState, useMemo } from "react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useRamadhanDailyLog, type DailyLogEntry, type PrayerKey, type SunnahKey } from "@/hooks/useRamadhanDailyLog";
-import { MapPin, Home } from "lucide-react";
+import { MapPin, Home } from "@/components/ui/icons";
 import { AppIcon } from "@/components/ui/AppIcon";
 import type { AppIconName } from "@/lib/icon-names";
 

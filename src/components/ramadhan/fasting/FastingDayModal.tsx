@@ -15,7 +15,7 @@ import { useTranslations } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { FASTING_STATUS_META, MADZHAB_OPTIONS, getConsequence } from "@/data/fasting/fiqh-rules";
 import { AppIcon } from "@/components/ui/AppIcon";
-import { X } from "lucide-react";
+import { X } from "@/components/ui/icons";
 import type { FastingDayLog, FastingStatus, Madzhab } from "@/data/fasting/types";
 import { addHasanah } from "@/lib/habits/leveling";
 import { queueHasanahEvent } from "@/lib/sync/award";

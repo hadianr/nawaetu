@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AlertCircle, Check, Clock } from "lucide-react";
+import { AlertCircle, Check, Clock } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { Mission } from "@/data/missions";
 import type { TranslationTree } from "@/context/LocaleContext";

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Flame } from "lucide-react";
+import { Flame } from "@/components/ui/icons";
 import { getTranslationText, useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { useStreak } from "@/hooks/useStreak";
 import { sendGAEvent } from "@/lib/analytics/analytics";

@@ -20,7 +20,7 @@
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Check, Heart } from "lucide-react";
+import { Check, Heart } from "@/components/ui/icons";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 

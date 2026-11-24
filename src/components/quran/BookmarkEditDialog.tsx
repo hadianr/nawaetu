@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Bookmark, saveBookmark, removeBookmark } from "@/lib/quran/bookmark-storage";
-import { Trash2, Bookmark as BookmarkIcon } from "lucide-react";
+import { Trash2, Bookmark as BookmarkIcon } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";

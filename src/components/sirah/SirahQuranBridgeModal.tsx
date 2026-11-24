@@ -5,7 +5,7 @@
  * Copyright (C) 2026 Hadian Rahmat
  */
 
-import { X, BookOpen, ExternalLink } from "lucide-react";
+import { X, BookOpen, ExternalLink } from "@/components/ui/icons";
 import { surahNames } from "@/lib/quran/surahData";
 import type { SirahQuranRef } from "@/data/sirah";
 import { useLocale } from "@/context/LocaleContext";

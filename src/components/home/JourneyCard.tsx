@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { MotionConfig, motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { ChevronDown, ChevronRight, Flame, Info } from "lucide-react";
+import { ChevronDown, ChevronRight, Flame, Info } from "@/components/ui/icons";
 import JourneyAboutDialog from "@/components/home/JourneyAboutDialog";
 import JourneyFasting from "@/components/home/JourneyFasting";
 import JourneyMilestoneDialog from "@/components/home/JourneyMilestoneDialog";

@@ -24,7 +24,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Mission } from "@/data/missions";
 import { cn } from "@/lib/utils";
-import { Check, AlertCircle, X, ExternalLink, Clock } from "lucide-react";
+import { Check, AlertCircle, X, ExternalLink, Clock } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { getRulingLabel, type ValidationResult } from "@/lib/habits/mission-utils";
 import { resolveReferenceForMission } from "@/lib/hadith/reference-matcher";

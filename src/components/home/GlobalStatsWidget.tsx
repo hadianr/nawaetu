@@ -19,7 +19,7 @@
  */
 
 import { motion } from "framer-motion";
-import { Users, Globe2, HeartHandshake } from "lucide-react";
+import { Users, Globe2, HeartHandshake } from "@/components/ui/icons";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import { AppIcon } from "@/components/ui/AppIcon";

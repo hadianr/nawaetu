@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { BookOpen, X, Sun } from "lucide-react";
+import { BookOpen, X, Sun } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "@/context/LocaleContext";
 

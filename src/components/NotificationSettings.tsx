@@ -19,7 +19,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { Bell, BellOff, Flame, Loader2 } from "lucide-react";
+import { Bell, BellOff, Flame, Loader2 } from "@/components/ui/icons";
 import { useSession } from "next-auth/react";
 import { Switch } from "@/components/ui/switch";
 import { registerServiceWorkerAndGetToken } from "@/lib/notifications/fcm-init";

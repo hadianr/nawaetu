@@ -21,7 +21,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, Bookmark, ChevronRight, Clock, Play } from "lucide-react";
+import { Search, Bookmark, ChevronRight, Clock, Play } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";

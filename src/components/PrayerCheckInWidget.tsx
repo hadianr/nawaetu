@@ -19,7 +19,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef, useSyncExternalStore } from "react";
-import { Check, Sparkles, AlertCircle, Calendar } from "lucide-react";
+import { Check, Sparkles, AlertCircle, Calendar } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useMissions } from "@/hooks/useMissions";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";

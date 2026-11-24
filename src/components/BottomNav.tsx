@@ -22,7 +22,7 @@ import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import { useSyncExternalStore, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BookOpen, Scroll, Settings, Fingerprint } from "lucide-react";
+import { Home, BookOpen, Scroll, Settings, Fingerprint } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";

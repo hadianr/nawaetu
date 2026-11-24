@@ -19,7 +19,7 @@
  */
 
 import { useState, useEffect, useMemo } from "react";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw } from "@/components/ui/icons";
 import AnimatedCheck from "@/components/ui/AnimatedCheck";
 import LottieMoment from "@/components/ui/LottieMoment";
 import { Button } from "@/components/ui/button";

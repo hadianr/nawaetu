@@ -19,7 +19,7 @@
  */
 
 import { useCallback, useState, useEffect } from "react";
-import { ArrowLeft, MapPin, ChevronRight, Clock, Settings2, BarChart3, ChevronDown, Heart, Calendar } from "lucide-react";
+import { ArrowLeft, MapPin, ChevronRight, Clock, Settings2, BarChart3, ChevronDown, Heart, Calendar } from "@/components/ui/icons";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react"; // Import useSession

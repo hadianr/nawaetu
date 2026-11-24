@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useSession } from "next-auth/react";
-import { CalendarDays, Flame, LockKeyhole, Share2, Snowflake, Target, Trophy } from "lucide-react";
+import { CalendarDays, Flame, LockKeyhole, Share2, Snowflake, Target, Trophy } from "@/components/ui/icons";
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { useStreak } from "@/hooks/useStreak";

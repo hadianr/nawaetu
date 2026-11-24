@@ -18,7 +18,7 @@
 
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { CalendarDays, Flame, Trophy, Medal, Check } from "lucide-react";
+import { CalendarDays, Flame, Trophy, Medal, Check } from "@/components/ui/icons";
 import { dhikrMilestones } from "@/data/dhikrMilestones";
 import { DhikrPreset } from "./types";
 import type { TranslationTree } from "@/context/LocaleContext";

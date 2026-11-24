@@ -22,7 +22,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw } from "@/components/ui/icons";
 
 interface UpdateCheckerProps {
     currentVersion: string;

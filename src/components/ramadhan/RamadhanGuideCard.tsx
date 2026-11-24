@@ -19,7 +19,7 @@
  */
 
 import { useState } from "react";
-import { BookOpen, HelpCircle } from "lucide-react";
+import { BookOpen, HelpCircle } from "@/components/ui/icons";
 import { AppIcon } from "@/components/ui/AppIcon";
 import RulingsModal from "./RulingsModal";
 import FAQModal from "./FAQModal";

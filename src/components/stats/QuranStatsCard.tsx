@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Clock, Flame } from 'lucide-react';
+import { BookOpen, Clock, Flame } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { AppIcon } from '@/components/ui/AppIcon';
 import { useTranslations } from '@/context/LocaleContext';

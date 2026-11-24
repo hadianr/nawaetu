@@ -7,7 +7,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Search, CheckCircle2, ChevronRight } from "lucide-react";
+import { ArrowLeft, Search, CheckCircle2, ChevronRight } from "@/components/ui/icons";
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS, type SirahEra } from "@/data/sirah";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";

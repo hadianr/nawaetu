@@ -21,7 +21,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
 import { IntentionDalil, getRandomDalil } from "@/data/intention-dalils";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "@/components/ui/icons";
 import { AppIcon } from "@/components/ui/AppIcon";
 
 interface IntentionPromptProps {

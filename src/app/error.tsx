@@ -20,7 +20,7 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Database, AlertTriangle, RefreshCw, Home } from "lucide-react";
+import { Database, AlertTriangle, RefreshCw, Home } from "@/components/ui/icons";
 import Link from "next/link";
 import { captureClientException } from "@/instrumentation-client";
 import { useOptionalLocale } from "@/context/LocaleContext";

@@ -20,7 +20,7 @@
 
 import { useEffect, useState } from "react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import { BookOpen, ChevronRight } from "lucide-react";
+import { BookOpen, ChevronRight } from "@/components/ui/icons";
 import {
     LAILATUL_QADR_EVIDENCE,
     LAST_TEN_NIGHTS,

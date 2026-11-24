@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Palette, Check } from "lucide-react";
+import { Palette, Check } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { THEMES, ThemeId } from "@/context/ThemeContext";
 import type { TranslationTree } from "@/context/LocaleContext";

@@ -6,7 +6,7 @@
  */
 
 import { type SVGProps, useState } from "react";
-import { X, Calculator, Plus, Trash2, HeartHandshake, Info } from "lucide-react";
+import { X, Calculator, Plus, Trash2, HeartHandshake, Info } from "@/components/ui/icons";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useLocale } from "@/context/LocaleContext";
 import { zakatIntentions, ZakatIntention } from "@/data/ramadhan/zakat-intentions";

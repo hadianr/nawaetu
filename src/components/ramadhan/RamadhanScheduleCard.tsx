@@ -24,7 +24,7 @@ import IntentionCard from "./IntentionCard";
 import { FASTING_SCHEDULE_EVIDENCE, IFTAR_PRAYER, IFTAR_PRAYER_2, IFTAR_PRAYER_3, SUHOOR_PRAYER } from "@/data/ramadhan";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays } from "@/components/ui/icons";
 import { useTranslations } from "@/context/LocaleContext";
 import { AppIcon } from "@/components/ui/AppIcon";
 

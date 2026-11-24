@@ -21,7 +21,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { CalendarDays, Clock, MapPin, Navigation } from "lucide-react";
+import { CalendarDays, Clock, MapPin, Navigation } from "@/components/ui/icons";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { cn } from "@/lib/utils";
 import PrayerTimeCard from "@/components/PrayerTimeCard";

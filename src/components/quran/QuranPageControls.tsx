@@ -20,7 +20,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, CornerDownRight, Hash } from "lucide-react";
+import { ArrowLeft, ArrowRight, CornerDownRight, Hash } from "@/components/ui/icons";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";

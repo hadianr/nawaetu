@@ -19,7 +19,7 @@
  */
 
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
-import { Edit2 } from "lucide-react";
+import { Edit2 } from "@/components/ui/icons";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Star, Flame, Target, Info, Gift, Sparkles } from "lucide-react";
+import { ChevronLeft, Star, Flame, Target, Info, Gift, Sparkles } from "@/components/ui/icons";
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";

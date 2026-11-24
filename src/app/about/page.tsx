@@ -18,7 +18,7 @@
 
 import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import Link from "next/link";
-import { Heart, Trophy } from "lucide-react";
+import { Heart, Trophy } from "@/components/ui/icons";
 import RewardsSupportCard from "@/components/RewardsSupportCard";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { pageMetadata } from "@/lib/seo";

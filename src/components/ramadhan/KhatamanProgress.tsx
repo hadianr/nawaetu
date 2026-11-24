@@ -25,7 +25,7 @@ import { QURAN_RECITATION_EVIDENCE, QURAN_RECITATION_INTENTION } from "@/data/ra
 import IntentionCard from "./IntentionCard";
 import DalilBadge from "./DalilBadge";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "@/components/ui/icons";
 import { useTranslations, type TranslationTree } from "@/context/LocaleContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { queueHasanahEvent } from "@/lib/sync/award";

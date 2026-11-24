@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Settings, AlignJustify, BookOpen, Type, Loader2, Headphones } from "lucide-react";
+import { Settings, AlignJustify, BookOpen, Type, Loader2, Headphones } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { QURAN_RECITER_OPTIONS } from "@/data/settings-data";
 

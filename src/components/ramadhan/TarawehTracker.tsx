@@ -17,7 +17,7 @@ import type { TranslationTree } from "@/context/LocaleContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { queueHasanahEvent } from "@/lib/sync/award";
 import { toast } from "sonner";
-import { MapPin, Home, X } from "lucide-react";
+import { MapPin, Home, X } from "@/components/ui/icons";
 import { useTarawehTracker, type TarawehChoice, type TarawehLocation } from "@/hooks/useTarawehTracker";
 import { AppIcon } from "@/components/ui/AppIcon";
 

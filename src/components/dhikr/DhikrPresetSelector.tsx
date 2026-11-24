@@ -19,7 +19,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Settings2, ChevronDown } from "lucide-react";
+import { Settings2, ChevronDown } from "@/components/ui/icons";
 import { dhikrCategories, dhikrSequences } from "@/data/dhikrLibrary";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { DhikrPreset } from "./types";

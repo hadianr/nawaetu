@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { User, MessageCircle } from "lucide-react";
+import { User, MessageCircle } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { ChatMessage } from "@/lib/chat-storage";
 import { parseAIResponse, formatMarkdown } from "@/lib/message-parser";

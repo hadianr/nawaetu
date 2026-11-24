@@ -17,7 +17,7 @@
  */
 
 import { toArabicNumber } from "@/lib/quran/quran-utils";
-import { Play, Pause, ChevronLeft, ChevronRight, Repeat, Infinity as InfinityIcon, Target, X } from "lucide-react";
+import { Play, Pause, ChevronLeft, ChevronRight, Repeat, Infinity as InfinityIcon, Target, X } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";

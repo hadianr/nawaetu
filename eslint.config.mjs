@@ -5,6 +5,16 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    // design.md: icons come from AppIcon or the reviewed glyph list, never straight from Lucide.
+    files: ["src/**/*.{ts,tsx}"],
+    ignores: ["src/components/ui/AppIcon.tsx", "src/components/ui/icons.ts"],
+    rules: {
+      "no-restricted-imports": ["error", {
+        paths: [{ name: "lucide-react", message: "Import icons from @/components/ui/AppIcon or @/components/ui/icons." }],
+      }],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

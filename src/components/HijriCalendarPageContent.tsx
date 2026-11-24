@@ -13,7 +13,7 @@ import {
     MapPin,
     Moon,
     Settings2,
-} from "lucide-react";
+} from "@/components/ui/icons";
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { getHijriEvents, type HijriEventId } from "@/data/hijri-events";

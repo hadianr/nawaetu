@@ -29,7 +29,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
-import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, X, ExternalLink, Clock } from "lucide-react";
+import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, X, ExternalLink, Clock } from "@/components/ui/icons";
 import { Mission } from "@/data/missions";
 import { getLocalizedMissionContent } from "@/data/missions";
 import { cn } from "@/lib/utils";

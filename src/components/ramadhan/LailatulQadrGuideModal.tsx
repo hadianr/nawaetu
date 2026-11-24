@@ -8,7 +8,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronDown, Moon, X } from "lucide-react";
+import { ChevronDown, Moon, X } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { LAILATUL_QADR_GUIDE_SECTIONS, GuideItem } from "@/data/ramadhan/lailatul-qadr-guide";

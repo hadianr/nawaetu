@@ -21,7 +21,7 @@
 import { useEffect, useState, useRef, useCallback, useSyncExternalStore, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { calculateQiblaDirection, calculateDistanceToKaaba } from "@/lib/qibla";
-import { Compass } from "lucide-react";
+import { Compass } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import CompassDisplay from "./QiblaCompassDisplay";

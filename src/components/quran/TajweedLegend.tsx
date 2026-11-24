@@ -17,7 +17,7 @@
  */
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { ChevronDown, ChevronUp, Info } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/context/LocaleContext';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
