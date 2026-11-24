@@ -129,7 +129,7 @@ const COPY: Record<AboutLang, {
     },
 };
 
-const card = "rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-5";
+const card = "rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-5 shadow-[var(--shadow-card)]";
 
 function FaqList({ items }: { items: { q: string; a: string }[] }) {
     return (
@@ -178,7 +178,7 @@ export function AboutContent({ lang }: { lang: AboutLang }) {
                 </div>
 
                 {/* What is Nawaetu */}
-                <section className="bg-[rgb(var(--color-surface))]/70 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
+                <section className="bg-[rgb(var(--color-surface))]/70 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                     <h2 className="text-2xl sm:text-3xl font-bold mb-4 flex items-center gap-2">
                         <Heart className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
                         {c.whatTitle}
@@ -205,7 +205,7 @@ export function AboutContent({ lang }: { lang: AboutLang }) {
                 </section>
 
                 {/* Gamification */}
-                <section className="bg-[rgb(var(--color-primary))]/10 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
+                <section className="bg-[rgb(var(--color-primary))]/10 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                     <div className="flex items-start gap-4 mb-4">
                         <div className="p-3 bg-[rgb(var(--color-primary))]/30 rounded-lg">
                             <Trophy className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
@@ -227,7 +227,7 @@ export function AboutContent({ lang }: { lang: AboutLang }) {
                 </section>
 
                 {/* Why Choose Nawaetu */}
-                <section className="bg-[rgb(var(--color-surface))]/70 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
+                <section className="bg-[rgb(var(--color-surface))]/70 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                     <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">{c.whyTitle}</h2>
                     <div className="space-y-4">
                         {c.why.map((w) => (

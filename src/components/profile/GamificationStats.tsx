@@ -42,7 +42,7 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
         <div className="flex flex-col gap-3 mb-6">
             {/* Level Progress */}
             <div className={cn(
-                "rounded-2xl p-4 transition-all border",
+                "rounded-2xl p-4 transition-all border shadow-[var(--shadow-card)]",
                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
             )}>
                 <div className="flex justify-between items-end mb-2">
@@ -89,7 +89,7 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
 
                 {showLevelInfo ? (
                     <div className={cn(
-                        "mt-3 p-4 rounded-xl border space-y-3 animate-in fade-in slide-in-from-top-1",
+                        "mt-3 p-4 rounded-xl border space-y-3 animate-in fade-in slide-in-from-top-1 shadow-[var(--shadow-card)]",
                         "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))]"
                     )}>
                         <div className="font-bold mb-1 text-xs text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelName} Tingkatan:</div>
@@ -139,7 +139,7 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
             <Link
                 href="/rewards"
                 className={cn(
-                    "flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold transition-colors",
+                    "flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold transition-colors shadow-[var(--shadow-card)]",
                     "border-[rgb(var(--color-accent))]/30 bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] hover:bg-[rgb(var(--color-accent))]/20"
                 )}
             >
@@ -149,7 +149,7 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
 
             {/* Streak Row (Full Width) */}
             <div className={cn(
-                "rounded-2xl p-4 flex items-center gap-4 border transition-all",
+                "rounded-2xl p-4 flex items-center gap-4 border transition-all shadow-[var(--shadow-card)]",
                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
             )}>
                 <div className={cn(

@@ -211,7 +211,7 @@ export default function BookmarksPage() {
 
                                         {bookmark.note ? (
                                             <div className={cn(
-                                                "relative rounded-2xl p-4 border transition-all",
+                                                "relative rounded-2xl p-4 border transition-all shadow-[var(--shadow-card)]",
                                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                                             )}>
                                                 <FileText className={cn(

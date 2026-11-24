@@ -57,7 +57,7 @@ export function QuranNiyyahScreen({ onConfirm, onCancel }: QuranFocusOverlayProp
 
             {/* Niyyah text */}
             <div className={cn(
-                "mt-6 mb-8 rounded-2xl px-6 py-4 border text-center max-w-xs",
+                "mt-6 mb-8 rounded-2xl px-6 py-4 border text-center max-w-xs shadow-[var(--shadow-card)]",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
             )}>
                 <p className="text-xs font-medium leading-relaxed text-[rgb(var(--color-text-muted))]">
@@ -183,7 +183,7 @@ export function QuranFocusExitConfirm({ sessionSeconds, onConfirm, onCancel }: {
                     <button
                         onClick={onCancel}
                         className={cn(
-                            "flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors",
+                            "flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"
                         )}
                     >

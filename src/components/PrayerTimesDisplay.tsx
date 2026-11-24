@@ -35,7 +35,7 @@ import { useLocale } from "@/context/LocaleContext";
 
 const PrayerCheckInWidget = dynamic(() => import("@/components/PrayerCheckInWidget"), {
     ssr: false,
-    loading: () => <div className="h-[88px] w-full animate-pulse rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]" />,
+    loading: () => <div className="h-[88px] w-full animate-pulse rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]" />,
 });
 
 export default function PrayerTimesDisplay() {
@@ -113,7 +113,7 @@ export default function PrayerTimesDisplay() {
                         "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/30 shadow-[var(--shadow-card)] ring-1 ring-[rgb(var(--color-warning))]/20"
                     )}>
                         <div className={cn(
-                            "w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors shadow-sm",
+                            "w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-warning))]/15 text-[rgb(var(--color-warning))]"
                         )}>
                             <Navigation className="w-5 h-5 fill-current" />
@@ -133,7 +133,7 @@ export default function PrayerTimesDisplay() {
 
                 {nextPrayer && nextPrayerTime && (
                     <div className={cn(
-                        "flex items-center justify-between gap-4 rounded-2xl border px-4 py-3",
+                        "flex items-center justify-between gap-4 rounded-2xl border px-4 py-3 shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10",
                     )}>
                         <div className="min-w-0">
@@ -164,7 +164,7 @@ export default function PrayerTimesDisplay() {
             <PrayerCheckInWidget />
 
             <div className={cn(
-                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5",
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5 shadow-[var(--shadow-card)]",
                 "border-[rgb(var(--color-border))]",
             )}>
                 <span className="text-xs font-bold text-[rgb(var(--color-text-muted))]">
@@ -174,7 +174,7 @@ export default function PrayerTimesDisplay() {
                     <Link
                         href="/hijri-calendar"
                         className={cn(
-                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
@@ -184,7 +184,7 @@ export default function PrayerTimesDisplay() {
                     <Link
                         href="/qibla"
                         className={cn(
-                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
@@ -195,7 +195,7 @@ export default function PrayerTimesDisplay() {
                         onClick={() => setShowMosqueFinder(true)}
                         aria-label={t.homeFindMosqueAria}
                         className={cn(
-                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
@@ -207,7 +207,7 @@ export default function PrayerTimesDisplay() {
                         prefetch={false}
                         aria-label={`${t.homeAiTitle}: ${t.homeAiSubtitle}`}
                         className={cn(
-                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >

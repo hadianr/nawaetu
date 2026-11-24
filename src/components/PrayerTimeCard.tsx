@@ -72,7 +72,7 @@ export default function PrayerTimeCard({
                         return (
                             <div
                                 key={key}
-                                className="flex items-center justify-between rounded-xl px-3 py-1.5 border border-dashed border-[rgb(var(--color-border))]"
+                                className="flex items-center justify-between rounded-xl px-3 py-1.5 border border-dashed border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
                             >
                                 <span className="text-xs font-medium flex items-center gap-1.5 text-[rgb(var(--color-text-muted))]">
                                     <AppIcon name="moon" size="xs" tone="muted" />

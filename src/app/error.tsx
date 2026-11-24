@@ -69,11 +69,11 @@ export default function Error({
         <div className="flex min-h-screen flex-col items-center justify-center bg-[rgb(var(--color-background))] px-6 text-center">
             <div className="relative mb-8">
                 {isDatabaseError ? (
-                    <div className="relative rounded-2xl bg-[rgb(var(--color-danger))]/10 p-6 border border-[rgb(var(--color-danger))]/20">
+                    <div className="relative rounded-2xl bg-[rgb(var(--color-danger))]/10 p-6 border border-[rgb(var(--color-danger))]/20 shadow-[var(--shadow-card)]">
                         <Database className="h-16 w-16 text-[rgb(var(--color-danger))]" />
                     </div>
                 ) : (
-                    <div className="relative rounded-2xl bg-[rgb(var(--color-warning))]/10 p-6 border border-[rgb(var(--color-warning))]/20">
+                    <div className="relative rounded-2xl bg-[rgb(var(--color-warning))]/10 p-6 border border-[rgb(var(--color-warning))]/20 shadow-[var(--shadow-card)]">
                         <AlertTriangle className="h-16 w-16 text-[rgb(var(--color-warning))]" />
                     </div>
                 )}
@@ -99,7 +99,7 @@ export default function Error({
                 <Link href="/" className="w-full">
                     <Button
                         variant="ghost"
-                        className="h-12 w-full rounded-2xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))]"
+                        className="h-12 w-full rounded-2xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]"
                     >
                         <Home className="mr-2 h-4 w-4" />
                         {copy.home}

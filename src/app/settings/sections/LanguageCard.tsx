@@ -35,7 +35,7 @@ interface LanguageCardProps {
 
 export default function LanguageCard({ t, locale, handleLocaleChange }: LanguageCardProps) {
     return (
-        <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4">
+        <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4 shadow-[var(--shadow-card)]">
             <div className="flex items-center gap-2">
                 <Globe className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                 <span className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.languageTitle}</span>

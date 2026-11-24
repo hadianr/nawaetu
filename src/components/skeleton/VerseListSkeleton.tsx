@@ -21,7 +21,7 @@ export default function VerseListSkeleton() {
     return (
         <div className="w-full max-w-4xl space-y-8 pb-24">
             {/* Header Skeleton */}
-            <div className="flex items-center justify-between rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-6 py-4">
+            <div className="flex items-center justify-between rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-6 py-4 shadow-[var(--shadow-card)]">
                 <div className="flex items-center gap-4">
                     <div className="h-10 w-10 rounded-full bg-[rgb(var(--color-border))]/20 animate-pulse" />
                     <div className="space-y-2">

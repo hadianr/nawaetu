@@ -46,7 +46,7 @@ export function SirahQuranBridgeModal({ refData, onClose }: SirahQuranBridgeModa
                 </div>
 
                 <div className="space-y-4 py-2">
-                    <div className="p-4 rounded-xl text-sm leading-relaxed border bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-text))]">
+                    <div className="p-4 rounded-xl text-sm leading-relaxed border bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-text))] shadow-[var(--shadow-card)]">
                         <p className="font-semibold text-xs mb-1 text-[rgb(var(--color-primary-strong))] flex items-center gap-1.5"><AppIcon name="book" size="xs" tone="primary" /> {t.sirahQuranContextTitle}</p>
                         <p className="text-xs">{refData.label || t.sirahQuranContextDefault}</p>
                     </div>

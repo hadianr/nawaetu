@@ -122,7 +122,7 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
                             key={option.id}
                             onClick={() => handleSearch(option.query)}
                             className={cn(
-                                `flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border border-[rgb(var(--color-border))] ${option.color} transition-all group hover:bg-[rgb(var(--color-surface-subtle))] hover:scale-[1.02] active:scale-[0.98]`
+                                `flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border border-[rgb(var(--color-border))] ${option.color} transition-all group hover:bg-[rgb(var(--color-surface-subtle))] hover:scale-[1.02] active:scale-[0.98] shadow-[var(--shadow-card)]`
                             )}
                         >
                             <div className={cn(

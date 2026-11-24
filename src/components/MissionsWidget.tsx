@@ -284,7 +284,7 @@ export default function MissionsWidget() {
                 >
                     <button
                         className={cn(
-                            "w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium transition-all",
+                            "w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium transition-all shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 active:scale-95 border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:text-[rgb(var(--color-primary-strong))]"
                         )}
                         onClick={() => setShowMissionModal(true)}

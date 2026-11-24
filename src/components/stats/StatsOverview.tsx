@@ -81,7 +81,7 @@ export function StatsOverview({
 
                         {/* Next Milestone - Inline & Clearer */}
                         {nextRank && (
-                            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-xs bg-[rgb(var(--color-surface-subtle))] rounded-xl px-2.5 py-1 sm:py-1.5 mt-1 border border-[rgb(var(--color-border))]">
+                            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-xs bg-[rgb(var(--color-surface-subtle))] rounded-xl px-2.5 py-1 sm:py-1.5 mt-1 border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                                 <div className="flex min-w-0 items-center gap-1.5">
                                     <span className="text-xs font-bold text-[rgb(var(--color-text-muted))] tracking-tighter shrink-0 hidden xs:inline">
                                         {t.stats.level.nextRankGoal}
@@ -111,7 +111,7 @@ export function StatsOverview({
 
             <Link
                 href="/rewards"
-                className="flex items-center justify-center gap-2 rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-4 py-3 text-xs font-bold text-[rgb(var(--color-primary-strong))] transition-colors hover:bg-[rgb(var(--color-primary))]/20"
+                className="flex items-center justify-center gap-2 rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-4 py-3 text-xs font-bold text-[rgb(var(--color-primary-strong))] transition-colors hover:bg-[rgb(var(--color-primary))]/20 shadow-[var(--shadow-card)]"
             >
                 <Gift className="h-4 w-4" />
                 {t.rewards.cta}
@@ -157,7 +157,7 @@ export function StatsOverview({
                         key={i}
                         onClick={() => stat.id === 'streak' ? onStreakClick() : setActiveInsight(stat.id)}
                         className={cn(
-                            "text-left relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br to-transparent p-4 active:scale-[0.98] transition-all group",
+                            "text-left relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br to-transparent p-4 active:scale-[0.98] transition-all group shadow-[var(--shadow-card)]",
                             stat.gradient
                         )}
                     >

@@ -28,7 +28,7 @@ export default function SurahListSkeleton() {
                 {[...Array(12)].map((_, i) => (
                     <div
                         key={i}
-                        className="flex h-24 w-full items-center justify-between rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-4"
+                        className="flex h-24 w-full items-center justify-between rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-4 shadow-[var(--shadow-card)]"
                     >
                         <div className="flex items-center gap-4">
                             <div className="h-10 w-10 shrink-0 rounded-full bg-[rgb(var(--color-border))]/20 animate-pulse" />

@@ -41,7 +41,7 @@ export default function ThemeCard({ t, currentTheme, handleThemeSelect }: ThemeC
     const chosen = themes.find((theme) => theme.id === currentTheme);
 
     return (
-        <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-2">
+        <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-2 shadow-[var(--shadow-card)]">
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-[rgb(var(--color-primary-strong))]">
                     <Palette className="w-4 h-4" />

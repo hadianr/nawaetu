@@ -291,7 +291,7 @@ export default function PrayerCheckInWidget() {
     if (!mounted || prayerDataLoading) {
         return (
             <div className={cn(
-                "w-full h-[88px] animate-pulse rounded-2xl border",
+                "w-full h-[88px] animate-pulse rounded-2xl border shadow-[var(--shadow-card)]",
                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
             )} />
         );
@@ -386,7 +386,7 @@ export default function PrayerCheckInWidget() {
                                 onClick={() => handlePrayerTap(prayer)}
                                 disabled={isLocked}
                                 className={cn(
-                                    "flex-1 flex flex-col items-center gap-1 py-1.5 rounded-xl border transition-all duration-200 relative overflow-hidden",
+                                    "flex-1 flex flex-col items-center gap-1 py-1.5 rounded-xl border transition-all duration-200 relative overflow-hidden shadow-[var(--shadow-card)]",
                                     done
                                         ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 cursor-default"
                                         : isLocked
@@ -598,7 +598,7 @@ export default function PrayerCheckInWidget() {
 
                         <div className="flex items-center gap-3 mb-5">
                             <div className={cn(
-                                "w-10 h-10 rounded-xl border flex items-center justify-center text-xl transition-colors",
+                                "w-10 h-10 rounded-xl border flex items-center justify-center text-xl transition-colors shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                             )}>
                                 <AppIcon name={sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? "landmark" : sheet.prayer.icon} size="lg" tone="primary" />
@@ -648,7 +648,7 @@ export default function PrayerCheckInWidget() {
                                             setSheet(null);
                                         }}
                                         className={cn(
-                                            "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border group",
+                                            "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border group shadow-[var(--shadow-card)]",
                                             "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10"
                                         )}
                                     >
@@ -678,7 +678,7 @@ export default function PrayerCheckInWidget() {
                         </div>
 
                         <div className={cn(
-                            "mt-4 mb-6 p-4 rounded-xl border relative",
+                            "mt-4 mb-6 p-4 rounded-xl border relative shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                         )}>
                             <p className={cn(

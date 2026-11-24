@@ -81,7 +81,7 @@ export function ChatInputArea({
                     <form
                         onSubmit={(e) => { e.preventDefault(); handleSend(); }}
                         className={cn(
-                            "flex items-end gap-2 border rounded-2xl p-1.5 pl-4 transition-all",
+                            "flex items-end gap-2 border rounded-2xl p-1.5 pl-4 transition-all shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] focus-within:border-[rgb(var(--color-primary))]/50 focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/50"
                         )}
                     >

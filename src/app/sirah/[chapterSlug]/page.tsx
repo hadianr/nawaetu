@@ -72,7 +72,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
             {/* Chapter Hero Info */}
             <div
                 className={cn(
-                    "p-6 sm:p-8 rounded-2xl border space-y-3 shadow-sm",
+                    "p-6 sm:p-8 rounded-2xl border space-y-3 shadow-[var(--shadow-card)]",
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
                 )}
             >
@@ -125,7 +125,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                 key={sec.id}
                                 href={`/sirah/${chapterSlug}/${sec.id}`}
                                 className={cn(
-                                    "p-4 rounded-2xl border transition-all hover:scale-[1.005] active:scale-[0.995] flex items-center justify-between gap-3 group",
+                                    "p-4 rounded-2xl border transition-all hover:scale-[1.005] active:scale-[0.995] flex items-center justify-between gap-3 group shadow-[var(--shadow-card)]",
                                     isDone
                                         ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-text))]"
                                         : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5 text-[rgb(var(--color-text))]"

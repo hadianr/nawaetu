@@ -83,7 +83,7 @@ export default function RewardsPage() {
                     </p>
                 </header>
 
-                <section className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-6">
+                <section className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-6 shadow-[var(--shadow-card)]">
                     <div className="flex items-start gap-3">
                         <Gift className="mt-1 h-5 w-5 shrink-0 text-[rgb(var(--color-warning))]" />
                         <div className="space-y-2 text-sm leading-relaxed">
@@ -98,7 +98,7 @@ export default function RewardsPage() {
                     </div>
                 </section>
 
-                <section className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-6">
+                <section className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-6 shadow-[var(--shadow-card)]">
                     <div className="mb-5 flex items-start gap-3">
                         <Heart className="mt-1 h-5 w-5 shrink-0 text-[rgb(var(--color-accent-strong))]" />
                         <div>
@@ -109,7 +109,7 @@ export default function RewardsPage() {
                         </div>
                     </div>
 
-                    {!isAuthenticated && <div className="mb-4 rounded-xl border border-[rgb(var(--color-warning))]/25 bg-[rgb(var(--color-warning))]/10 p-4 text-sm text-[rgb(var(--color-warning))]">
+                    {!isAuthenticated && <div className="mb-4 rounded-xl border border-[rgb(var(--color-warning))]/25 bg-[rgb(var(--color-warning))]/10 p-4 text-sm text-[rgb(var(--color-warning))] shadow-[var(--shadow-card)]">
                         <p>{copy.loginRequired}</p>
                         <button type="button" onClick={() => void signInWithGoogle()} className="mt-3 rounded-lg bg-[rgb(var(--color-primary))] px-4 py-2 font-bold text-[rgb(var(--color-primary-foreground))]">{copy.loginButton}</button>
                     </div>}
@@ -131,7 +131,7 @@ export default function RewardsPage() {
                     </fieldset>
                 </section>
 
-                <a href={`mailto:${SUPPORT_EMAIL}`} className="flex items-center justify-center gap-2 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] px-4 py-3 text-sm font-semibold text-[rgb(var(--color-text))]">
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="flex items-center justify-center gap-2 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] px-4 py-3 text-sm font-semibold text-[rgb(var(--color-text))] shadow-[var(--shadow-card)]">
                     <Mail className="h-4 w-4" /> {copy.directContact}
                 </a>
             </div>

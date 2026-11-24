@@ -46,7 +46,7 @@ export function AuthActions({
             {/* 4. Auth Call to Action (If Guest) */}
             {!isAuthenticated && (
                 <div className={cn(
-                    "mb-6 border rounded-xl p-4 text-center transition-all",
+                    "mb-6 border rounded-xl p-4 text-center transition-all shadow-[var(--shadow-card)]",
                     "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))]"
                 )}>
                     <div className={cn(
@@ -96,7 +96,7 @@ export function AuthActions({
                 {isAuthenticated && (
                     !showLogoutConfirm ? (
                         <button onClick={() => setShowLogoutConfirm(true)} className={cn(
-                            "w-full flex items-center justify-between p-3 rounded-xl transition-colors group mt-2 border border-transparent",
+                            "w-full flex items-center justify-between p-3 rounded-xl transition-colors group mt-2 border border-transparent shadow-[var(--shadow-card)]",
                             "hover:bg-[rgb(var(--color-danger))]/10 hover:border-[rgb(var(--color-danger))]/20"
                         )}>
                             <div className="flex items-center gap-3">
@@ -108,7 +108,7 @@ export function AuthActions({
                         </button>
                     ) : (
                         <div className={cn(
-                            "mt-2 p-3 rounded-xl animate-in fade-in slide-in-from-top-2 duration-200 border",
+                            "mt-2 p-3 rounded-xl animate-in fade-in slide-in-from-top-2 duration-200 border shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-danger))]/10 border-[rgb(var(--color-danger))]/20"
                         )}>
                             <p className={cn(
@@ -119,7 +119,7 @@ export function AuthActions({
                                 <button
                                     onClick={handleLogout}
                                     className={cn(
-                                        "flex-1 h-8 rounded-lg text-xs font-bold transition-all active:scale-[0.98] shadow-sm",
+                                        "flex-1 h-8 rounded-lg text-xs font-bold transition-all active:scale-[0.98] shadow-[var(--shadow-card)]",
                                         "bg-[rgb(var(--color-danger))]/20 hover:bg-[rgb(var(--color-danger))]/30 text-[rgb(var(--color-danger))] border border-[rgb(var(--color-danger))]/20 shadow-none"
                                     )}
                                 >

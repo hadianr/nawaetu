@@ -93,7 +93,7 @@ export default function RulingsModal({ open, onOpenChange }: RulingsModalProps) 
                                 {currentRulings.map((item, index) => (
                                     <div
                                         key={item.id}
-                                        className="border border-[rgb(var(--color-border))] rounded-xl bg-[rgb(var(--color-surface-subtle))] overflow-hidden"
+                                        className="border border-[rgb(var(--color-border))] rounded-xl bg-[rgb(var(--color-surface-subtle))] overflow-hidden shadow-[var(--shadow-card)]"
                                     >
                                         <button
                                             onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}

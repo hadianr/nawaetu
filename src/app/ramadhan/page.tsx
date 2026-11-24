@@ -68,7 +68,7 @@ const FastingTrackerWidget = dynamic(() => import("@/components/ramadhan/fasting
 
 const RamadhanWrappedCard = dynamic(() => import("@/components/ramadhan/RamadhanWrappedCard"), {
     ssr: false,
-    loading: () => <div className="h-80 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse border border-[rgb(var(--color-border))]" />,
+    loading: () => <div className="h-80 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]" />,
 });
 
 export default function RamadhanPage() {

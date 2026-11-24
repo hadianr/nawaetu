@@ -188,7 +188,7 @@ export default function FastingDayModal({
 
                     {/* Madzhab Selector (conditional) */}
                     {requiresMadzhab && (
-                        <div className="rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 p-4 space-y-3">
+                        <div className="rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 p-4 space-y-3 shadow-[var(--shadow-card)]">
                             <div>
                                 <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] mb-1">{t.fastingMadzhabTitle}</p>
                                 <p className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed">{t.fastingMadzhabSubtitle}</p>
@@ -220,7 +220,7 @@ export default function FastingDayModal({
                     )}
 
                     {/* Consequence Preview */}
-                    <div className={`flex items-center justify-between gap-2 rounded-xl border px-4 py-3 ${consequenceBg}`}>
+                    <div className={`flex items-center justify-between gap-2 rounded-xl border px-4 py-3 ${consequenceBg} shadow-[var(--shadow-card)]`}>
                         <span className="text-[rgb(var(--color-text-muted))] text-xs font-medium">{t.fastingDayModalRuling}</span>
                         <span className={`text-xs font-bold ${consequenceColor}`}>
                             {consequenceLabel}
@@ -229,7 +229,7 @@ export default function FastingDayModal({
 
                     {/* Dalil + Translation */}
                     {selectedStatus !== "fasting" && statusMeta && (
-                        <div className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-4 py-4 space-y-2.5">
+                        <div className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-4 py-4 space-y-2.5 shadow-[var(--shadow-card)]">
                             <p className="text-xs text-[rgb(var(--color-text-muted))] font-bold">
                                 {t.fastingDayModalDalilLabel}
                             </p>
@@ -255,7 +255,7 @@ export default function FastingDayModal({
                             placeholder={t.fastingDayModalNotePlaceholder}
                             rows={2}
                             maxLength={200}
-                            className="w-full rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-4 py-2 text-sm text-[rgb(var(--color-text-strong))] placeholder-[rgb(var(--color-text-muted))] resize-none focus:outline-none focus:border-[rgb(var(--color-primary))]/40 transition-colors"
+                            className="w-full rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-4 py-2 text-sm text-[rgb(var(--color-text-strong))] placeholder-[rgb(var(--color-text-muted))] resize-none focus:outline-none focus:border-[rgb(var(--color-primary))]/40 transition-colors shadow-[var(--shadow-card)]"
                         />
                     </div>
                 </div>

@@ -182,7 +182,7 @@ export function SirahReaderView({
                             const next = sizes[(sizes.indexOf(fontSize) + 1) % sizes.length];
                             setFontSize(next);
                         }}
-                        className={cn("p-2 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer", toolBtnClass)}
+                        className={cn("p-2 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer shadow-[var(--shadow-card)]", toolBtnClass)}
                         title={t.sirahReaderFontSize}
                     >
                         <Type className="w-3.5 h-3.5" />
@@ -193,7 +193,7 @@ export function SirahReaderView({
                     <button
                         onClick={toggleTTS}
                         className={cn(
-                            "p-2 rounded-xl border transition-colors cursor-pointer",
+                            "p-2 rounded-xl border transition-colors cursor-pointer shadow-[var(--shadow-card)]",
                                 isPlayingAudio
                                 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
                                 : toolBtnClass
@@ -207,7 +207,7 @@ export function SirahReaderView({
                     <button
                         onClick={toggleBookmark}
                         className={cn(
-                            "p-2 rounded-xl border transition-colors cursor-pointer",
+                            "p-2 rounded-xl border transition-colors cursor-pointer shadow-[var(--shadow-card)]",
                             isBookmarked ? "bg-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]" : toolBtnClass
                         )}
                         title={t.sirahReaderBookmark}
@@ -218,7 +218,7 @@ export function SirahReaderView({
                     {/* Copy Button */}
                     <button
                         onClick={handleCopy}
-                        className={cn("p-2 rounded-xl border transition-colors cursor-pointer", toolBtnClass)}
+                        className={cn("p-2 rounded-xl border transition-colors cursor-pointer shadow-[var(--shadow-card)]", toolBtnClass)}
                         title={t.sirahReaderCopy}
                     >
                         {copied ? <Check className="w-4 h-4 text-[rgb(var(--color-success))]" /> : <Share2 className="w-4 h-4" />}
@@ -272,7 +272,7 @@ export function SirahReaderView({
             {/* EN language notice — shown only when locale is English */}
             {locale === "en" && !enNoticeDismissed && (
                 <div className={cn(
-                    "flex items-start justify-between gap-3 px-4 py-3 rounded-2xl border text-xs",
+                    "flex items-start justify-between gap-3 px-4 py-3 rounded-2xl border text-xs shadow-[var(--shadow-card)]",
                         "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25 text-[rgb(var(--color-warning))]"
                 )}>
                     <p className="leading-relaxed">
@@ -293,7 +293,7 @@ export function SirahReaderView({
             {/* Main Section Content */}
             <div
                 className={cn(
-                    "px-5 py-6 sm:px-8 sm:py-8 rounded-2xl border transition-all shadow-sm space-y-5 select-text font-serif",
+                    "px-5 py-6 sm:px-8 sm:py-8 rounded-2xl border transition-all shadow-[var(--shadow-card)] space-y-5 select-text font-serif",
                     fontSizeClasses[fontSize],
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                 )}
@@ -330,7 +330,7 @@ export function SirahReaderView({
                     {prevSectionId ? (
                         <Link
                             href={`/sirah/${chapterSlug}/${prevSectionId}`}
-                            className={cn("px-4 py-2 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-1", toolBtnClass)}
+                            className={cn("px-4 py-2 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-1 shadow-[var(--shadow-card)]", toolBtnClass)}
                         >
                             <ChevronLeft className="w-4 h-4" />
                             <span>{t.sirahReaderPrev}</span>
@@ -340,7 +340,7 @@ export function SirahReaderView({
                     {nextSectionId ? (
                         <Link
                             href={`/sirah/${chapterSlug}/${nextSectionId}`}
-                            className={cn("px-4 py-2 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-1", toolBtnClass)}
+                            className={cn("px-4 py-2 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-1 shadow-[var(--shadow-card)]", toolBtnClass)}
                         >
                             <span>{t.sirahReaderNext}</span>
                             <ChevronRight className="w-4 h-4" />

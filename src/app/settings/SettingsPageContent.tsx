@@ -256,7 +256,7 @@ export default function SettingsPageContent() {
     };
 
     return (
-        <main className="settings-page flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 py-6 font-sans sm:px-6 pb-nav">
+        <main className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 py-6 font-sans sm:px-6 pb-nav">
 
             <div className="w-full max-w-none space-y-6 xl:max-w-md">
                 {/* Header */}
@@ -321,7 +321,7 @@ export default function SettingsPageContent() {
                     <button
                         onClick={handleRefreshLocation}
                         disabled={isRefreshing || locationLoading}
-                        className="h-[84px] p-3 bg-[rgb(var(--color-surface-subtle))]/60 border border-[rgb(var(--color-border))]/20 rounded-xl text-left hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-primary))]/30 transition-all group disabled:opacity-70 flex flex-col justify-between"
+                        className="h-[84px] p-3 bg-[rgb(var(--color-surface-subtle))]/60 border border-[rgb(var(--color-border))]/20 rounded-xl text-left hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-primary))]/30 transition-all group disabled:opacity-70 flex flex-col justify-between shadow-[var(--shadow-card)]"
                     >
                         <div className="flex items-center justify-between w-full">
                             <div className="flex items-center gap-2">
@@ -343,7 +343,7 @@ export default function SettingsPageContent() {
                         </p>
                     </button>
 
-                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[rgb(var(--color-ring))] bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px]">
+                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[rgb(var(--color-ring))] bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px] shadow-[var(--shadow-card)]">
                         {/* Visual Layer - Exact copy of Location card structure */}
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
                             <div className="flex items-center justify-between w-full">
@@ -378,13 +378,13 @@ export default function SettingsPageContent() {
                 <NotificationSettings />
 
                 {/* Hijri Date Settings Card */}
-                <div id="hijri-date" className="scroll-mt-6 bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4">
+                <div id="hijri-date" className="scroll-mt-6 bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4 shadow-[var(--shadow-card)]">
                     <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                         <span className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.hijriDateTitle}</span>
                     </div>
 
-                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[rgb(var(--color-ring))] bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px]">
+                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[rgb(var(--color-ring))] bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px] shadow-[var(--shadow-card)]">
                         {/* Visual Layer */}
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
                             <div className="flex items-center justify-between w-full">
@@ -556,7 +556,7 @@ export default function SettingsPageContent() {
                             </Link>
                         </div>
                         {fcmToken ? (
-                            <div className="p-3 rounded-xl border bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]">
+                            <div className="p-3 rounded-xl border bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                                 <p className="text-xs font-mono text-[rgb(var(--color-primary-strong))] break-all leading-relaxed">
                                     {fcmToken}
                                 </p>

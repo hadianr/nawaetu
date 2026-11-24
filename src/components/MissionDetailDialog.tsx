@@ -110,7 +110,7 @@ export default function MissionDetailDialog({
                     </button>
                     <div className="flex items-center gap-3">
                         <div className={cn(
-                            "text-3xl w-12 h-12 rounded-xl flex items-center justify-center border transition-colors",
+                            "text-3xl w-12 h-12 rounded-xl flex items-center justify-center border transition-colors shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))]"
                         )}>
                             <AppIcon name={mission.iconKey ?? resolveAppIconName(mission.icon)} size="xl" tone="primary" />
@@ -241,7 +241,7 @@ export default function MissionDetailDialog({
                                                 ) : (
                                                     // SINGLE VIEW (No Tabs) - For Puasa/General
                                                     <div className={cn(
-                                                        "p-4 rounded-xl border transition-colors",
+                                                        "p-4 rounded-xl border transition-colors shadow-[var(--shadow-card)]",
                                                         "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                                                     )}>
                                                         <p className="text-lg md:text-xl font-serif text-right mb-2 leading-relaxed">
@@ -270,7 +270,7 @@ export default function MissionDetailDialog({
 
                                                 <div className={cn(
                                                     "rounded-2xl p-5 border space-y-4 relative min-h-[220px] flex flex-col justify-center transition-colors",
-                                                    "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-sm"
+                                                    "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
                                                 )}>
                                                     <div>
                                                         {currentReading?.title && (
@@ -306,7 +306,7 @@ export default function MissionDetailDialog({
                                                         onClick={handleNextReading}
                                                         disabled={readingIndex === (content.readings.length - 1)}
                                                         className={cn(
-                                                            "transition-colors shadow-sm",
+                                                            "transition-colors shadow-[var(--shadow-card)]",
                                                             "bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-border))]"
                                                         )}
                                                     >
@@ -460,7 +460,7 @@ export default function MissionDetailDialog({
                                 const targetUrl = resolvedSpiritual?.targetUrl;
                                 return (
                                     <div className={cn(
-                                        "mt-4 p-4 rounded-xl border w-full text-center",
+                                        "mt-4 p-4 rounded-xl border w-full text-center shadow-[var(--shadow-card)]",
                                         "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                                     )}>
                                         <p className="text-xs font-bold mb-1 text-[rgb(var(--color-primary-strong))]">{t.mission_dialog_dalil_label}</p>
@@ -542,7 +542,7 @@ export default function MissionDetailDialog({
                         {isCompleted ? (
                             <div className="flex flex-col gap-2">
                                 <Button className={cn(
-                                    "w-full border cursor-default transition-all shadow-sm",
+                                    "w-full border cursor-default transition-all shadow-[var(--shadow-card)]",
                                     "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/20"
                                 )} disabled>
                                     <Check className="w-4 h-4 mr-2" /> {t.home_mission_completed_label}
@@ -554,7 +554,7 @@ export default function MissionDetailDialog({
                                             variant="destructive"
                                             className={cn(
                                                 "flex-1 py-5 text-xs font-bold transition-all",
-                                                "bg-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/90 text-[rgb(var(--color-primary-foreground))] shadow-sm"
+                                                "bg-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/90 text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                                             )}
                                             onClick={() => {
                                                 onReset();

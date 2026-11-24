@@ -75,11 +75,11 @@ export default function QuranSettingsModal({
                         {/* View Mode */}
                         <div className="space-y-3">
                             <Label className="text-[rgb(var(--color-primary-strong))] text-xs font-bold ml-1">{t.quranModeRead}</Label>
-                            <div className="grid grid-cols-2 gap-2 bg-[rgb(var(--color-primary))]/5 p-1.5 rounded-2xl border border-[rgb(var(--color-primary))]/10">
-                                <button onClick={() => setViewMode('list')} className={`flex items-center justify-center gap-2 h-11 rounded-xl text-sm font-bold transition-all ${viewMode === 'list' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}>
+                            <div className="grid grid-cols-2 gap-2 bg-[rgb(var(--color-surface-subtle))] p-1.5 rounded-2xl border border-[rgb(var(--color-border))]">
+                                <button onClick={() => setViewMode('list')} className={`flex items-center justify-center gap-2 h-11 rounded-xl text-sm font-bold transition-all ${viewMode === 'list' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]' : 'text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]'}`}>
                                     <AlignJustify className="h-4 w-4" /> {t.quranModeList}
                                 </button>
-                                <button onClick={() => setViewMode('mushaf')} className={`flex items-center justify-center gap-2 h-11 rounded-xl text-sm font-bold transition-all ${viewMode === 'mushaf' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}>
+                                <button onClick={() => setViewMode('mushaf')} className={`flex items-center justify-center gap-2 h-11 rounded-xl text-sm font-bold transition-all ${viewMode === 'mushaf' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]' : 'text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]'}`}>
                                     <BookOpen className="h-4 w-4" /> {t.quranModeMushaf}
                                 </button>
                             </div>
@@ -87,19 +87,19 @@ export default function QuranSettingsModal({
                         {/* Script Type Toggle */}
                         <div className="space-y-3">
                             <Label className="text-[rgb(var(--color-primary-strong))] text-xs font-bold ml-1">{t.quranScriptType}</Label>
-                            <div className="grid grid-cols-2 gap-2 bg-[rgb(var(--color-primary))]/5 p-1.5 rounded-2xl border border-[rgb(var(--color-primary))]/10">
+                            <div className="grid grid-cols-2 gap-2 bg-[rgb(var(--color-surface-subtle))] p-1.5 rounded-2xl border border-[rgb(var(--color-border))]">
                                 <button
                                     onClick={() => setScriptType('indopak')}
-                                    className={`flex flex-col items-center justify-center h-16 rounded-xl text-sm font-bold transition-all ${scriptType === 'indopak' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}
+                                    className={`flex flex-col items-center justify-center h-16 rounded-xl text-sm font-bold transition-all ${scriptType === 'indopak' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]' : 'text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]'}`}
                                 >
                                     <span className="font-bold text-xl mb-0.5 font-amiri">بِسْمِ</span>
                                     <span className="text-xs md:text-xs">{t.quranScriptStandard}</span>
                                 </button>
                                 <button
                                     onClick={() => setScriptType('tajweed')}
-                                    className={`flex flex-col items-center justify-center h-16 rounded-xl text-sm font-bold transition-all ${scriptType === 'tajweed' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}
+                                    className={`flex flex-col items-center justify-center h-16 rounded-xl text-sm font-bold transition-all ${scriptType === 'tajweed' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]' : 'text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]'}`}
                                 >
-                                    <span className="font-bold text-xl mb-0.5 font-amiri text-[rgb(var(--color-text-strong))] quran-tajweed-active"><span className="text-[rgb(var(--color-warning))]">بِسْ</span><span className="text-[rgb(var(--color-success))]">مِ</span></span>
+                                    <span className="font-bold text-xl mb-0.5 font-amiri text-[rgb(var(--color-text-strong))]"><span className="text-[rgb(var(--color-warning))]">بِسْ</span><span className="text-[rgb(var(--color-success))]">مِ</span></span>
                                     <span className="text-xs md:text-xs">{t.quranScriptTajweed}</span>
                                 </button>
                             </div>
@@ -108,7 +108,7 @@ export default function QuranSettingsModal({
                         {/* Toggles */}
                         <div className="space-y-3">
                             <Label className="text-[rgb(var(--color-primary-strong))] text-xs font-bold ml-1">{t.quranOtherDisplay}</Label>
-                            <div className="flex items-center justify-between p-4 rounded-2xl border border-[rgb(var(--color-primary))]/10 bg-[rgb(var(--color-primary))]/5 shadow-sm">
+                            <div className="flex items-center justify-between p-4 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
                                         <Type className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
@@ -117,7 +117,7 @@ export default function QuranSettingsModal({
                                 </div>
                                 <Switch checked={showTransliteration} onCheckedChange={setShowTransliteration} className="quran-toggle" />
                             </div>
-                            <div className="flex items-center justify-between p-4 rounded-2xl border border-[rgb(var(--color-primary))]/10 bg-[rgb(var(--color-primary))]/5 shadow-sm">
+                            <div className="flex items-center justify-between p-4 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
                                         <BookOpen className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
@@ -131,10 +131,10 @@ export default function QuranSettingsModal({
                         {/* Font Size */}
                         <div className="space-y-3">
                             <Label className="text-[rgb(var(--color-primary-strong))] text-xs font-bold ml-1">{t.quranFontSize}</Label>
-                            <div className="flex items-center gap-2 bg-[rgb(var(--color-primary))]/5 p-1.5 rounded-2xl border border-[rgb(var(--color-primary))]/10">
-                                <button onClick={() => setFontSize('small')} className={`flex-1 h-10 rounded-xl text-sm font-bold transition-all ${fontSize === 'small' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}>A-</button>
-                                <button onClick={() => setFontSize('medium')} className={`flex-1 h-10 rounded-xl text-base font-bold transition-all ${fontSize === 'medium' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}>A</button>
-                                <button onClick={() => setFontSize('large')} className={`flex-1 h-10 rounded-xl text-lg font-bold transition-all ${fontSize === 'large' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}>A+</button>
+                            <div className="flex items-center gap-2 bg-[rgb(var(--color-surface-subtle))] p-1.5 rounded-2xl border border-[rgb(var(--color-border))]">
+                                <button onClick={() => setFontSize('small')} className={`flex-1 h-10 rounded-xl text-sm font-bold transition-all ${fontSize === 'small' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]' : 'text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]'}`}>A-</button>
+                                <button onClick={() => setFontSize('medium')} className={`flex-1 h-10 rounded-xl text-base font-bold transition-all ${fontSize === 'medium' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]' : 'text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]'}`}>A</button>
+                                <button onClick={() => setFontSize('large')} className={`flex-1 h-10 rounded-xl text-lg font-bold transition-all ${fontSize === 'large' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]' : 'text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]'}`}>A+</button>
                             </div>
                         </div>
 
@@ -142,7 +142,7 @@ export default function QuranSettingsModal({
                         <div className="space-y-3">
                             <Label className="text-[rgb(var(--color-primary-strong))] text-xs font-bold ml-1">{t.quranSelectQari}</Label>
                             <Select value={currentReciterId?.toString()} onValueChange={handleReciterChange} disabled={isPending}>
-                                <SelectTrigger aria-label={String(t.quranSelectQari)} className={`w-full bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/10 rounded-2xl h-14 md:h-12 shadow-sm ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                <SelectTrigger aria-label={String(t.quranSelectQari)} className={`w-full bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] rounded-2xl h-14 md:h-12 shadow-[var(--shadow-card)] ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-lg bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
                                             {isPending ? <Loader2 className="h-4 w-4 animate-spin text-[rgb(var(--color-primary-strong))]" /> : <Headphones className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />}

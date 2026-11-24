@@ -300,18 +300,18 @@ export default function StatsPage() {
                                 </DialogHeader>
 
                                 <div className="space-y-4">
-                                    <div className="p-4 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
+                                    <div className="p-4 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl shadow-[var(--shadow-card)]">
                                         <p className="text-xs text-[rgb(var(--color-text))] leading-relaxed italic">
                                             &quot;{playerRank.desc}&quot;
                                         </p>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-3">
-                                        <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
+                                        <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl shadow-[var(--shadow-card)]">
                                             <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1">{t.stats.level.currentHasanah}</p>
                                             <p className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{playerStats.hasanah.toLocaleString()}</p>
                                         </div>
-                                        <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
+                                        <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl shadow-[var(--shadow-card)]">
                                             <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1">{t.stats.level.nextLevelHasanah}</p>
                                             <p className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{playerStats.nextLevelHasanah.toLocaleString()}</p>
                                         </div>
@@ -319,7 +319,7 @@ export default function StatsPage() {
 
                                     <Button
                                         onClick={() => setIsRankModalOpen(false)}
-                                        className="w-full h-12 rounded-2xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-strong))] font-bold text-sm border border-[rgb(var(--color-border))] transition-all"
+                                        className="w-full h-12 rounded-2xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-strong))] font-bold text-sm border border-[rgb(var(--color-border))] transition-all shadow-[var(--shadow-card)]"
                                     >
                                         {t.stats.level.understand}
                                     </Button>

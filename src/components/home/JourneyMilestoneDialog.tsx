@@ -65,7 +65,7 @@ export default function JourneyMilestoneDialog({ daysLeft, dayNumber, hadStreak 
                         <Link
                             href="/ramadhan"
                             onClick={close}
-                            className="flex min-h-11 items-center justify-between gap-2 rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 px-4 text-left text-sm font-medium text-[rgb(var(--color-text-strong))] outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]"
+                            className="flex min-h-11 items-center justify-between gap-2 rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 px-4 text-left text-sm font-medium text-[rgb(var(--color-text-strong))] outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                         >
                             {String(t.journeyWelcomeQadha)}
                             <ChevronRight className="size-4 shrink-0 text-[rgb(var(--color-text-muted))]" aria-hidden="true" />

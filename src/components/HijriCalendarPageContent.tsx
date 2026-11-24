@@ -155,7 +155,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                 </header>
 
                 {showRamadanView && (
-                    <div className={cn("mb-4 grid grid-cols-2 rounded-xl border p-1", surface)}>
+                    <div className={cn("mb-4 grid grid-cols-2 rounded-xl border p-1 shadow-[var(--shadow-card)]", surface)}>
                         <button
                             type="button"
                             onClick={() => handleView("month")}
@@ -181,12 +181,12 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                 )}
 
                 {loading ? (
-                    <div className={cn("flex min-h-96 flex-col items-center justify-center gap-3 rounded-2xl border", surface)}>
+                    <div className={cn("flex min-h-96 flex-col items-center justify-center gap-3 rounded-2xl border shadow-[var(--shadow-card)]", surface)}>
                         <Loader2 className="h-8 w-8 animate-spin text-[rgb(var(--color-primary-strong))]" />
                         <p className="text-sm text-[rgb(var(--color-text-muted))]">{t.hijriCalendarLoading}</p>
                     </div>
                 ) : error ? (
-                    <div className={cn("flex min-h-96 flex-col items-center justify-center gap-3 rounded-2xl border px-6 text-center", surface)}>
+                    <div className={cn("flex min-h-96 flex-col items-center justify-center gap-3 rounded-2xl border px-6 text-center shadow-[var(--shadow-card)]", surface)}>
                         <AlertTriangle className="h-7 w-7 text-[rgb(var(--color-warning))]" />
                         <p className="text-sm text-[rgb(var(--color-text-muted))]">
                             {error === "location_required" ? t.hijriCalendarLocationRequired : t.hijriCalendarLoadFailed}
@@ -197,7 +197,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                     </div>
                 ) : viewMode === "month" ? (
                     <div className="grid gap-4 md:grid-cols-[minmax(0,1.6fr)_minmax(260px,1fr)] md:items-start">
-                        <section className={cn("rounded-2xl border p-3 sm:p-5", surface)}>
+                        <section className={cn("rounded-2xl border p-3 sm:p-5 shadow-[var(--shadow-card)]", surface)}>
                             <div className="mb-3 flex items-center justify-between">
                                 <button type="button" onClick={() => void navigateMonth(-1)} aria-label={t.hijriCalendarPreviousMonth} className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-[rgb(var(--color-primary))]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]">
                                     <ChevronLeft className="h-5 w-5" />
@@ -224,7 +224,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                                             aria-label={`${day.hijriDay} ${getHijriMonthName(day.hijriMonthNumber, locale)} ${day.hijriYear}H, ${dateFormatter.format(new Date(`${day.gregorianIso}T12:00:00`))}${eventNames ? `, ${eventNames}` : ""}`}
                                             aria-current={day.isToday ? "date" : undefined}
                                             className={cn(
-                                                "relative flex min-h-14 flex-col items-center justify-center rounded-xl border text-center transition-colors focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                                                "relative flex min-h-14 flex-col items-center justify-center rounded-xl border text-center transition-colors focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
                                                 selected ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]" : day.isToday ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10" : "border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10",
                                             )}
                                         >
@@ -242,7 +242,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                         </section>
 
                         {selectedDay && (
-                            <section className={cn("rounded-2xl border p-4 md:sticky md:top-4", surface)} aria-live="polite">
+                            <section className={cn("rounded-2xl border p-4 md:sticky md:top-4 shadow-[var(--shadow-card)]", surface)} aria-live="polite">
                                 <p className="text-xs font-bold text-[rgb(var(--color-text-muted))]">{t.hijriCalendarSelectedDate}</p>
                                 <p className="mt-1 text-base font-bold">
                                     {selectedDay.hijriDay} {getHijriMonthName(selectedDay.hijriMonthNumber, locale)} {selectedDay.hijriYear}H
@@ -264,7 +264,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                         )}
                     </div>
                 ) : (
-                    <section className={cn("overflow-hidden rounded-2xl border p-3 sm:p-5", surface)}>
+                    <section className={cn("overflow-hidden rounded-2xl border p-3 sm:p-5 shadow-[var(--shadow-card)]", surface)}>
                         <div className="overflow-x-auto">
                             <div className="grid min-w-[430px] grid-cols-5 border-b border-current/10 py-2 text-center text-xs font-bold uppercase opacity-60">
                                 <span>{t.hijriCalendarHeaderHijri}</span><span>{t.hijriCalendarHeaderDate}</span><span>{t.hijriCalendarHeaderImsak}</span><span>{t.hijriCalendarHeaderFajr}</span><span>{t.hijriCalendarHeaderIftar}</span>
@@ -280,7 +280,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                 )}
 
                 {historyEvents.length > 0 && (
-                    <section className={cn("mt-4 rounded-2xl border p-4", surface)}>
+                    <section className={cn("mt-4 rounded-2xl border p-4 shadow-[var(--shadow-card)]", surface)}>
                         <h2 className="flex items-center gap-2 text-sm font-bold">
                             <BookOpen className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                             {t.hijriHistoryTitle}

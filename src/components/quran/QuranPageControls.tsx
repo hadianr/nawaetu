@@ -94,7 +94,7 @@ export function SurahNavigationCards({ chapter, t }: SurahNavigationCardsProps) 
     return (
         <div className="grid grid-cols-2 gap-2 mt-2 pt-4 border-t border-[rgb(var(--color-border))] px-1 md:px-0">
             {chapter.id > 1 ? (
-                <Link href={`/quran/${chapter.id - 1}`} className="group flex flex-col p-3 rounded-xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300">
+                <Link href={`/quran/${chapter.id - 1}`} className="group flex flex-col p-3 rounded-xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300 shadow-[var(--shadow-card)]">
                     <span className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1 group-hover:text-[rgb(var(--color-primary-strong))]">{t.quranPrevious}</span>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5 min-w-0 pr-1">
@@ -111,7 +111,7 @@ export function SurahNavigationCards({ chapter, t }: SurahNavigationCardsProps) 
             ) : <div />}
 
             {chapter.id < 114 ? (
-                <Link href={`/quran/${chapter.id + 1}`} className="group flex flex-col p-3 rounded-xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300 text-right">
+                <Link href={`/quran/${chapter.id + 1}`} className="group flex flex-col p-3 rounded-xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300 text-right shadow-[var(--shadow-card)]">
                     <span className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1 group-hover:text-[rgb(var(--color-primary-strong))]">{t.quranNext}</span>
                     <div className="flex items-center justify-between flex-row-reverse">
                         <div className="flex items-center gap-1.5 flex-row-reverse min-w-0 pl-1">

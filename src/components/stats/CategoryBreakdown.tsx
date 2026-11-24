@@ -25,7 +25,7 @@ export function CategoryBreakdown({
     if (activeStats.length === 0) return null;
 
     return (
-        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5 shadow-[var(--shadow-card)]">
             <h2 className="font-bold text-sm mb-5 flex items-center gap-2">
                 <AppIcon name="target" size="sm" tone="primary" label={t.stats.missions.title} />
                 {t.stats.missions.title}
@@ -50,7 +50,7 @@ export function CategoryBreakdown({
                         </div>
                         <div className="h-1.5 w-full bg-[rgb(var(--color-surface))] rounded-full overflow-hidden">
                             <div
-                                className="h-full rounded-full transition-all duration-1000 shadow-sm"
+                                className="h-full rounded-full transition-all duration-1000 shadow-[var(--shadow-card)]"
                                 style={{
                                     width: `${(cat.count / maxCatCount) * 100}%`,
                                     backgroundColor: cat.color

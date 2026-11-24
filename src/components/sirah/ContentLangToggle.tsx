@@ -30,7 +30,7 @@ export function ContentLangToggle({ className, hideLabel }: { className?: string
     return (
         <div role="group" aria-label={t.sirahContentLangLabel} className={cn("inline-flex items-center gap-2", className)}>
             {!hideLabel && <span className="text-xs font-semibold text-[rgb(var(--color-text-muted))]" aria-hidden>{t.sirahContentLangLabel}</span>}
-            <span className="inline-flex rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-0.5">
+            <span className="inline-flex rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-0.5 shadow-[var(--shadow-card)]">
                 {OPTIONS.map((o) => {
                     const active = lang === o.value;
                     return (

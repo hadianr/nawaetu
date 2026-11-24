@@ -45,7 +45,7 @@ function PathCard({ href, icon, title, description, meta, badge, progress }: Pat
             <Link
                 href={href}
                 className={cn(
-                    "group flex gap-3 rounded-2xl border p-4 transition-colors",
+                    "group flex gap-3 rounded-2xl border p-4 transition-colors shadow-[var(--shadow-card)]",
                     FOCUS,
                     badge
                         ? "border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary))]/5 hover:bg-[rgb(var(--color-primary))]/10"

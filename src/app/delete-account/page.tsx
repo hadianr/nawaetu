@@ -18,7 +18,7 @@ export default function DeleteAccountPage() {
                     <p className="text-[rgb(var(--color-text-muted))]">Account deletion request / Permintaan penghapusan akun</p>
                 </header>
 
-                <div className="space-y-8 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-6 leading-relaxed text-[rgb(var(--color-text-muted))] sm:p-8">
+                <div className="space-y-8 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-6 leading-relaxed text-[rgb(var(--color-text-muted))] sm:p-8 shadow-[var(--shadow-card)]">
                     <section className="space-y-3">
                         <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">Request deletion</h2>
                         <p>Email us from the email address associated with your Nawaetu account. Include the account email in the request so we can verify and locate your account. We will contact you if we need more information to verify the request.</p>

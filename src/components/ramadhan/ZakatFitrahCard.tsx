@@ -62,7 +62,7 @@ export default function ZakatFitrahCard() {
                 <div className="px-3 pb-3 sm:px-4 sm:pb-4 space-y-3">
                     
                     {/* Waktu Pembayaran Timeline Guide */}
-                    <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3">
+                    <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3 shadow-[var(--shadow-card)]">
                         <h4 className="font-semibold text-[rgb(var(--color-text))] text-xs mb-2 flex items-center gap-2">
                             <Clock className="h-3.5 w-3.5" /> Panduan Waktu Pembayaran
                         </h4>
@@ -83,7 +83,7 @@ export default function ZakatFitrahCard() {
                     </div>
 
                     {/* Kewajiban / Amount Info */}
-                    <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3">
+                    <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3 shadow-[var(--shadow-card)]">
                         <div className="flex items-center gap-2 mb-2">
                             <HandHeart className="h-4 w-4 text-[rgb(var(--color-success))]" />
                             <h4 className="font-semibold text-[rgb(var(--color-text-strong))] text-sm">{t.zakatObligationTitle || "Kewajiban Zakat"}</h4>
@@ -106,7 +106,7 @@ export default function ZakatFitrahCard() {
 
                     <div className="grid grid-cols-2 gap-2">
                         {/* Makanan Pokok */}
-                        <div className="rounded-2xl border border-[rgb(var(--color-warning))]/20 bg-[rgb(var(--color-warning))]/10 p-3">
+                        <div className="rounded-2xl border border-[rgb(var(--color-warning))]/20 bg-[rgb(var(--color-warning))]/10 p-3 shadow-[var(--shadow-card)]">
                             <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-warning))]/20 to-[rgb(var(--color-warning))]/10">
                                 <Wheat className="h-4 w-4 text-[rgb(var(--color-warning))]" />
                             </div>
@@ -119,7 +119,7 @@ export default function ZakatFitrahCard() {
                         </div>
 
                         {/* Uang */}
-                        <div className="rounded-2xl border border-[rgb(var(--color-success))]/20 bg-[rgb(var(--color-success))]/10 p-3">
+                        <div className="rounded-2xl border border-[rgb(var(--color-success))]/20 bg-[rgb(var(--color-success))]/10 p-3 shadow-[var(--shadow-card)]">
                             <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-success))]/20 to-[rgb(var(--color-success))]/10">
                                 <Coins className="h-4 w-4 text-[rgb(var(--color-success))]" />
                             </div>
@@ -133,7 +133,7 @@ export default function ZakatFitrahCard() {
                     </div>
 
                     {/* Doa Menerima Zakat (Bagi Panitia/Mustahiq) */}
-                    <div className="rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 p-3">
+                    <div className="rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 p-3 shadow-[var(--shadow-card)]">
                         <h4 className="font-semibold text-[rgb(var(--color-primary-strong))] text-xs mb-2 flex items-center gap-2">
                             <ThumbsUp className="h-3.5 w-3.5" /> Doa Menerima Zakat (Mustahiq)
                         </h4>

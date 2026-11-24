@@ -121,7 +121,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                 
                                 <div className="space-y-2">
                                     {recipients.map((recipient) => (
-                                        <div key={recipient.id} className="flex flex-col gap-2 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3 transition-all focus-within:border-[rgb(var(--color-primary))]/50">
+                                        <div key={recipient.id} className="flex flex-col gap-2 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3 transition-all focus-within:border-[rgb(var(--color-primary))]/50 shadow-[var(--shadow-card)]">
                                             <div className="flex items-start gap-3">
                                                 {/* Checkbox */}
                                                 <button 
@@ -179,7 +179,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
 
                                             {/* Niat Collapsible Box */}
                                             {activeIntentionId === recipient.id && !recipient.isPaid && (
-                                                <div className="mt-2 rounded-xl bg-[rgb(var(--color-surface))] p-3 pt-4 border border-[rgb(var(--color-border))] text-center relative overflow-hidden">
+                                                <div className="mt-2 rounded-xl bg-[rgb(var(--color-surface))] p-3 pt-4 border border-[rgb(var(--color-border))] text-center relative overflow-hidden shadow-[var(--shadow-card)]">
                                                     <div className="absolute top-0 left-0 w-full h-1 bg-[rgb(var(--color-primary))] opacity-30"></div>
                                                     <h4 className="text-xs font-semibold text-[rgb(var(--color-primary-strong))] mb-2">{getIntentionForType(recipient.type).title}</h4>
                                                     <p className="font-arabic text-xl sm:text-2xl leading-loose text-[rgb(var(--color-text-strong))] mb-3" dir="rtl">

@@ -244,7 +244,7 @@ export default function JournalPage() {
 
                                         {/* Reflection Content */}
                                         {intention.reflection_text && (
-                                            <div className="rounded-xl p-3 border bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]">
+                                            <div className="rounded-xl p-3 border bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                                                 <div className="flex items-start gap-2.5">
                                                     <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 bg-[rgb(var(--color-primary-light))]/20">
                                                         <AppIcon name="book-marked" size="xs" tone="primary" />

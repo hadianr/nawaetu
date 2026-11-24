@@ -109,7 +109,7 @@ export default function QuranReadingBanner() {
                     {/* Target toggle button */}
                     <button
                         onClick={() => setShowTargetPicker((prev) => !prev)}
-                        className="shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-xl border transition-all text-xs bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:text-[rgb(var(--color-text-strong))]"
+                        className="shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-xl border transition-all text-xs bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-card)]"
                     >
                         <Target className="w-3 h-3" />
                         <span className="whitespace-nowrap">{targetMinutes < 60 ? `${targetMinutes}${t.unitMinute}` : `1${t.unitHour}`}</span>
@@ -125,7 +125,7 @@ export default function QuranReadingBanner() {
                                 key={opt.value}
                                 onClick={() => handleTargetChange(opt.value)}
                                 className={cn(
-                                    "py-1.5 rounded-xl text-xs font-medium transition-all border text-center",
+                                    "py-1.5 rounded-xl text-xs font-medium transition-all border text-center shadow-[var(--shadow-card)]",
                                         targetMinutes === opt.value
                                         ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-strong))] font-bold"
                                         : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]"

@@ -343,7 +343,7 @@ export default function NotificationSettings() {
     // RENDER: PRE-PERMISSION STATE
     if (permissionStatus === "default") {
         return (
-            <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-6 text-center space-y-4">
+            <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-6 text-center space-y-4 shadow-[var(--shadow-card)]">
                 <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Bell className="w-8 h-8 text-[rgb(var(--color-primary-strong))]" />
                 </div>
@@ -385,12 +385,12 @@ export default function NotificationSettings() {
     // RENDER: SETTINGS STATE (GRANTED)
     return (
         <div className="space-y-3">
-        <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4">
+        <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4 shadow-[var(--shadow-card)]">
             {/* Main Toggle Area */}
             <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 flex-1">
                     {isEnabled ? (
-                        <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 flex items-center justify-center shrink-0 shadow-[var(--shadow-card)]">
                             {isLoading ? (
                                 <Loader2 className="w-5 h-5 text-[rgb(var(--color-primary-strong))] animate-spin" />
                             ) : (
@@ -398,7 +398,7 @@ export default function NotificationSettings() {
                             )}
                         </div>
                     ) : (
-                        <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/20 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/20 flex items-center justify-center shrink-0 shadow-[var(--shadow-card)]">
                             {isLoading ? (
                                 <Loader2 className="w-5 h-5 text-[rgb(var(--color-text-muted))] animate-spin" />
                             ) : (
@@ -443,7 +443,7 @@ export default function NotificationSettings() {
                                     {[1, 2, 3, 4, 5, 6].map((i) => (
                                         <div
                                             key={i}
-                                            className="flex items-center justify-between py-2 px-3 bg-[rgb(var(--color-surface-subtle))]/60 rounded-xl border border-[rgb(var(--color-border))]/15 animate-pulse h-11"
+                                            className="flex items-center justify-between py-2 px-3 bg-[rgb(var(--color-surface-subtle))]/60 rounded-xl border border-[rgb(var(--color-border))]/15 animate-pulse h-11 shadow-[var(--shadow-card)]"
                                         >
                                             <div className="h-3 bg-[rgb(var(--color-border))]/20 rounded w-16"></div>
                                             <div className="h-5 bg-[rgb(var(--color-border))]/20 rounded-full w-9"></div>
@@ -458,7 +458,7 @@ export default function NotificationSettings() {
                                         return (
                                             <div
                                                 key={prayer}
-                                                className="flex items-center justify-between py-2 px-3 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] rounded-xl border border-[rgb(var(--color-border))]/20 transition-colors h-11 group"
+                                                className="flex items-center justify-between py-2 px-3 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] rounded-xl border border-[rgb(var(--color-border))]/20 transition-colors h-11 group shadow-[var(--shadow-card)]"
                                             >
                                                 <span className="text-[rgb(var(--color-text))] group-hover:text-[rgb(var(--color-text-strong))] capitalize font-medium text-xs sm:text-sm">
                                                     {label}
@@ -480,9 +480,9 @@ export default function NotificationSettings() {
         </div>
 
         {status === "authenticated" && (
-            <div className="flex items-center justify-between gap-3 rounded-2xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface))]/70 p-4">
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface))]/70 p-4 shadow-[var(--shadow-card)]">
                 <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 shadow-[var(--shadow-card)]">
                         <Flame className="h-5 w-5 text-[rgb(var(--color-primary-strong))]" aria-hidden="true" />
                     </div>
                     <div>

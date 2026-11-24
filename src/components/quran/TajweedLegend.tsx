@@ -92,7 +92,7 @@ export default function TajweedLegend() {
                     <TooltipTrigger asChild>
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="w-full flex items-center justify-between p-3 rounded-xl border transition-all group bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-ring))]"
+                            className="w-full flex items-center justify-between p-3 rounded-xl border transition-all group bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-ring))] shadow-[var(--shadow-card)]"
                         >
                             <div className="flex items-center gap-2">
                                 <Info className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />

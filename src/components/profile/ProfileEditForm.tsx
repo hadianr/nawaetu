@@ -69,7 +69,7 @@ export function ProfileEditForm({
                         aria-pressed={editGender === 'male'}
                         onClick={() => setEditGender('male')}
                         className={cn(
-                            "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
+                            "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium shadow-[var(--shadow-card)]",
                             editGender === 'male'
                                 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
                                 : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))]"
@@ -82,7 +82,7 @@ export function ProfileEditForm({
                         aria-pressed={editGender === 'female'}
                         onClick={() => setEditGender('female')}
                         className={cn(
-                            "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
+                            "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium shadow-[var(--shadow-card)]",
                             editGender === 'female'
                                 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
                                 : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))]"
