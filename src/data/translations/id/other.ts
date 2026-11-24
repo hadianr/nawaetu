@@ -359,7 +359,7 @@ export const otherID = {
     homePrayerCheckInSheetSubtitle: "Bagaimana kamu sholat?",
     homePrayerCheckInOptionSolo: "Sholat Sendiri",
     homePrayerCheckInOptionJamaah: "Berjamaah di Masjid",
-    homePrayerCheckInQuote: "\"Sholat berjamaah lebih utama 27 derajat\" — HR. Bukhari & Muslim",
+    homePrayerCheckInQuote: "\"Sholat berjamaah lebih utama 27 derajat\" (HR. Bukhari & Muslim)",
 
     // Mosque Finder Modal
     mosqueFinderTitle: "Mau Sholat di Mana?",

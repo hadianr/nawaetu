@@ -272,7 +272,7 @@ export default function JournalPage() {
                             {hasMore && (
                                 <button
                                     onClick={loadMore}
-                                    className="w-full py-4 text-xs font-medium uppercase tracking-wider text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] rounded-xl transition-all"
+                                    className="w-full py-4 text-xs font-medium text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] rounded-xl transition-all"
                                 >
                                     {t.intention_load_more} {t.intention_history_btn_title}
                                 </button>

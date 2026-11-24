@@ -20,7 +20,7 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Heart, Check, Sparkles, ExternalLink } from "@/components/ui/icons";
+import { Heart, Check, Lock, ExternalLink } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useInfaq } from "@/context/InfaqContext";
@@ -141,7 +141,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                 "rounded-2xl p-5 text-center border transition-all shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25"
                             )}>
-                                <Sparkles className={cn(
+                                <Lock className={cn(
                                     "w-7 h-7 mx-auto mb-3",
                                     "text-[rgb(var(--color-warning))]"
                                 )} />

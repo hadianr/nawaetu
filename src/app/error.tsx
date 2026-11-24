@@ -108,8 +108,8 @@ export default function Error({
             </div>
 
             {process.env.NODE_ENV === "development" && (
-                <div className="mt-12 w-full max-w-md overflow-hidden rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]/60 p-4 text-left">
-                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">Debug Info</p>
+                <div className="mt-12 w-full max-w-md overflow-hidden rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]/60 p-4 text-left shadow-[var(--shadow-card)]">
+                    <p className="mb-2 text-xs font-bold text-[rgb(var(--color-text-muted))]">Debug Info</p>
                     <pre className="overflow-x-auto text-xs text-[rgb(var(--color-danger))] font-mono leading-relaxed">
                         {error.message}
                         {"\n"}
