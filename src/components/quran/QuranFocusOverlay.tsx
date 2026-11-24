@@ -37,7 +37,7 @@ export function QuranNiyyahScreen({ onConfirm, onCancel }: QuranFocusOverlayProp
                 "w-20 h-20 rounded-2xl mb-6 flex items-center justify-center shadow-[var(--shadow-floating)] border",
                 "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
             )}>
-                <BookOpen className="w-9 h-9 text-[rgb(var(--color-primary))]" />
+                <BookOpen className="w-9 h-9 text-[rgb(var(--color-primary-strong))]" />
             </div>
 
             {/* Basmallah */}
@@ -126,10 +126,10 @@ export function QuranFocusBadge({ sessionSeconds, onExit }: FocusBadgeProps) {
                         "bg-[rgb(var(--color-primary))]"
                     )} />
                 </div>
-                <span className="text-[10px] font-medium leading-none text-[rgb(var(--color-text-muted))]">
+                <span className="text-xs font-medium leading-none text-[rgb(var(--color-text-muted))]">
                     {t.tilawahFocusMode}
                 </span>
-                <span className="text-[10px] font-bold tabular-nums leading-none text-[rgb(var(--color-primary-strong))]">
+                <span className="text-xs font-bold tabular-nums leading-none text-[rgb(var(--color-primary-strong))]">
                     {formatTime(sessionSeconds)}
                 </span>
             </div>
@@ -208,7 +208,7 @@ export function QuranFocusExitConfirm({ sessionSeconds, onConfirm, onCancel }: {
 export function FocusModeThemeIndicator() {
     return (
         <div className="fixed top-5 right-4 z-[201]">
-            <Sun className="w-4 h-4 text-[rgb(var(--color-primary))] opacity-60" />
+            <Sun className="w-4 h-4 text-[rgb(var(--color-primary-strong))] opacity-60" />
         </div>
     );
 }

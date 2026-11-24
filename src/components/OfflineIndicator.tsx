@@ -63,7 +63,7 @@ export default function OfflineIndicator() {
                 {!isOnline && (
                     <button
                         onClick={() => window.location.reload()}
-                        className="ml-1 text-[10px] px-2 py-0.5 rounded transition-colors bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-text-muted))]"
+                        className="ml-1 text-xs px-2 py-0.5 rounded transition-colors bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-text-muted))]"
                     >
                         {t.offlineReload}
                     </button>

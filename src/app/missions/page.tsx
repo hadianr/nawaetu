@@ -183,7 +183,7 @@ export default function MisiPage() {
                                 {mission.title}
                             </p>
                             <span className={cn(
-                                "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider",
+                                "text-xs px-1.5 py-0.5 rounded font-bold uppercase tracking-wider",
                                 mission.ruling === 'obligatory'
                                     ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border border-[rgb(var(--color-accent))]/30"
                                     : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30"
@@ -192,7 +192,7 @@ export default function MisiPage() {
                             </span>
                         </div>
                         {isGenderSpecific && (
-                            <span className="text-[9px] bg-[rgb(var(--color-surface))] px-1.5 py-0.5 rounded text-[rgb(var(--color-text-muted))]">
+                            <span className="text-xs bg-[rgb(var(--color-surface))] px-1.5 py-0.5 rounded text-[rgb(var(--color-text-muted))]">
                                 <AppIcon name={mission.gender === 'female' ? "heart-handshake" : "hands"} size="xs" tone="muted" />
                             </span>
                         )}
@@ -200,25 +200,25 @@ export default function MisiPage() {
                     {isLocked ? (
                         <div className="flex items-center gap-1 mt-1 text-[rgb(var(--color-warning))]">
                             <AlertCircle className="w-3 h-3" />
-                            <p className="text-[10px] font-medium">{validation.reason}</p>
+                            <p className="text-xs font-medium">{validation.reason}</p>
                         </div>
                     ) : validation.isLate ? (
                         <div className="flex items-center gap-1 mt-1 text-[rgb(var(--color-danger))]">
                             <AlertCircle className="w-3 h-3" />
-                            <p className="text-[10px] font-medium">{validation.reason}</p>
+                            <p className="text-xs font-medium">{validation.reason}</p>
                         </div>
                     ) : validation.isEarly ? (
                         <div className="flex items-center gap-1 mt-1 text-[rgb(var(--color-primary-strong))]">
                             <Sparkles className="w-3 h-3" />
-                            <p className="text-[10px] font-medium">{translations.home_mission_early_bonus}</p>
+                            <p className="text-xs font-medium">{translations.home_mission_early_bonus}</p>
                         </div>
                     ) : (
-                        <p className="text-[10px] text-[rgb(var(--color-text-muted))]">{mission.description}</p>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">{mission.description}</p>
                     )}
                 </div>
                 <div className="flex flex-col items-end gap-1">
                     <span className={cn(
-                        "text-[10px] font-bold px-2 py-0.5 rounded-full",
+                        "text-xs font-bold px-2 py-0.5 rounded-full",
                         "text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10"
                     )}
                     >

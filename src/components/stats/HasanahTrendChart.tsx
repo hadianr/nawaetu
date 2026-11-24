@@ -58,7 +58,7 @@ export function HasanahTrendChart({
                             key={f.id}
                             onClick={() => setTimeRange(f.id)}
                             className={cn(
-                                "px-1 py-1.5 rounded-lg text-[10px] sm:px-3 font-bold transition-all whitespace-nowrap text-center",
+                                "px-1 py-1.5 rounded-lg text-xs sm:px-3 font-bold transition-all whitespace-nowrap text-center",
                                 timeRange === f.id
                                     ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                                     : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))]"
@@ -89,7 +89,7 @@ export function HasanahTrendChart({
                             axisLine={false}
                             tickMargin={12}
                             tickFormatter={(value) => value}
-                            tick={{ fill: 'rgb(var(--color-text-muted) / 0.8)', fontSize: 9, fontWeight: 700 }}
+                            tick={{ fill: 'rgb(var(--color-text-muted))', fontSize: 12, fontWeight: 700 }}
                             interval={timeRange === 'today' ? 3 : timeRange === '7d' ? 0 : 'preserveStartEnd'}
                         />
                         <ChartTooltip
@@ -118,7 +118,7 @@ export function HasanahTrendChart({
                     </AreaChart>
                 </ChartContainer>
             </div>
-            <p className="text-[10px] text-center mt-3 text-[rgb(var(--color-text-muted))]">
+            <p className="text-xs text-center mt-3 text-[rgb(var(--color-text-muted))]">
                 {t.stats.chart.subtitle}
             </p>
         </div>

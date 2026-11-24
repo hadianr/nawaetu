@@ -53,7 +53,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                     <div className="flex-1 min-w-0 pr-2">
                         <p className="font-semibold text-[rgb(var(--color-text-strong))] text-sm">{localizedTitle}</p>
                         {localizedDesc && (
-                            <p className="text-[11px] sm:text-xs text-[rgb(var(--color-text-muted))] mt-1 leading-relaxed line-clamp-2">{localizedDesc}</p>
+                            <p className="text-xs sm:text-xs text-[rgb(var(--color-text-muted))] mt-1 leading-relaxed line-clamp-2">{localizedDesc}</p>
                         )}
                     </div>
                     <ChevronDown className={cn("w-4 h-4 text-[rgb(var(--color-text-muted))] transition-transform flex-shrink-0", isExpanded && "rotate-180")} />
@@ -71,7 +71,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                         {/* Steps / Tips */}
                         {localizedSteps && localizedSteps.length > 0 && (
                             <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] p-4 mt-3 shadow-[var(--shadow-card)]">
-                                <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                                <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-3 flex items-center gap-1.5">
                                     <AppIcon name="sparkles" size="xs" tone="primary" /> {t.practicesTipsLabel || "Panduan / Tata Cara"}
                                 </p>
                                 <ul className="space-y-2">
@@ -102,7 +102,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                         {/* Dalil */}
                         {item.dalil && (
                             <div className="pt-2">
-                                <div className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
+                                <div className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
                                     <AppIcon name="book" size="xs" tone="muted" /> {t.faqEvidenceLabel || "Dalil"}
                                 </div>
                                 <DalilBadge dalil={item.dalil} variant="inline" />
@@ -123,7 +123,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                             <Moon className="w-5 h-5 text-[rgb(var(--color-primary-strong))] shrink-0 mt-0.5 sm:mt-0" />
                             <span className="leading-snug">Panduan 10 Malam Terakhir</span>
                         </DialogTitle>
-                        <p className="text-[11px] sm:text-xs text-[rgb(var(--color-text-muted))] mt-1.5 leading-relaxed break-words text-left">
+                        <p className="text-xs sm:text-xs text-[rgb(var(--color-text-muted))] mt-1.5 leading-relaxed break-words text-left">
                             Saku digital komprehensif untuk I&apos;tikaf, Doa, dan Sholat Sunnah
                         </p>
                     </div>
@@ -146,7 +146,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                                     <TabsTrigger
                                         key={section.id}
                                         value={section.id}
-                                        className="flex-1 text-[10px] sm:text-xs text-center whitespace-normal leading-tight h-auto py-2 text-[rgb(var(--color-text-muted))] data-[state=active]:bg-[rgb(var(--color-primary))] data-[state=active]:text-[rgb(var(--color-primary-foreground))] hover:text-[rgb(var(--color-text))] transition-colors"
+                                        className="flex-1 text-xs sm:text-xs text-center whitespace-normal leading-tight h-auto py-2 text-[rgb(var(--color-text-muted))] data-[state=active]:bg-[rgb(var(--color-primary))] data-[state=active]:text-[rgb(var(--color-primary-foreground))] hover:text-[rgb(var(--color-text))] transition-colors"
                                     >
                                         {locale === "en" && section.title_en ? section.title_en : section.title}
                                     </TabsTrigger>

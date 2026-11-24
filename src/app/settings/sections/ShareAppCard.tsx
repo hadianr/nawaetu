@@ -61,7 +61,7 @@ export default function ShareAppCard({ t }: ShareAppCardProps) {
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
                 <div className={cn(
                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                    "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-primary))]"
+                    "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-primary-strong))]"
                 )}>
                     <Share2 className="w-3.5 h-3.5" />
                 </div>
@@ -73,7 +73,7 @@ export default function ShareAppCard({ t }: ShareAppCardProps) {
                         {t.shareAppCardTitle || "Bagikan Aplikasi"}
                     </h3>
                     <p className={cn(
-                        "text-[10px] leading-tight truncate mt-0.5",
+                        "text-xs leading-tight truncate mt-0.5",
                         "text-[rgb(var(--color-text-muted))]"
                     )}>
                         {t.shareAppCardDesc || "Ajak teman & keluarga beribadah bersama."}
@@ -84,7 +84,7 @@ export default function ShareAppCard({ t }: ShareAppCardProps) {
                 onClick={handleShare}
                 size="sm"
                 className={cn(
-                    "font-bold h-7 px-3 text-[11px] rounded-lg transition-all active:scale-[0.98] shrink-0 gap-1",
+                    "font-bold h-7 px-3 text-xs rounded-lg transition-all active:scale-[0.98] shrink-0 gap-1",
                     "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                 )}
             >

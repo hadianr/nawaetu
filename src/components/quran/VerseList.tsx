@@ -513,7 +513,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                 <h1 className="text-base md:text-lg font-bold truncate leading-tight text-[rgb(var(--color-text-strong))]">
                                     {chapter.name_simple}
                                 </h1>
-                                <p className="text-[9px] md:text-[10px] text-[rgb(var(--color-primary-strong))] font-medium truncate uppercase tracking-wider">
+                                <p className="text-xs md:text-xs text-[rgb(var(--color-primary-strong))] font-medium truncate uppercase tracking-wider">
                                     {chapter.revelation_place === "Makkah" ? t.quranMakkah : t.quranMadinah}, {chapter.verses_count} {t.quranVerseCount}
                                 </p>
                             </div>
@@ -527,7 +527,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                     <TooltipTrigger asChild>
                                         <button
                                             onClick={handleSurahPlay}
-                                            className="flex items-center justify-center gap-1.5 h-9 w-9 md:w-auto md:px-4 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] transition-colors border border-[rgb(var(--color-primary))]/20 shrink-0 p-0"
+                                            className="flex items-center justify-center gap-1.5 h-9 w-9 md:w-auto md:px-4 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-strong))] transition-colors border border-[rgb(var(--color-primary))]/20 shrink-0 p-0"
                                         >
                                             <Play className="h-3.5 w-3.5 fill-current flex-shrink-0" />
                                             <span className="hidden md:inline text-xs font-bold leading-none">{t.quranPlaySurah}</span>
@@ -614,7 +614,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                             <div ref={loadMoreRef} className="flex justify-center items-center py-8">
                                 {isPending ? (
                                     <div className="flex flex-col items-center gap-2">
-                                        <Loader2 className="w-6 h-6 animate-spin text-[rgb(var(--color-primary))]" />
+                                        <Loader2 className="w-6 h-6 animate-spin text-[rgb(var(--color-primary-strong))]" />
                                     </div>
                                 ) : (
                                     <div className="w-full h-10 border-t border-[rgb(var(--color-border))]/60" />
@@ -682,7 +682,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                 return (
                                     <div key={`verse-error-${verse.verse_key}`} className="px-4 md:px-6 py-6 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-danger))]/10 rounded-lg border border-[rgb(var(--color-danger))]/30">
                                         <p className="text-[rgb(var(--color-danger))] text-sm font-semibold">Error rendering verse {verse.verse_key}</p>
-                                        <p className="text-[rgb(var(--color-danger))]/70 text-xs mt-1">{error instanceof Error ? error.message : 'Unknown error'}</p>
+                                        <p className="text-[rgb(var(--color-danger))] text-xs mt-1">{error instanceof Error ? error.message : 'Unknown error'}</p>
                                     </div>
                                 );
                             }
@@ -692,7 +692,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                             <div ref={loadMoreRef} className="flex justify-center items-center py-8 border-t border-[rgb(var(--color-border))]">
                                 {isPending ? (
                                     <div className="flex flex-col items-center gap-2">
-                                        <Loader2 className="w-6 h-6 animate-spin text-[rgb(var(--color-primary))]" />
+                                        <Loader2 className="w-6 h-6 animate-spin text-[rgb(var(--color-primary-strong))]" />
                                     </div>
                                 ) : (
                                     <div className="w-full h-10" />
@@ -794,7 +794,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
 
                 {isPending && (
                     <div className="fixed top-20 right-4 z-50">
-                        <Loader2 className="h-5 w-5 animate-spin text-[rgb(var(--color-primary))]" />
+                        <Loader2 className="h-5 w-5 animate-spin text-[rgb(var(--color-primary-strong))]" />
                     </div>
                 )}
             </div>

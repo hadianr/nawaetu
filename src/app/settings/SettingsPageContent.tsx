@@ -307,7 +307,7 @@ export default function SettingsPageContent() {
                                 </p>
                             </div>
                         </div>
-                        <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[rgb(var(--color-primary))] shrink-0" />
+                        <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[rgb(var(--color-primary-strong))] shrink-0" />
                     </Link>
                 </div>
 
@@ -324,10 +324,10 @@ export default function SettingsPageContent() {
                         <div className="flex items-center justify-between w-full">
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
-                                <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.locationLabel}</span>
+                                <span className="text-xs uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.locationLabel}</span>
                             </div>
                             <svg
-                                className={`w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-all ${(isRefreshing || locationLoading) ? 'animate-spin text-[rgb(var(--color-primary))]' : ''}`}
+                                className={`w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] transition-all ${(isRefreshing || locationLoading) ? 'animate-spin text-[rgb(var(--color-primary-strong))]' : ''}`}
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
@@ -347,9 +347,9 @@ export default function SettingsPageContent() {
                             <div className="flex items-center justify-between w-full">
                                 <div className="flex items-center gap-2">
                                     <Clock className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
-                                    <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.methodLabel}</span>
+                                    <span className="text-xs uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.methodLabel}</span>
                                 </div>
-                                <ChevronDown className="w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
+                                <ChevronDown className="w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors" />
                             </div>
                             <p className="text-xs text-[rgb(var(--color-text-strong))] font-medium line-clamp-1 leading-none mb-0.5">
                                 {currentMethod?.label || "Kemenag RI"}
@@ -386,8 +386,8 @@ export default function SettingsPageContent() {
                         {/* Visual Layer */}
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
                             <div className="flex items-center justify-between w-full">
-                                <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.hijriAdjustmentLabel}</span>
-                                <ChevronDown className="w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
+                                <span className="text-xs uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.hijriAdjustmentLabel}</span>
+                                <ChevronDown className="w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors" />
                             </div>
                             <div>
                                 <p className="text-xs text-[rgb(var(--color-text-strong))] font-medium line-clamp-1 leading-none mb-1">
@@ -395,7 +395,7 @@ export default function SettingsPageContent() {
                                         hijriAdjustment === "-1" ? t.adjustmentMuhammadiyah :
                                             `${t.adjustmentManual} (${hijriAdjustment})`}
                                 </p>
-                                <p className="text-[10px] text-[rgb(var(--color-text-muted))] line-clamp-1">
+                                <p className="text-xs text-[rgb(var(--color-text-muted))] line-clamp-1">
                                     {t.hijriDateDesc}
                                 </p>
                             </div>
@@ -474,7 +474,7 @@ export default function SettingsPageContent() {
                         <div className="flex items-center gap-2 mb-1">
                             <Heart className={cn(
                                 "w-4 h-4",
-                                "text-[rgb(var(--color-primary))] fill-[rgb(var(--color-primary))]/20"
+                                "text-[rgb(var(--color-primary-strong))] fill-[rgb(var(--color-primary))]/20"
                             )} />
                             <span className={cn(
                                 "text-sm font-bold",
@@ -482,7 +482,7 @@ export default function SettingsPageContent() {
                             )}>{t.supportTitle}</span>
                         </div>
                         <p className={cn(
-                            "text-[10px] max-w-[200px] leading-relaxed",
+                            "text-xs max-w-[200px] leading-relaxed",
                             "text-[rgb(var(--color-text-muted))]"
                         )}>
                             {t.supportText}
@@ -512,14 +512,14 @@ export default function SettingsPageContent() {
                     >
                         <BrandIcon size={20} />
                         <span className={cn(
-                            "text-[10px] font-bold transition-colors",
+                            "text-xs font-bold transition-colors",
                             "text-[rgb(var(--color-text-muted))]"
                         )}>
                             {t.aboutAppName} {APP_CONFIG.version}
                         </span>
                         <ChevronRight className={cn(
                             "w-3 h-3 transition-colors",
-                            "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))]"
+                            "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))]"
                         )} />
                     </button>
                 </div>
@@ -544,23 +544,23 @@ export default function SettingsPageContent() {
                         <div className="flex items-center justify-between text-[rgb(var(--color-text-muted))]">
                             <div className="flex items-center gap-2">
                                 <Settings2 className="w-3 h-3" />
-                                <span className="text-[10px] font-bold uppercase tracking-wider">Developer Tools</span>
+                                <span className="text-xs font-bold uppercase tracking-wider">Developer Tools</span>
                             </div>
                             <Link
                                 href="/notification-debug"
-                                className="text-[10px] px-2 py-1 rounded border transition-colors bg-[rgb(var(--color-danger))]/10 text-[rgb(var(--color-danger))] border-[rgb(var(--color-danger))]/30 hover:bg-[rgb(var(--color-danger))]/20"
+                                className="text-xs px-2 py-1 rounded border transition-colors bg-[rgb(var(--color-danger))]/10 text-[rgb(var(--color-danger))] border-[rgb(var(--color-danger))]/30 hover:bg-[rgb(var(--color-danger))]/20"
                             >
                                 Open Debugger
                             </Link>
                         </div>
                         {fcmToken ? (
                             <div className="p-3 rounded-xl border bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]">
-                                <p className="text-[10px] font-mono text-[rgb(var(--color-primary-strong))]/70 break-all leading-relaxed">
+                                <p className="text-xs font-mono text-[rgb(var(--color-primary-strong))] break-all leading-relaxed">
                                     {fcmToken}
                                 </p>
                             </div>
                         ) : (
-                            <p className="text-[9px] italic text-[rgb(var(--color-text-muted))]">
+                            <p className="text-xs italic text-[rgb(var(--color-text-muted))]">
                                 Token belum tersedia. Klik &quot;Open Debugger&quot; untuk mencoba mengambil token.
                             </p>
                         )}

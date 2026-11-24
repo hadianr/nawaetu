@@ -92,8 +92,8 @@ export default function DailyMissionCard({
                         <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20">
                             <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-strong))] mt-0.5 shrink-0" />
                             <div>
-                                <p className="text-[10px] font-bold text-[rgb(var(--color-primary-strong))] leading-tight">{t.home_mission_early_title}</p>
-                                <p className="text-[9px] text-[rgb(var(--color-primary-strong))]/70 leading-tight italic">{t.home_mission_early_quote}</p>
+                                <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] leading-tight">{t.home_mission_early_title}</p>
+                                <p className="text-xs text-[rgb(var(--color-primary-strong))] leading-tight italic">{t.home_mission_early_quote}</p>
                             </div>
                         </div>
                     );
@@ -102,8 +102,8 @@ export default function DailyMissionCard({
                         <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-[rgb(var(--color-warning))]/10 border border-[rgb(var(--color-warning))]/20">
                             <AlertCircle className="w-3 h-3 text-[rgb(var(--color-warning))] mt-0.5 shrink-0" />
                             <div>
-                                <p className="text-[10px] font-bold text-[rgb(var(--color-warning))] leading-tight">{t.home_mission_late_title.replace("{minutes}", Math.floor(minsRemaining).toString())}</p>
-                                <p className="text-[9px] text-[rgb(var(--color-warning))]/70 leading-tight italic">{t.home_mission_late_quote}</p>
+                                <p className="text-xs font-bold text-[rgb(var(--color-warning))] leading-tight">{t.home_mission_late_title.replace("{minutes}", Math.floor(minsRemaining).toString())}</p>
+                                <p className="text-xs text-[rgb(var(--color-warning))] leading-tight italic">{t.home_mission_late_quote}</p>
                             </div>
                         </div>
                     );
@@ -147,34 +147,34 @@ export default function DailyMissionCard({
                             {mission.title}
                         </p>
                         {isSpecial && !isCompleted && !isLocked && (
-                            <span className="text-[8px] px-1 rounded bg-[rgb(var(--color-accent))]/15 text-[rgb(var(--color-accent-strong))] border border-[rgb(var(--color-accent))]/30">
+                            <span className="text-xs px-1 rounded bg-[rgb(var(--color-accent))]/15 text-[rgb(var(--color-accent-strong))] border border-[rgb(var(--color-accent))]/30">
                                 {t.home_mission_special}
                             </span>
                         )}
                     </div>
                     <div className="flex items-center gap-2">
                         <span className={cn(
-                            "text-[7px] px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
+                            "text-xs px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
                             mission.ruling === 'obligatory'
                                 ? "bg-[rgb(var(--color-info))]/15 text-[rgb(var(--color-info))] border-[rgb(var(--color-info))]/30"
                                 : "bg-[rgb(var(--color-success))]/10 text-[rgb(var(--color-success))] border-[rgb(var(--color-success))]/20"
                         )}>
                             {getRulingLabel(mission.ruling, t)}
                         </span>
-                        <p className="text-[10px] truncate text-[rgb(var(--color-text))]">
+                        <p className="text-xs truncate text-[rgb(var(--color-text))]">
                             {formatHasanahRange(mission.hasanahReward, mission.completionOptions, isBackdated)} Hasanah
                         </p>
 
                         {isLocked ? (
-                            <span className="text-[9px] flex items-center gap-0.5 ml-auto text-[rgb(var(--color-text-muted))]">
+                            <span className="text-xs flex items-center gap-0.5 ml-auto text-[rgb(var(--color-text-muted))]">
                                 {t.home_mission_locked}
                             </span>
                         ) : validation.isLate ? (
-                            <span className="text-[9px] text-[rgb(var(--color-danger))] bg-[rgb(var(--color-danger))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-danger))]/20 flex items-center gap-1 font-medium ml-auto">
+                            <span className="text-xs text-[rgb(var(--color-danger))] bg-[rgb(var(--color-danger))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-danger))]/20 flex items-center gap-1 font-medium ml-auto">
                                 <AlertCircle className="w-2.5 h-2.5" /> {t.home_mission_late}
                             </span>
                         ) : validation.isEarly ? (
-                            <span className="text-[9px] text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20 flex items-center gap-1 font-medium ml-auto">
+                            <span className="text-xs text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20 flex items-center gap-1 font-medium ml-auto">
                                 <Sparkles className="w-2.5 h-2.5" /> {t.home_mission_early}
                             </span>
                         ) : null}

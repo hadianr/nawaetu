@@ -236,12 +236,12 @@ export default function MissionsWidget() {
                     </div>
                     <div>
                         <h2 className="text-sm font-bold leading-none text-[rgb(var(--color-text-strong))]">{t.home_mission_focus_title}</h2>
-                        <p className="text-[10px] mt-0.5 text-[rgb(var(--color-text-muted))]">{t.home_mission_daily_target}</p>
+                        <p className="text-xs mt-0.5 text-[rgb(var(--color-text-muted))]">{t.home_mission_daily_target}</p>
                     </div>
                 </div>
 
                 <div className={cn(
-                    "text-[10px] px-3 py-1 rounded-full font-medium border backdrop-blur-sm",
+                    "text-xs px-3 py-1 rounded-full font-medium border backdrop-blur-sm",
                     completedCount === missions.length
                         ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))]"
                         : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
@@ -297,7 +297,7 @@ export default function MissionsWidget() {
 
             {!gender && (
                 <div className="mt-3 p-2 bg-[rgb(var(--color-warning))]/10 border border-[rgb(var(--color-warning))]/20 rounded-lg">
-                    <p className="text-[10px] text-[rgb(var(--color-warning))] text-center">
+                    <p className="text-xs text-[rgb(var(--color-warning))] text-center">
                         {t.home_mission_select_gender_hint}
                     </p>
                 </div>

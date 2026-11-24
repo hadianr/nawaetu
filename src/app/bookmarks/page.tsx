@@ -123,7 +123,7 @@ export default function BookmarksPage() {
                         )}>
                             <div className={cn(
                                 "w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 transition-all",
-                                "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))]"
+                                "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))]"
                             )}>
                                 <BookmarkIcon className="w-10 h-10" />
                             </div>
@@ -175,13 +175,13 @@ export default function BookmarksPage() {
                                                     QS. {bookmark.surahName} : {bookmark.verseId}
                                                 </div>
                                                 {isCurrentLastRead && (
-                                                    <span className="text-[10px] font-bold text-[rgb(var(--color-primary-strong))] uppercase tracking-wider hidden sm:block">
+                                                    <span className="text-xs font-bold text-[rgb(var(--color-primary-strong))] uppercase tracking-wider hidden sm:block">
                                                         {t.bookmarksLastReadLabel}
                                                     </span>
                                                 )}
                                             </div>
 
-                                            <div className="flex items-center gap-1.5 text-[10px] font-medium text-[rgb(var(--color-text-muted))] bg-[rgb(var(--color-surface-subtle))] px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-border))]">
+                                            <div className="flex items-center gap-1.5 text-xs font-medium text-[rgb(var(--color-text-muted))] bg-[rgb(var(--color-surface-subtle))] px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-border))]">
                                                 <Calendar className="w-3.5 h-3.5" />
                                                 {new Date(bookmark.updatedAt || bookmark.createdAt || getCurrentTimestamp()).toLocaleString('id-ID', {
                                                     day: 'numeric',
@@ -216,7 +216,7 @@ export default function BookmarksPage() {
                                             )}>
                                                 <FileText className={cn(
                                                     "absolute top-4 left-4 w-4 h-4 transition-colors",
-                                                    "text-[rgb(var(--color-primary))]/60"
+                                                    "text-[rgb(var(--color-primary-strong))]"
                                                 )} />
                                                 <p className="text-sm pl-7 italic leading-relaxed text-[rgb(var(--color-text-muted))]">
                                                     &quot;{bookmark.note}&quot;

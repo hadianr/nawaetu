@@ -69,13 +69,13 @@ export default function SirahHistoryPage() {
                                 </span>
                                 <span className="min-w-0 flex-1">
                                     {chapter.date && (
-                                        <span className="block text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+                                        <span className="block text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
                                             {formatHistoryDate(chapter.date, locale)}
                                         </span>
                                     )}
                                     <span className="block text-sm font-semibold text-[rgb(var(--color-text-strong))]">{isEn ? chapter.titleEn : chapter.titleId}</span>
                                     <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{isEn ? chapter.introEn : chapter.introId}</span>
-                                    <span className="mt-1 block text-[10px] text-[rgb(var(--color-text-muted))]">
+                                    <span className="mt-1 block text-xs text-[rgb(var(--color-text-muted))]">
                                         {(t.historyChapterCount || "{count} hadits").replace("{count}", String(chapter.hadithCount))}
                                     </span>
                                 </span>
@@ -85,7 +85,7 @@ export default function SirahHistoryPage() {
                     ))}
                 </ol>
 
-                <p className="text-[11px] leading-relaxed text-[rgb(var(--color-text-muted))]">{t.historySources}</p>
+                <p className="text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{t.historySources}</p>
             </main>
         </div>
     );

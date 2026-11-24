@@ -96,7 +96,7 @@ export function ChatHistorySidebar({
                                     <MessageSquare className={cn(
                                         "w-4 h-4 shrink-0",
                                         activeSessionId === session.id
-                                            ? "text-[rgb(var(--color-primary))]"
+                                            ? "text-[rgb(var(--color-primary-strong))]"
                                             : "text-[rgb(var(--color-text-muted))]"
                                     )} />
                                     <div className="min-w-0">
@@ -109,7 +109,7 @@ export function ChatHistorySidebar({
                                             {session.title || "Percakapan Baru"}
                                         </p>
                                         <p className={cn(
-                                            "text-[10px]",
+                                            "text-xs",
                                             "text-[rgb(var(--color-text-muted))]"
                                         )}>
                                             {new Date(session.updatedAt).toLocaleDateString()}

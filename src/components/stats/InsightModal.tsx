@@ -100,7 +100,7 @@ export function InsightModal({
                                 <div className="p-4 bg-[rgb(var(--color-accent))]/10 border border-[rgb(var(--color-accent))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
                                         <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-accent-strong))]" />
-                                        <p className="text-[10px] font-bold text-[rgb(var(--color-accent-strong))] uppercase">{t.stats.insights.streak.status}</p>
+                                        <p className="text-xs font-bold text-[rgb(var(--color-accent-strong))] uppercase">{t.stats.insights.streak.status}</p>
                                     </div>
                                     <p className="text-xs text-[rgb(var(--color-text))] font-medium leading-relaxed">
                                         {data.streakData.currentStreak >= 40
@@ -119,14 +119,14 @@ export function InsightModal({
                                 <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
-                                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-strong))] uppercase">{t.stats.insights.prayers.insightTitle}</p>
+                                        <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] uppercase">{t.stats.insights.prayers.insightTitle}</p>
                                     </div>
                                     {data.primaryPrayer ? (
                                         <>
                                             <p className="text-xs text-[rgb(var(--color-text))] italic mb-2">
                                                 &quot;{`${t.stats.insights.prayers.mostConsistent} ${data.primaryPrayer}.`}&quot;
                                             </p>
-                                            <p className="text-[10px] text-[rgb(var(--color-text-muted))]">
+                                            <p className="text-xs text-[rgb(var(--color-text-muted))]">
                                                 {data.sunnahTotal > 0
                                                     ? t.stats.insights.prayers.sunnahDone?.replace('{{count}}', data.sunnahTotal.toString())
                                                     : t.stats.insights.prayers.sunnahNone
@@ -147,7 +147,7 @@ export function InsightModal({
                                 <div className="p-4 bg-[rgb(var(--color-warning))]/10 border border-[rgb(var(--color-warning))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
                                         <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />
-                                        <p className="text-[10px] font-bold text-[rgb(var(--color-warning))] uppercase">{t.stats.insights.hasanah.insightTitle}</p>
+                                        <p className="text-xs font-bold text-[rgb(var(--color-warning))] uppercase">{t.stats.insights.hasanah.insightTitle}</p>
                                     </div>
                                     <p className="text-xs text-[rgb(var(--color-text))]">
                                         {data.powerDayName
@@ -165,7 +165,7 @@ export function InsightModal({
                                 <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
                                         <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />
-                                        <p className="text-[10px] font-bold text-[rgb(var(--color-info))] uppercase">
+                                        <p className="text-xs font-bold text-[rgb(var(--color-info))] uppercase">
                                             {data.consistency > 80 ? t.stats.insights.consistency.highTitle : t.stats.insights.consistency.tipTitle || "Tips Disiplin"}
                                         </p>
                                     </div>
@@ -192,12 +192,12 @@ export function InsightModal({
                                 <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
                                         <Award className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />
-                                        <p className="text-[10px] font-bold text-[rgb(var(--color-info))] uppercase">{t.stats.insights.quran.insightTitle || "Wawasan Tilawah"}</p>
+                                        <p className="text-xs font-bold text-[rgb(var(--color-info))] uppercase">{t.stats.insights.quran.insightTitle || "Wawasan Tilawah"}</p>
                                     </div>
                                     <p className="text-xs text-[rgb(var(--color-text))] font-medium mb-1">
                                         {t.stats.insights.quran.summary?.replace('{{count}}', data.totalQuranAyat.toString())}
                                     </p>
-                                    <p className="text-[10px] text-[rgb(var(--color-text-muted))]">
+                                    <p className="text-xs text-[rgb(var(--color-text-muted))]">
                                         {data.totalQuranAyat > 0
                                             ? t.stats.insights.quran.milestoneReach?.replace('{{needed}}', (data.nextQuranMilestone - data.totalQuranAyat).toString()).replace('{{target}}', data.nextQuranMilestone.toString())
                                             : t.stats.insights.quran.startTip
@@ -213,7 +213,7 @@ export function InsightModal({
                                 <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
-                                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-strong))] uppercase">{t.stats.insights.dhikr.benefitTitle}</p>
+                                        <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] uppercase">{t.stats.insights.dhikr.benefitTitle}</p>
                                     </div>
                                     <p className="text-xs text-[rgb(var(--color-text))] italic">
                                         &quot;{t.stats.insights.dhikr.summary}&quot;

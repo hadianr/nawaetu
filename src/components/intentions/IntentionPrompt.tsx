@@ -123,10 +123,10 @@ export default function IntentionPrompt({
                                                 {dalil.arabic}
                                             </p>
                                         )}
-                                        <p className="text-[10px] sm:text-xs md:text-sm font-serif italic leading-relaxed px-4 text-[rgb(var(--color-text-muted))]">
+                                        <p className="text-xs sm:text-xs md:text-sm font-serif italic leading-relaxed px-4 text-[rgb(var(--color-text-muted))]">
                             &quot;{isId ? dalil.textId : dalil.textEn}&quot;
                                         </p>
-                                        <p className="text-[9px] font-medium text-[rgb(var(--color-primary))] opacity-80 tracking-wider uppercase">
+                                        <p className="text-xs font-medium text-[rgb(var(--color-primary-strong))] opacity-80 tracking-wider uppercase">
                                             — {isId ? dalil.sourceId : dalil.sourceEn}
                                         </p>
                                     </motion.div>
@@ -179,7 +179,7 @@ export default function IntentionPrompt({
                                 }}
                                 autoFocus
                             />
-                            <div className="absolute bottom-3 right-3 text-[10px] uppercase font-medium transition-colors text-[rgb(var(--color-text-muted))]">
+                            <div className="absolute bottom-3 right-3 text-xs uppercase font-medium transition-colors text-[rgb(var(--color-text-muted))]">
                                 {intentionText.length}/500
                             </div>
                         </div>
@@ -187,7 +187,7 @@ export default function IntentionPrompt({
                         {/* Inspiration Suggestions */}
                         <div className="pt-2">
                             <div className="flex items-center justify-between mb-3 px-1">
-                                <label className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.intention_need_inspiration}</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.intention_need_inspiration}</label>
                                 <button
                                     onClick={() => {
                                         const suggestions = t.intention_suggestions as string[];
@@ -196,7 +196,7 @@ export default function IntentionPrompt({
                                         ];
                                         handleSuggestionClick(randomSuggestion);
                                     }}
-                                    className="text-[10px] font-bold flex items-center gap-1 transition-colors uppercase tracking-wider text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-strong))]"
+                                    className="text-xs font-bold flex items-center gap-1 transition-colors uppercase tracking-wider text-[rgb(var(--color-primary-strong))] hover:text-[rgb(var(--color-primary-strong))]"
                                 >
                                     <AppIcon name="sparkles" size="xs" tone="primary" />
                                     {t.intention_random_btn}
@@ -207,7 +207,7 @@ export default function IntentionPrompt({
                                     <button
                                         key={index}
                                         onClick={() => handleSuggestionClick(suggestion)}
-                                        className="text-[11px] px-3 py-1.5 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 rounded-lg transition-all text-left font-serif italic text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
+                                        className="text-xs px-3 py-1.5 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 rounded-lg transition-all text-left font-serif italic text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                                     >
                                         {suggestion}
                                     </button>

@@ -65,16 +65,16 @@ export function StatsOverview({
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                             <div className="flex items-center gap-1.5 min-w-0">
-                                <h2 className="text-base sm:text-lg font-bold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary))] transition-colors truncate">
+                                <h2 className="text-base sm:text-lg font-bold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors truncate">
                                     {playerRank.title}
                                 </h2>
-                                <span className="text-[7px] sm:text-[8px] font-bold tracking-wider uppercase text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/20 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/30 shrink-0">
+                                <span className="text-xs sm:text-xs font-bold tracking-wider uppercase text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/20 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/30 shrink-0">
                                     LV. {playerStats.level}
                                 </span>
                             </div>
                             <div className="text-right shrink-0">
-                                <span className="text-[rgb(var(--color-primary-strong))] text-[10px] sm:text-xs font-bold">{playerStats.hasanah}</span>
-                                <span className="text-[rgb(var(--color-text-muted))] text-[9px] sm:text-[10px] ml-0.5">/ {playerStats.nextLevelHasanah}</span>
+                                <span className="text-[rgb(var(--color-primary-strong))] text-xs sm:text-xs font-bold">{playerStats.hasanah}</span>
+                                <span className="text-[rgb(var(--color-text-muted))] text-xs sm:text-xs ml-0.5">/ {playerStats.nextLevelHasanah}</span>
                             </div>
                         </div>
 
@@ -108,7 +108,7 @@ export function StatsOverview({
                         )}
 
                         {nextRank && (
-                            <p className="hidden sm:block text-[9px] text-[rgb(var(--color-text-muted))] mt-1.5 px-1 truncate italic">
+                            <p className="hidden sm:block text-xs text-[rgb(var(--color-text-muted))] mt-1.5 px-1 truncate italic">
                                 &quot;{nextRank.milestone}&quot;
                             </p>
                         )}
@@ -170,11 +170,11 @@ export function StatsOverview({
                     >
                         <div className="flex items-center gap-2 mb-2">
                             {stat.icon}
-                            <span className="text-[10px] text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))] transition-colors line-clamp-1">{stat.label}</span>
+                            <span className="text-xs text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))] transition-colors line-clamp-1">{stat.label}</span>
                             <Info className="w-2.5 h-2.5 ml-auto opacity-0 group-hover:opacity-40 transition-opacity" />
                         </div>
                         <div className="text-xl md:text-2xl font-bold text-[rgb(var(--color-text-strong))]">{stat.value}</div>
-                        <div className="text-[9px] text-[rgb(var(--color-text-muted))] mt-0.5">{stat.sub}</div>
+                        <div className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5">{stat.sub}</div>
                     </button>
                 ))}
             </div>

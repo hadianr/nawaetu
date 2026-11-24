@@ -77,7 +77,7 @@ export default function PrayerTimeCard({
                                 <span className="text-xs font-medium flex items-center gap-1.5 text-[rgb(var(--color-text-muted))]">
                                     <AppIcon name="moon" size="xs" tone="muted" />
                                     {label}
-                                    <span className="text-[9px] font-normal text-[rgb(var(--color-text-muted))]/70">({t.prayerImsakRef})</span>
+                                    <span className="text-xs font-normal text-[rgb(var(--color-text-muted))]">({t.prayerImsakRef})</span>
                                 </span>
                                 <span className="text-xs font-semibold tabular-nums text-[rgb(var(--color-text-muted))]">
                                     {time}

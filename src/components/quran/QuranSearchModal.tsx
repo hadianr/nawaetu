@@ -75,7 +75,7 @@ export default function QuranSearchModal() {
                 <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                     {isPending && !results && (
                         <div className="flex flex-col items-center justify-center py-12 gap-3 opacity-50">
-                            <Loader2 className="h-8 w-8 animate-spin text-[rgb(var(--color-primary))]" />
+                            <Loader2 className="h-8 w-8 animate-spin text-[rgb(var(--color-primary-strong))]" />
                             <p className="text-sm font-medium text-[rgb(var(--color-text-muted))]">{translations.quranSearchSearching}</p>
                         </div>
                     )}

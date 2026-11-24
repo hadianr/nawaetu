@@ -345,7 +345,7 @@ export default function NotificationSettings() {
         return (
             <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-6 text-center space-y-4">
                 <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Bell className="w-8 h-8 text-[rgb(var(--color-primary))]" />
+                    <Bell className="w-8 h-8 text-[rgb(var(--color-primary-strong))]" />
                 </div>
                 <h3 className="text-lg font-bold text-[rgb(var(--color-text-strong))]">
                     {(t as unknown as Record<string, string>).notificationPermissionTitle || "Aktifkan Notifikasi Sholat"}
@@ -374,7 +374,7 @@ export default function NotificationSettings() {
                     <h3 className="font-semibold text-[rgb(var(--color-danger))] text-sm mb-1">
                         {locale === 'id' ? 'Akses Ditolak' : 'Permission Denied'}
                     </h3>
-                    <p className="text-xs text-[rgb(var(--color-danger))]/80 leading-relaxed">
+                    <p className="text-xs text-[rgb(var(--color-danger))] leading-relaxed">
                         {t.notificationDenied}
                     </p>
                 </div>
@@ -392,9 +392,9 @@ export default function NotificationSettings() {
                     {isEnabled ? (
                         <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 flex items-center justify-center shrink-0">
                             {isLoading ? (
-                                <Loader2 className="w-5 h-5 text-[rgb(var(--color-primary))] animate-spin" />
+                                <Loader2 className="w-5 h-5 text-[rgb(var(--color-primary-strong))] animate-spin" />
                             ) : (
-                                <Bell className="w-5 h-5 text-[rgb(var(--color-primary))]" />
+                                <Bell className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
                             )}
                         </div>
                     ) : (
@@ -483,7 +483,7 @@ export default function NotificationSettings() {
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface))]/70 p-4">
                 <div className="flex min-w-0 items-center gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10">
-                        <Flame className="h-5 w-5 text-[rgb(var(--color-primary))]" aria-hidden="true" />
+                        <Flame className="h-5 w-5 text-[rgb(var(--color-primary-strong))]" aria-hidden="true" />
                     </div>
                     <div>
                         <h3 className="text-sm font-semibold text-[rgb(var(--color-text-strong))] sm:text-base">{t.streakReminderTitle}</h3>

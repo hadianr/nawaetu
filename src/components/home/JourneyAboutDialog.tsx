@@ -134,7 +134,7 @@ export default function JourneyAboutDialog({ open, onOpenChange, phase, dayNumbe
                     </div>
 
                     <div className="flex items-start gap-3 rounded-xl border border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-primary))]/5 p-3 text-sm text-[rgb(var(--color-text))]">
-                        <AnimatedCheck className="mt-0.5 size-5 shrink-0 text-[rgb(var(--color-primary))]" />
+                        <AnimatedCheck className="mt-0.5 size-5 shrink-0 text-[rgb(var(--color-primary-strong))]" />
                         <div className="space-y-1">
                             <p className="font-medium text-[rgb(var(--color-text-strong))]">{String(t.journeyAboutObligations)}</p>
                             <p>{String(t.journeyAboutLate)}</p>
@@ -146,7 +146,7 @@ export default function JourneyAboutDialog({ open, onOpenChange, phase, dayNumbe
                     </Button>
 
                     {/* The honest fine print stays, but small: it is a footnote, not the opening line. */}
-                    <p className="text-[11px] leading-relaxed text-[rgb(var(--color-text-muted))]">
+                    <p className="text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">
                         {String(t.journeyAboutIntro)} {String(t.journeyAboutReview)}
                     </p>
                 </div>

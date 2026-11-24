@@ -88,12 +88,12 @@ export default function FastingTrackerWidget() {
                 </div>
                 <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-[15px] leading-tight">{t.fastingTitle}</h3>
-                    <p className="text-[11px] text-[rgb(var(--color-text-muted))] mt-0.5">{t.fastingSubtitle}</p>
+                    <p className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5">{t.fastingSubtitle}</p>
                 </div>
                 {/* Stats pill — quick year context */}
                 <div className="text-right shrink-0">
-                    <p className="text-[10px] text-[rgb(var(--color-text-muted))]">{stats.totalFasting}/30</p>
-                    <p className="text-[10px] font-semibold text-[rgb(var(--color-primary-light,var(--color-primary)))]">
+                    <p className="text-xs text-[rgb(var(--color-text-muted))]">{stats.totalFasting}/30</p>
+                    <p className="text-xs font-semibold text-[rgb(var(--color-primary-light,var(--color-primary)))]">
                         {Math.round((stats.totalFasting / 30) * 100)}%
                     </p>
                 </div>
@@ -107,13 +107,13 @@ export default function FastingTrackerWidget() {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`relative flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-[11px] font-semibold transition-all duration-200 ${isActive ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]" : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
+                            className={`relative flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${isActive ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]" : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                                 }`}
                         >
                             <AppIcon name={tab.icon} size="sm" tone={isActive ? "default" : "muted"} />
                             <span className="truncate">{tab.label}</span>
                             {tab.badge !== undefined && (
-                                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-[rgb(var(--color-warning))]/15 text-[rgb(var(--color-warning))] text-[8px] font-bold flex items-center justify-center leading-none">
+                                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-[rgb(var(--color-warning))]/15 text-[rgb(var(--color-warning))] text-xs font-bold flex items-center justify-center leading-none">
                                     {tab.badge}
                                 </span>
                             )}

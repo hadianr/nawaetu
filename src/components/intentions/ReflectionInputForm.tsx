@@ -145,7 +145,7 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
                                     <AppIcon name={item.icon} size="xl" tone={isSelected ? "primary" : "muted"} />
                                 </span>
                                 <span className={cn(
-                                    "text-[9px] font-bold transition-colors",
+                                    "text-xs font-bold transition-colors",
                                     isSelected ? item.color : "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))]"
                                 )}>
                                     {item.label}

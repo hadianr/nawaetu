@@ -35,7 +35,7 @@ export default function DhikrPage() {
     return (
         <main className="dhikr-page min-h-screen w-full bg-[rgb(var(--color-background))] font-sans text-[rgb(var(--color-text))]">
             <section aria-label="Tasbih digital Nawaetu" className="relative flex h-[100dvh] w-full max-w-full flex-col items-center overflow-hidden bg-transparent">
-                <Suspense fallback={<div className="flex-1 flex items-center justify-center"><Loader2 className="animate-spin text-[rgb(var(--color-primary))]" /></div>}>
+                <Suspense fallback={<div className="flex-1 flex items-center justify-center"><Loader2 className="animate-spin text-[rgb(var(--color-primary-strong))]" /></div>}>
                     <DhikrCounter />
                 </Suspense>
             </section>

@@ -61,7 +61,7 @@ export default function AudioPlayerBar({
         <div className="fixed bottom-24 left-0 right-0 z-40 pointer-events-none flex flex-col items-center gap-3 px-4">
             <div className="pointer-events-auto bg-[rgb(var(--color-surface))]/95 backdrop-blur-xl border border-[rgb(var(--color-border))] rounded-full p-2 pl-6 pr-2 flex items-center gap-4 shadow-[var(--shadow-floating)] animate-in slide-in-from-bottom-5">
                 <div className="flex flex-col">
-                    <span className="text-[10px] text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-wider">
+                    <span className="text-xs text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-wider">
                         {t.quranNowPlaying || 'Now Playing'}
                     </span>
                     <span className="text-xs font-bold text-[rgb(var(--color-text-strong))]">
@@ -77,7 +77,7 @@ export default function AudioPlayerBar({
                                     onClick={onScrollToPlaying}
                                     size="icon"
                                     variant="ghost"
-                                    className="h-8 w-8 rounded-full text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 mr-1"
+                                    className="h-8 w-8 rounded-full text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10 mr-1"
                                 >
                                     <Target className="h-4 w-4" />
                                 </Button>
@@ -97,11 +97,11 @@ export default function AudioPlayerBar({
                                 }}
                                 size="icon"
                                 variant="ghost"
-                                className={`h-8 w-8 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] ${loopMode !== 'off' ? 'text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10' : 'text-[rgb(var(--color-text-muted))]'}`}
+                                className={`h-8 w-8 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] ${loopMode !== 'off' ? 'text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10' : 'text-[rgb(var(--color-text-muted))]'}`}
                             >
                                 {loopMode === 'infinity' ? <InfinityIcon className="h-4 w-4" /> :
                                     loopMode === 'off' ? <Repeat className="h-4 w-4" /> :
-                                        <span className="text-[10px] font-bold border rounded px-0.5 border-current w-4 h-4 flex items-center justify-center">{loopMode}x</span>
+                                        <span className="text-xs font-bold border rounded px-0.5 border-current w-4 h-4 flex items-center justify-center">{loopMode}x</span>
                                 }
                             </Button>
                         </TooltipTrigger>

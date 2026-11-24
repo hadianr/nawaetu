@@ -62,7 +62,7 @@ export default function HomeHeader() {
         <header className="flex w-full items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
                 <p className={cn(
-                    "text-[11px] font-medium uppercase tracking-wider sm:text-sm",
+                    "text-xs font-medium uppercase tracking-wider sm:text-sm",
                     "text-[rgb(var(--color-primary-strong))]",
                 )}>
                     {greeting}

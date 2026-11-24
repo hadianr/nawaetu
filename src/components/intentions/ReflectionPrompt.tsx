@@ -128,10 +128,10 @@ export default function ReflectionPrompt({
                                                 {dalil.arabic}
                                             </p>
                                         )}
-                                        <p className="text-[10px] sm:text-xs md:text-sm font-serif italic leading-relaxed px-2 text-[rgb(var(--color-text-muted))]">
+                                        <p className="text-xs sm:text-xs md:text-sm font-serif italic leading-relaxed px-2 text-[rgb(var(--color-text-muted))]">
                                             &quot;{isId ? dalil.textId : dalil.textEn}&quot;
                                         </p>
-                                        <p className="text-[9px] font-medium text-[rgb(var(--color-primary))] opacity-80 tracking-wider uppercase">
+                                        <p className="text-xs font-medium text-[rgb(var(--color-primary-strong))] opacity-80 tracking-wider uppercase">
                                             — {isId ? dalil.sourceId : dalil.sourceEn}
                                         </p>
                                     </motion.div>
@@ -157,7 +157,7 @@ export default function ReflectionPrompt({
                         {/* Today's Intention */}
                         <div className="backdrop-blur-md border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] rounded-2xl p-5 relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-1 h-full bg-[rgb(var(--color-primary))]" />
-                            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1 sm:mb-2 text-[rgb(var(--color-text-muted))]">{t.intention_todays_niat}</p>
+                            <p className="text-xs sm:text-xs font-bold uppercase tracking-wider mb-1 sm:mb-2 text-[rgb(var(--color-text-muted))]">{t.intention_todays_niat}</p>
                             <p className="text-base sm:text-lg font-medium italic leading-relaxed text-[rgb(var(--color-text))]">&quot;{intentionText}&quot;</p>
                         </div>
 
@@ -179,7 +179,7 @@ export default function ReflectionPrompt({
                                                 }`}
                                         >
                                             <AppIcon name={item.icon} size="xl" tone={isSelected ? "primary" : "muted"} className={`transition-transform ${isSelected ? 'scale-125' : 'group-hover:scale-110'}`} />
-                                            <span className={`text-[8px] sm:text-[9px] font-bold transition-colors leading-tight ${isSelected ? item.color :
+                                            <span className={`text-xs sm:text-xs font-bold transition-colors leading-tight ${isSelected ? item.color :
                                                 "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))]"
                                                 }`}>
                                                 {item.label}

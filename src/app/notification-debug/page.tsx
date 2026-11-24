@@ -206,7 +206,7 @@ export default function NotificationDebugPage() {
                             Clear
                         </button>
                     </div>
-                    <pre className="text-[10px] overflow-auto max-h-60 bg-[rgb(var(--color-background))]/70 p-2 rounded whitespace-pre-wrap">
+                    <pre className="text-xs overflow-auto max-h-60 bg-[rgb(var(--color-background))]/70 p-2 rounded whitespace-pre-wrap">
                         {errorLog.join('\n')}
                     </pre>
                 </div>
@@ -220,7 +220,7 @@ export default function NotificationDebugPage() {
                     </span>
                 </p>
                 {permission === 'denied' && (
-                    <div className="text-[11px] bg-[rgb(var(--color-danger))]/10 p-2 rounded border border-[rgb(var(--color-danger))]/30 text-[rgb(var(--color-danger))] mt-2">
+                    <div className="text-xs bg-[rgb(var(--color-danger))]/10 p-2 rounded border border-[rgb(var(--color-danger))]/30 text-[rgb(var(--color-danger))] mt-2">
                         <strong>Cara Memperbaiki:</strong><br />
                         1. Buka <b>Settings</b> iPhone.<br />
                         2. Pilih <b>Notifications</b>.<br />
@@ -273,7 +273,7 @@ export default function NotificationDebugPage() {
             {lastMessage && (
                 <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/40 rounded-lg">
                     <h3 className="font-bold text-[rgb(var(--color-info))] mb-2">Incoming Message Detected</h3>
-                    <pre className="text-[10px] overflow-auto max-h-40 bg-[rgb(var(--color-background))]/70 p-2 rounded">
+                    <pre className="text-xs overflow-auto max-h-40 bg-[rgb(var(--color-background))]/70 p-2 rounded">
                         {JSON.stringify(lastMessage, null, 2)}
                     </pre>
                 </div>
@@ -324,7 +324,7 @@ export default function NotificationDebugPage() {
                     >
                         Force Local Notification (No FCM)
                     </button>
-                    <p className="text-[10px] text-[rgb(var(--color-text-muted))] mt-2">
+                    <p className="text-xs text-[rgb(var(--color-text-muted))] mt-2">
                         *If this fails, check iOS Settings &rarr; Notifications &rarr; Nawaetu.
                     </p>
                 </div>

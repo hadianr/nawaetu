@@ -67,7 +67,7 @@ export default function QadhaTracker({ pendingItems, onMarkDone }: QadhaTrackerP
             {/* Header badge */}
             <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold text-[rgb(var(--color-text-muted))] uppercase tracking-wider">{t.fastingQadhaTitle}</p>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[rgb(var(--color-warning))]/20 text-[rgb(var(--color-warning))] border border-[rgb(var(--color-warning))]/30">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[rgb(var(--color-warning))]/20 text-[rgb(var(--color-warning))] border border-[rgb(var(--color-warning))]/30">
                     {badgeLabel}
                 </span>
             </div>
@@ -77,7 +77,7 @@ export default function QadhaTracker({ pendingItems, onMarkDone }: QadhaTrackerP
                 .sort(([a], [b]) => parseInt(a) - parseInt(b))
                 .map(([year, items]) => (
                     <div key={year} className="space-y-1.5">
-                        <p className="text-[10px] font-semibold text-[rgb(var(--color-text-muted))] uppercase tracking-wider px-1">
+                        <p className="text-xs font-semibold text-[rgb(var(--color-text-muted))] uppercase tracking-wider px-1">
                             {year}H
                         </p>
                         {items.map((item) => {
@@ -95,17 +95,17 @@ export default function QadhaTracker({ pendingItems, onMarkDone }: QadhaTrackerP
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-medium text-[rgb(var(--color-text))] truncate">{dayLabel}</p>
                                         <div className="flex items-center gap-1.5 mt-0.5">
-                                            <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full border ${badge.color}`}>
+                                            <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full border ${badge.color}`}>
                                                 {badge.label}
                                             </span>
                                             {item.log.note && (
-                                                <span className="text-[9px] text-[rgb(var(--color-text-muted))] truncate">{item.log.note}</span>
+                                                <span className="text-xs text-[rgb(var(--color-text-muted))] truncate">{item.log.note}</span>
                                             )}
                                         </div>
                                     </div>
                                     <button
                                         onClick={() => handleMarkDone(item.hijriYear, item.hijriDay)}
-                                        className="shrink-0 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-success))]/40 bg-[rgb(var(--color-success))]/20 text-[rgb(var(--color-success))] hover:bg-[rgb(var(--color-success))]/30 transition-all active:scale-95"
+                                        className="shrink-0 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-success))]/40 bg-[rgb(var(--color-success))]/20 text-[rgb(var(--color-success))] hover:bg-[rgb(var(--color-success))]/30 transition-all active:scale-95"
                                     >
                                         {t.fastingQadhaMarkDone}
                                     </button>
@@ -116,7 +116,7 @@ export default function QadhaTracker({ pendingItems, onMarkDone }: QadhaTrackerP
                 ))}
 
             {/* Disclaimer */}
-            <p className="text-[9px] text-[rgb(var(--color-text-muted))] leading-relaxed pt-1 border-t border-[rgb(var(--color-border))]">
+            <p className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed pt-1 border-t border-[rgb(var(--color-border))]">
                 {t.fastingFiqhDisclaimer}
             </p>
         </div>

@@ -76,14 +76,14 @@ export default function FastingStats({ stats, hijriYear, onViewDetail }: Fasting
                             <AppIcon name={card.icon} size="sm" tone="primary" />
                             <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>
                         </div>
-                        <p className="text-[10px] text-[rgb(var(--color-text-muted))] leading-tight">{card.label}</p>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))] leading-tight">{card.label}</p>
                     </div>
                 ))}
             </div>
 
             {/* Progress bar: fasting/30 */}
             <div>
-                <div className="flex justify-between text-[10px] text-[rgb(var(--color-text-muted))] mb-1">
+                <div className="flex justify-between text-xs text-[rgb(var(--color-text-muted))] mb-1">
                     <span>{stats.totalFasting} / 30</span>
                     <span>{Math.round((stats.totalFasting / 30) * 100)}%</span>
                 </div>

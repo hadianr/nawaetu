@@ -235,12 +235,12 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                             </button>
                                         </div>
                                         {isAuthenticated && session?.user?.email && (
-                                            <div className="flex items-center gap-1.5 text-[10px] mt-0.5 text-[rgb(var(--color-text-muted))]">
+                                            <div className="flex items-center gap-1.5 text-xs mt-0.5 text-[rgb(var(--color-text-muted))]">
                                                 <div className={cn(
                                                     "w-3 h-3 rounded-full flex items-center justify-center",
                                                     "bg-[rgb(var(--color-surface-subtle))]"
                                                 )}>
-                                                    <span className="text-[6px] font-bold text-[rgb(var(--color-text))]">G</span>
+                                                    <span className="text-xs font-bold text-[rgb(var(--color-text))]">G</span>
                                                 </div>
                                                 {session.user.email}
                                             </div>
@@ -264,7 +264,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                     {/* Footer */}
                     <div className="mt-6 pt-6 border-t border-[rgb(var(--color-border))] text-center px-4">
-                        <p className="text-[10px] text-[rgb(var(--color-text-muted))]">{(t as unknown as Record<string, string>).profileFooter}</p>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">{(t as unknown as Record<string, string>).profileFooter}</p>
                     </div>
 
                 </div>

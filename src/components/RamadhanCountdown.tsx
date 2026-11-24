@@ -236,7 +236,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 bg: "from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-surface))] to-[rgb(var(--color-primary))]/10",
                 border: "border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)]",
                 text: "text-[rgb(var(--color-primary-strong))]",
-                icon: "fill-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary))]"
+                icon: "fill-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary-strong))]"
             };
         }
         return {
@@ -275,7 +275,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             <div className="flex flex-col gap-1 z-10">
                                 <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
                                     <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
-                                    <span className="text-[10px] font-bold uppercase tracking-wider">
+                                    <span className="text-xs font-bold uppercase tracking-wider">
                                         Ramadhan Hub
                                     </span>
                                 </div>
@@ -327,7 +327,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             <div className="flex flex-col gap-1.5 z-10 w-full">
                                 <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
                                     <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
-                                    <span className="text-[10px] font-bold uppercase tracking-wider">
+                                    <span className="text-xs font-bold uppercase tracking-wider">
                                         {t.ramadhanHeading}
                                     </span>
                                 </div>
@@ -341,7 +341,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
                             {/* Right: Progress Ring (Visual Only) or Minimal Bar */}
                             <div className="z-10 flex flex-col items-end gap-2">
-                                <div className={`text-[10px] font-bold uppercase tracking-wider ${styles.text} text-right flex items-center gap-1`}>
+                                <div className={`text-xs font-bold uppercase tracking-wider ${styles.text} text-right flex items-center gap-1`}>
                                     {getLevelTitle(progress)}
                                 </div>
                                 {/* Minimalist Bar */}
@@ -355,7 +355,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                                     e.stopPropagation();
                                     setShowInfo(true);
                                 }}>
-                                    <div className="text-[9px] text-[rgb(var(--color-text-muted))] font-medium cursor-pointer hover:text-[rgb(var(--color-text))] transition-colors">
+                                    <div className="text-xs text-[rgb(var(--color-text-muted))] font-medium cursor-pointer hover:text-[rgb(var(--color-text))] transition-colors">
                                         {`${progress}% ${t.ramadhanPreparationLabel}`}
                                     </div>
                                     <InfoIcon className="w-3 h-3 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))] cursor-pointer" />

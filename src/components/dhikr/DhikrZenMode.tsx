@@ -123,7 +123,7 @@ export function DhikrZenMode({
                 className="absolute bottom-8 right-6 z-[110] p-4 rounded-full active:scale-95 transition-all flex flex-col items-center gap-1.5 text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 hover:text-[rgb(var(--color-primary-strong))]"
             >
                 <FeedbackIcon className="w-5 h-5" />
-                <span className="text-[8px] font-medium uppercase tracking-tighter opacity-70">
+                <span className="text-xs font-medium uppercase tracking-tighter opacity-70">
                     {feedbackMode === 'sound' ? t.tasbihSound : t.tasbihMute}
                 </span>
             </button>

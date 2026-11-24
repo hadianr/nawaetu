@@ -186,7 +186,7 @@ export function SirahReaderView({
                         title={t.sirahReaderFontSize}
                     >
                         <Type className="w-3.5 h-3.5" />
-                        <span className="uppercase text-[10px]">{fontSize}</span>
+                        <span className="uppercase text-xs">{fontSize}</span>
                     </button>
 
                     {/* TTS Button */}
@@ -251,7 +251,7 @@ export function SirahReaderView({
             {section.relatedQuranVerses && section.relatedQuranVerses.length > 0 && (
                 <div className="flex flex-wrap items-center gap-2 pt-1">
                     <span className="text-xs font-medium flex items-center gap-1 text-[rgb(var(--color-text-muted))]">
-                        <BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" />
+                        <BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
                         {t.sirahReaderQuranRefs}
                     </span>
                     {section.relatedQuranVerses.map((ref, idx) => (

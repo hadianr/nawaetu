@@ -51,8 +51,8 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
 
                     <div className="flex justify-center mt-1.5">
                         <span className={cn(
-                            "text-[10px] uppercase tracking-wider font-extrabold px-3 py-1 rounded-full border",
-                            "text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
+                            "text-xs uppercase tracking-wider font-extrabold px-3 py-1 rounded-full border",
+                            "text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                         )}>
                             {t.aboutTagline}
                         </span>
@@ -67,11 +67,11 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                             "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20"
                         )}>
                             <h3 className="text-xs font-bold flex items-center gap-2">
-                                <Sparkles className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" />
+                                <Sparkles className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
                                 {t.aboutWhatIsTitle}
                             </h3>
                             <p className={cn(
-                                "text-[11px] leading-relaxed",
+                                "text-xs leading-relaxed",
                                 "text-[rgb(var(--color-text-muted))]"
                             )}>
                                 {t.aboutDescription}
@@ -84,11 +84,11 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                             "bg-[rgb(var(--color-primary))]/[0.05] border-[rgb(var(--color-primary))]/15"
                         )}>
                             <h3 className="text-xs font-bold flex items-center gap-2">
-                                <BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" />
+                                <BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
                                 {t.aboutApproachTitle}
                             </h3>
                             <p className={cn(
-                                "text-[11px] leading-relaxed",
+                                "text-xs leading-relaxed",
                                 "text-[rgb(var(--color-text-muted))]"
                             )}>
                                 {t.aboutApproachDesc}
@@ -98,7 +98,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
 
                     {/* Footer - minimal */}
                     <div className="flex flex-col items-center gap-2 pt-2 border-t border-[rgb(var(--color-border))]/20">
-                        <div className="flex items-center gap-1.5 text-[9px] font-medium text-[rgb(var(--color-text-muted))]">
+                        <div className="flex items-center gap-1.5 text-xs font-medium text-[rgb(var(--color-text-muted))]">
                             <span className={cn(
                                 "px-1.5 py-0.5 rounded border uppercase tracking-tighter",
                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]/20"

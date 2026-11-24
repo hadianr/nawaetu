@@ -185,7 +185,7 @@ export default function MissionListModal({
                                     </p>
                                     <div className="flex gap-1">
                                         <span className={cn(
-                                            "text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border",
+                                            "text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border",
                                             mission.ruling === 'obligatory'
                                                 ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary-light))]"
                                                 : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary-light))]"
@@ -198,7 +198,7 @@ export default function MissionListModal({
                                 <p className="text-xs truncate mb-1 text-[rgb(var(--color-text-muted))]">{mission.description}</p>
 
                                 <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                    <span className="text-[10px] tabular-nums text-[rgb(var(--color-accent-strong))]">+{mission.hasanahReward} Hasanah</span>
+                                    <span className="text-xs tabular-nums text-[rgb(var(--color-accent-strong))]">+{mission.hasanahReward} Hasanah</span>
 
                                     {mission.dalil && (() => {
                                         const ref = resolveReferenceForMission(mission);
@@ -212,7 +212,7 @@ export default function MissionListModal({
                                                     }
                                                 }}
                                                 className={cn(
-                                                    "text-[9px] px-1.5 py-0.5 rounded tabular-nums flex items-center gap-1 border transition-colors cursor-pointer",
+                                                    "text-xs px-1.5 py-0.5 rounded tabular-nums flex items-center gap-1 border transition-colors cursor-pointer",
                                                     ref
                                                         ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/20 hover:bg-[rgb(var(--color-primary))]/20 hover:underline"
                                                         : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"
@@ -226,17 +226,17 @@ export default function MissionListModal({
                                     })()}
 
                                     {isLocked && (
-                                        <span className="text-[9px] flex items-center gap-0.5 px-1.5 py-0.5 rounded border text-[rgb(var(--color-text-muted))] bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]">
+                                        <span className="text-xs flex items-center gap-0.5 px-1.5 py-0.5 rounded border text-[rgb(var(--color-text-muted))] bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]">
                                             {t.home_mission_locked}
                                         </span>
                                     )}
                                     {!isLocked && validation.isLate && (
-                                        <span className="text-[9px] text-[rgb(var(--color-danger))] flex items-center gap-1 font-bold bg-[rgb(var(--color-danger))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-danger))]/20">
+                                        <span className="text-xs text-[rgb(var(--color-danger))] flex items-center gap-1 font-bold bg-[rgb(var(--color-danger))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-danger))]/20">
                                             <AlertCircle className="w-3 h-3" /> {t.home_mission_late}
                                         </span>
                                     )}
                                     {!isLocked && validation.isEarly && (
-                                        <span className="text-[9px] text-[rgb(var(--color-primary-strong))] flex items-center gap-1 font-bold bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20">
+                                        <span className="text-xs text-[rgb(var(--color-primary-strong))] flex items-center gap-1 font-bold bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20">
                                             <Sparkles className="w-3 h-3" /> {t.home_mission_early}
                                         </span>
                                     )}
