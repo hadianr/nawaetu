@@ -126,6 +126,11 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  .animate-in,
+  [class*="animate-"] {
+    animation: none !important;
+  }
 }
 
 [data-color-mode="light"],
@@ -204,23 +209,6 @@
     will-change: transform, opacity;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-
-    .animate-in,
-    [class*="animate-"] {
-      animation: none !important;
-    }
-  }
-
   /* Reduce layout shifts */
   img,
   video,
@@ -230,46 +218,7 @@
   }
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-    transform: translate3d(0, 0, 0);
-  }
-
-  100% {
-    background-position: 200% 0;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes gradient-shift {
-
-  0%,
-  100% {
-    background-position: 0% 50%;
-    transform: translate3d(0, 0, 0);
-  }
-
-  50% {
-    background-position: 100% 50%;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
 @layer utilities {
-
-  /* Animation classes with GPU acceleration */
-  .animate-shimmer {
-    animation: shimmer 3s linear infinite;
-    will-change: background-position;
-    transform: translate3d(0, 0, 0);
-  }
-
-  .animate-gradient-shift {
-    animation: gradient-shift 4s ease infinite;
-    will-change: background-position;
-    transform: translate3d(0, 0, 0);
-  }
 
   @keyframes ripple {
     0% {
@@ -286,13 +235,6 @@
   .animate-ripple {
     animation: ripple 0.6s ease-out forwards;
     will-change: transform, opacity;
-  }
-
-  /* Disable animations on mobile for better performance */
-  @media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
-    .animate-shimmer {
-      animation: none;
-    }
   }
 
   /* Improve touch targets for mobile */
@@ -364,12 +306,7 @@
   }
 }
 
-/* =====================================================================
-   QURAN FOCUS MODE
-   Applied via body[data-focus-mode="true"]
-   Hides bottom navigation bar and scrollbar during active reading session.
-   Works for both dark and light (daylight) themes.
-   ===================================================================== */
+/* Quran focus mode (body[data-focus-mode="true"]): hide the bottom nav and scrollbar while reading. */
 
 body[data-focus-mode="true"] nav,
 body[data-focus-mode="true"] [data-bottom-nav] {
@@ -392,21 +329,12 @@ body[data-focus-mode="true"] .pb-nav {
   padding-bottom: 1rem !important;
 }
 
-/* Focus mode dimming — only in dark themes (not daylight) */
-body[data-focus-mode="true"]:not([data-theme="daylight"]) [data-quran-verse-list] {
-  /* no additional dimming at CSS level — handled by React overlay */
-}
-
 /* Transition for nav on enter/exit */
 nav {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* =====================================================================
-   MOBILE INPUT AUTO-ZOOM PREVENTION
-   Prevents iOS Safari & mobile webviews from automatically zooming in
-   when an input/textarea/select field is tapped/focused.
-   ===================================================================== */
+/* iOS Safari and webviews zoom into fields under 16px on focus. */
 @media screen and (max-width: 768px) {
   input[type="text"],
   input[type="search"],
