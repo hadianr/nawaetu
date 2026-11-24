@@ -454,7 +454,7 @@ export default function MentorAIClient() {
                 <div className="w-full max-w-none mx-auto px-4 h-16 flex items-center justify-between xl:max-w-md">
                     <div className="flex items-center gap-2">
                         {/* Back Button */}
-                        <Link href="/" className={cn(
+                        <Link href="/" aria-label={translations.onboardingBack || "Kembali"} className={cn(
                             "p-2 -ml-2 rounded-full transition-colors",
                             "text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
                         )}>
@@ -490,7 +490,9 @@ export default function MentorAIClient() {
                     {/* Actions: History & New Chat */}
                     <div className="flex items-center gap-1">
                         <button
+                            type="button"
                             onClick={() => setShowHistory(true)}
+                            aria-label={translations.tanyaHistory}
                             className={cn(
                                 "p-2 rounded-full transition-colors",
                                 "text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10"
@@ -499,7 +501,9 @@ export default function MentorAIClient() {
                             <History className="w-5 h-5" />
                         </button>
                         <button
+                            type="button"
                             onClick={handleNewChat}
+                            aria-label={translations.tanyaNewChat}
                             className="p-2 rounded-full hover:bg-[rgb(var(--color-primary))]/20 transition-colors text-[rgb(var(--color-primary-strong))]"
                         >
                             <Plus className="w-5 h-5" />

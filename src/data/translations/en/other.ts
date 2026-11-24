@@ -577,6 +577,12 @@ export const otherEN = {
     tanyaLoginButton: "Login Now",
     tanyaLimitAdvice: "We recommend asking an Ustadz or local Majelis Taklim directly for a more comprehensive explanation.",
     tanyaLimitDalil: "\"So ask the people of the message if you do not know.\" (QS. An-Nahl: 43)",
+    tanyaHistory: "Chat history",
+    tanyaNewChat: "New chat",
+    tanyaNoHistory: "No conversations yet.",
+    tanyaUntitled: "New conversation",
+    tanyaDeleteChat: "Delete conversation",
+    tanyaClose: "Close",
 
     // Toast Messages
     toastMissionComplete: "Mission Complete!",

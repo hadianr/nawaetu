@@ -577,6 +577,12 @@ export const otherID = {
     tanyaLoginButton: "Login Sekarang",
     tanyaLimitAdvice: "Sebaiknya tanyakan langsung kepada Ustadz atau Majelis Taklim terdekat agar mendapatkan penjelasan yang lebih komprehensif.",
     tanyaLimitDalil: "\"Maka bertanyalah kepada orang yang mempunyai pengetahuan jika kamu tidak mengetahui.\" (QS. An-Nahl: 43)",
+    tanyaHistory: "Riwayat Chat",
+    tanyaNewChat: "Chat Baru",
+    tanyaNoHistory: "Belum ada riwayat percakapan.",
+    tanyaUntitled: "Percakapan Baru",
+    tanyaDeleteChat: "Hapus percakapan",
+    tanyaClose: "Tutup",
 
     // Toast Messages
     toastMissionComplete: "Misi Selesai!",
