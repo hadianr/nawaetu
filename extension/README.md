@@ -1,9 +1,9 @@
 # Nawaetu Browser Extension
 
-This directory contains the source code for the Nawaetu Browser Extension, which serves as a native wrapper around the web application.
+This directory contains the source code for the Nawaetu Browser Extension: a standalone side panel with prayer times, adzan notifications, Quran, and dhikr.
 
 ## How it works
-The extension uses an `iframe` to embed the live Next.js application (https://nawaetu.com). This approach allows the extension to automatically receive all application updates without requiring users to download a new version from the extension store.
+The popup (`popup.html`, `popup.css`, `popup.js`) is its own page and calls public APIs directly; it does not embed nawaetu.com. Changes to it reach users only through a new store release, so bump `version` in `manifest.json` and upload a new package. Its colors come from the app's Emerald theme tokens (see `design.md`).
 
 ## Packaging for the Store
 
