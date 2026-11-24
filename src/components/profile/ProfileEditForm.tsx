@@ -48,8 +48,9 @@ export function ProfileEditForm({
     return (
         <div className="space-y-4 mb-2 pr-2">
             <div className="space-y-1.5">
-                <Label className="text-xs text-[rgb(var(--color-text-muted))]">{translations.profileNameLabel}</Label>
+                <Label htmlFor="profile-edit-name" className="text-xs text-[rgb(var(--color-text-muted))]">{translations.profileNameLabel}</Label>
                 <Input
+                    id="profile-edit-name"
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
@@ -64,6 +65,8 @@ export function ProfileEditForm({
                 <Label className="text-xs text-[rgb(var(--color-text-muted))]">{translations.profileGenderLabel}</Label>
                 <div className="grid grid-cols-2 gap-2">
                     <button
+                        type="button"
+                        aria-pressed={editGender === 'male'}
                         onClick={() => setEditGender('male')}
                         className={cn(
                             "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
@@ -75,6 +78,8 @@ export function ProfileEditForm({
                         <AppIcon name="hands" size="sm" tone="info" /> {translations.onboardingMaleLabel}
                     </button>
                     <button
+                        type="button"
+                        aria-pressed={editGender === 'female'}
                         onClick={() => setEditGender('female')}
                         className={cn(
                             "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",

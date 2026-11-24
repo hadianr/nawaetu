@@ -83,7 +83,7 @@ export function ProfileHeader({
                         "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]"
                     )}>
                         <Avatar className="w-full h-full rounded-full border border-[rgb(var(--color-border))]">
-                            <AvatarImage src={userImage} className="object-cover" />
+                            <AvatarImage alt="" src={userImage} className="object-cover" />
                             <AvatarFallback>NA</AvatarFallback>
                         </Avatar>
                     </div>

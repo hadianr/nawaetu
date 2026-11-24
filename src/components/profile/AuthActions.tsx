@@ -126,6 +126,7 @@ export function AuthActions({
                                     {translations.profileLogoutConfirmYes}
                                 </button>
                                 <button
+                                    autoFocus
                                     onClick={() => setShowLogoutConfirm(false)}
                                     className={cn(
                                         "flex-1 h-8 rounded-lg text-xs font-medium transition-all active:scale-[0.98]",

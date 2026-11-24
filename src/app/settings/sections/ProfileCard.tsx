@@ -64,7 +64,7 @@ export default function ProfileCard({
                         "bg-[rgb(var(--color-primary-light))]/30 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))]"
                     )}>
                         <Avatar className="w-full h-full rounded-full">
-                            <AvatarImage src={userAvatar || session?.user?.image || ""} className="object-cover" />
+                            <AvatarImage alt="" src={userAvatar || session?.user?.image || ""} className="object-cover" />
                             <AvatarFallback className={cn(
                                 "text-lg font-bold",
                                 "bg-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary-strong))]"
