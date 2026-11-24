@@ -14,6 +14,14 @@ Nawaetu is a calm Muslim daily-practice companion. The interface should feel tru
 
 Use clear, respectful language that helps the user act: “Set your intention”, “Continue reading”, “You can do this later”. Avoid shame, urgency manipulation, noisy gamification, unexplained religious jargon, and decorative UI that competes with Quran, prayer, dhikr, or intention content.
 
+### Design dials
+
+`Dial: ENERGY 1 / RHYTHM 2 / MOTION 1`
+
+- **Energy 1 (calm):** worship content is the focal point; one accent per screen, no decorative gradients, glow, or blur.
+- **Rhythm 2 (consistent, with a few breaks):** screens share the layout families below; vary composition only where the content calls for it, such as the dhikr counter or the Quran reader.
+- **Motion 1 (state only):** hover, focus, press, and state transitions. No ambient, looping, or scroll-driven animation.
+
 ## Source of truth
 
 Use the existing implementation in this order:
