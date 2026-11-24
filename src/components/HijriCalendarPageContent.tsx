@@ -46,7 +46,7 @@ const EVENT_LABELS: Record<HijriEventId, string> = {
 
 export default function HijriCalendarPageContent({ initialView = "month" }: HijriCalendarPageContentProps) {
     const { locale, t } = useLocale();
-    const { data: prayerData } = usePrayerTimesContext();
+    const { data: prayerData, refreshLocation } = usePrayerTimesContext();
     const [selectedDay, setSelectedDay] = useState<HijriCalendarDay | null>(null);
     const {
         calendarData,
@@ -64,6 +64,13 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
         // The route's initial view is fixed for this mount; later changes use handleView.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // A granted location arrives through prayer times; load the calendar that was waiting for it.
+    useEffect(() => {
+        if (error === "location_required" && prayerData?.locationName && !prayerData.isDefaultLocation) void fetchCalendar(viewMode);
+        // Keyed on the place name only, so a failed attempt cannot loop.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [prayerData?.locationName]);
 
     useEffect(() => {
         if (!calendarData.length) return;
@@ -184,8 +191,8 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                         <p className="text-sm text-[rgb(var(--color-text-muted))]">
                             {error === "location_required" ? t.hijriCalendarLocationRequired : t.hijriCalendarLoadFailed}
                         </p>
-                        <button type="button" onClick={() => void fetchCalendar(viewMode)} className="min-h-11 text-sm font-semibold text-[rgb(var(--color-primary-strong))] underline">
-                            {t.hijriCalendarRetry}
+                        <button type="button" onClick={() => (error === "location_required" ? refreshLocation() : void fetchCalendar(viewMode))} className="min-h-11 text-sm font-semibold text-[rgb(var(--color-primary-strong))] underline">
+                            {error === "location_required" ? t.hijriCalendarUseLocation : t.hijriCalendarRetry}
                         </button>
                     </div>
                 ) : viewMode === "month" ? (

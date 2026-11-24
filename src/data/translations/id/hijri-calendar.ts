@@ -9,6 +9,7 @@ export const hijriCalendarID = {
     hijriCalendarYourLocation: "Lokasi Anda",
     hijriCalendarLoading: "Memuat kalender...",
     hijriCalendarRetry: "Coba lagi",
+    hijriCalendarUseLocation: "Gunakan lokasi saya",
     hijriCalendarNoData: "Data kalender tidak tersedia.",
     hijriCalendarLocationRequired: "Atur lokasi untuk memuat Kalender Hijriah.",
     hijriCalendarLoadFailed: "Kalender Hijriah gagal dimuat.",
