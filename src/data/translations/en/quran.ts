@@ -111,4 +111,6 @@ export const quranEN = {
     unitHourLong: "hour",
     unitMinuteLong: "minute",
     unitSecondLong: "second",
+    quranSirahContextLabel: "Historical context (Sirah)",
+    quranSirahContextRead: "Read the Sirah",
 };
