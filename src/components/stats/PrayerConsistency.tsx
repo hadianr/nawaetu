@@ -46,12 +46,16 @@ export function PrayerConsistency({
 
                     <div className="flex bg-[rgb(var(--color-surface-subtle))] p-1 rounded-xl border border-[rgb(var(--color-border))]">
                         <button
+                            type="button"
+                            aria-pressed={viewDays === 7}
                             onClick={() => setViewDays(7)}
                             className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${viewDays === 7 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]" : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"}`}
                         >
                             {t.stats.heatmap.days7}
                         </button>
                         <button
+                            type="button"
+                            aria-pressed={viewDays === 14}
                             onClick={() => setViewDays(14)}
                             className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${viewDays === 14 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]" : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"}`}
                         >
