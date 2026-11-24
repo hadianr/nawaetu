@@ -34,10 +34,10 @@ export const fastingTrackerID = {
     fastingConsequenceQadha: "Wajib Qadha",
     fastingConsequenceFidyah: "Wajib Fidyah",
     fastingConsequenceChoice: "Pilihan: Qadha atau Fidyah",
-    fastingConsequenceChoiceNote: "Hukum berbeda tiap madzhab — silakan pilih madzhab Anda",
+    fastingConsequenceChoiceNote: "Hukum berbeda tiap madzhab. Silakan pilih madzhab Anda",
 
     // ── Day Modal ─────────────────────────────────────────────────────────────
-    fastingDayModalTitle: "Hari ke-{day} — Ramadan {year}H",
+    fastingDayModalTitle: "Hari ke-{day}, Ramadan {year}H",
     fastingDayModalStatusLabel: "Status Puasa",
     fastingDayModalNoteLabel: "Catatan (opsional)",
     fastingDayModalNotePlaceholder: "misal: sedang dalam perjalanan dari Jakarta ke Surabaya...",

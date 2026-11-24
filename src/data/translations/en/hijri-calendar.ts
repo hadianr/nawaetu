@@ -91,7 +91,7 @@ export const hijriCalendarEN = {
     conciseExpandAll: "Open all",
     conciseCollapseAll: "Close all",
     sirahContentLangLabel: "Reading language",
-    hijriEventEidFitrProhibited: "Eid al-Fitr — fasting prohibited",
-    hijriEventEidAdhaProhibited: "Eid al-Adha — fasting prohibited",
-    hijriEventTashreeqProhibited: "Day of Tashreeq — fasting prohibited",
+    hijriEventEidFitrProhibited: "Eid al-Fitr: fasting prohibited",
+    hijriEventEidAdhaProhibited: "Eid al-Adha: fasting prohibited",
+    hijriEventTashreeqProhibited: "Day of Tashreeq: fasting prohibited",
 } as const;

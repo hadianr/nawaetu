@@ -23,9 +23,9 @@ export const ramadhanEN = {
     ramadhanDay1: "Day 1",
     ramadhanDay30: "Day 30",
     ramadhanCompleted: "completed",
-    ramadhanPeriod1: "First 10 Days — Full of Mercy",
-    ramadhanPeriod2: "Second 10 Days — Full of Forgiveness",
-    ramadhanPeriod3: "Last 10 Days - Freedom from Hellfire",
+    ramadhanPeriod1: "First 10 Days: Full of Mercy",
+    ramadhanPeriod2: "Second 10 Days: Full of Forgiveness",
+    ramadhanPeriod3: "Last 10 Days: Freedom from Hellfire",
 
     // Hero Card
     heroRamadhanLabel: "Ramadhan",
@@ -33,9 +33,9 @@ export const ramadhanEN = {
     heroDay1: "Day 1",
     heroDay30: "Day 30",
     heroCompleted: "completed",
-    heroPeriod1: "First 10 Days — Full of Mercy",
-    heroPeriod2: "Second 10 Days — Full of Forgiveness",
-    heroPeriod3: "Last 10 Days - Freedom from Hellfire",
+    heroPeriod1: "First 10 Days: Full of Mercy",
+    heroPeriod2: "Second 10 Days: Full of Forgiveness",
+    heroPeriod3: "Last 10 Days: Freedom from Hellfire",
 
     // Schedule Card
     scheduleTodayTitle: "Today's Schedule",

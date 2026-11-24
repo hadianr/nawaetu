@@ -106,7 +106,7 @@ export default function AboutPage() {
                     </h2>
                     <div className="space-y-4 text-[rgb(var(--color-text-muted))] leading-relaxed">
                         <p>
-                            <strong className="text-[rgb(var(--color-text-strong))]">Nawaetu</strong> berarti niat—fondasi yang mengawali setiap amal ibadah. Kami hadir agar niat dapat dijalani dengan ilmu: memahami tuntunan dan menelusuri rujukan sebelum mengamalkan.
+                            <strong className="text-[rgb(var(--color-text-strong))]">Nawaetu</strong> berarti niat, fondasi yang mengawali setiap amal ibadah. Kami hadir agar niat dapat dijalani dengan ilmu: memahami tuntunan dan menelusuri rujukan sebelum mengamalkan.
                         </p>
                         <p>
                             Sebagai aplikasi Muslim, Nawaetu menggabungkan panduan ibadah yang bersumber dengan alat untuk mengamalkannya sehari-hari. Baca Al-Qur&apos;an, telusuri hadits dan doa beserta sumbernya, pelajari Sirah, atur waktu sholat, dan bangun rutinitas ibadah. Tanya Nawaetu dirancang untuk menyertakan rujukan pada jawaban agama dan mengakui batasnya saat sumber belum dapat dipastikan.

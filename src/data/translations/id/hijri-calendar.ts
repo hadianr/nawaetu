@@ -91,7 +91,7 @@ export const hijriCalendarID = {
     conciseExpandAll: "Buka semua",
     conciseCollapseAll: "Tutup semua",
     sirahContentLangLabel: "Bahasa bacaan",
-    hijriEventEidFitrProhibited: "Idulfitri — dilarang berpuasa",
-    hijriEventEidAdhaProhibited: "Iduladha — dilarang berpuasa",
-    hijriEventTashreeqProhibited: "Hari Tasyrik — dilarang berpuasa",
+    hijriEventEidFitrProhibited: "Idulfitri: dilarang berpuasa",
+    hijriEventEidAdhaProhibited: "Iduladha: dilarang berpuasa",
+    hijriEventTashreeqProhibited: "Hari Tasyrik: dilarang berpuasa",
 } as const;

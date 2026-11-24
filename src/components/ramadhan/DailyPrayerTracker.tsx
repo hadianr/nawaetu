@@ -134,8 +134,8 @@ export default function DailyPrayerTracker() {
                 <div className="px-4 pb-4 text-center text-xs text-[rgb(var(--color-text-muted))] py-6">Belum waktunya</div>
             ) : (
                 <div className="px-3 pb-3 sm:px-4 sm:pb-4 space-y-3 border-t border-[rgb(var(--color-border))] pt-3">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] text-center mb-1">
-                        HARI KE-{viewDay} — LOKASI SHOLAT WAJIB
+                    <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] text-center mb-1">
+                        Hari ke-{viewDay}: lokasi sholat wajib
                     </p>
 
                     {/* Fardhu Prayer Location Grid */}
