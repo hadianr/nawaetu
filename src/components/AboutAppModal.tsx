@@ -63,7 +63,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                     <div className="space-y-4 text-left">
                         {/* What is Nawaetu - merging description & title for compactness */}
                         <div className={cn(
-                            "space-y-1.5 p-3.5 rounded-2xl border",
+                            "space-y-1.5 p-3.5 rounded-2xl border shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20"
                         )}>
                             <h3 className="text-xs font-bold flex items-center gap-2">
@@ -80,7 +80,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
 
                         {/* Our Approach */}
                         <div className={cn(
-                            "space-y-1.5 p-3.5 rounded-2xl border transition-all",
+                            "space-y-1.5 p-3.5 rounded-2xl border transition-all shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-primary))]/[0.05] border-[rgb(var(--color-primary))]/15"
                         )}>
                             <h3 className="text-xs font-bold flex items-center gap-2">

@@ -412,7 +412,7 @@ export default function MentorAIClient() {
                         <button
                             onClick={() => void signInWithGoogle()}
                             className={cn(
-                                "w-full h-12 font-bold rounded-xl transition-all flex items-center justify-center gap-3 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] shadow-sm hover:bg-[rgb(var(--color-surface-subtle))]"
+                                "w-full h-12 font-bold rounded-xl transition-all flex items-center justify-center gap-3 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-surface-subtle))]"
                             )}
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -551,7 +551,7 @@ export default function MentorAIClient() {
                                     key={prompt}
                                     onClick={() => handleSend(prompt)}
                                     className={cn(
-                                        "p-3 rounded-xl border text-left text-sm transition-all flex items-center justify-between group",
+                                        "p-3 rounded-xl border text-left text-sm transition-all flex items-center justify-between group shadow-[var(--shadow-card)]",
                                         "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10 hover:border-[rgb(var(--color-primary))]/30"
                                     )}
                                 >
@@ -584,7 +584,7 @@ export default function MentorAIClient() {
                                     <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/20 flex items-center justify-center shrink-0 mt-1 border border-[rgb(var(--color-primary))]/30">
                                         <MessageCircle className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                                     </div>
-                                    <div className="bg-[rgb(var(--color-surface-subtle))] p-3 rounded-2xl rounded-tl-none border border-[rgb(var(--color-border))] flex items-center gap-1 h-10">
+                                    <div className="bg-[rgb(var(--color-surface-subtle))] p-3 rounded-2xl rounded-tl-none border border-[rgb(var(--color-border))] flex items-center gap-1 h-10 shadow-[var(--shadow-card)]">
                                         <span className="w-1.5 h-1.5 bg-[rgb(var(--color-text-muted))]/60 rounded-full animate-bounce [animation-delay:-0.3s]" />
                                         <span className="w-1.5 h-1.5 bg-[rgb(var(--color-text-muted))]/60 rounded-full animate-bounce [animation-delay:-0.15s]" />
                                         <span className="w-1.5 h-1.5 bg-[rgb(var(--color-text-muted))]/60 rounded-full animate-bounce" />

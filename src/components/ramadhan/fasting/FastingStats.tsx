@@ -71,7 +71,7 @@ export default function FastingStats({ stats, hijriYear, onViewDetail }: Fasting
             {/* Stat grid */}
             <div className="grid grid-cols-2 gap-2">
                 {statCards.map((card, i) => (
-                    <div key={i} className={`rounded-xl border px-3 py-2.5 ${card.bg}`}>
+                    <div key={i} className={`rounded-xl border px-3 py-2.5 ${card.bg} shadow-[var(--shadow-card)]`}>
                         <div className="flex items-center gap-1.5 mb-0.5">
                             <AppIcon name={card.icon} size="sm" tone="primary" />
                             <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>

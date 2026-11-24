@@ -85,7 +85,7 @@ export function ChatHistorySidebar({
                                 className={cn(
                                     "flex items-center justify-between rounded-xl border transition-all",
                                         activeSessionId === session.id
-                                            ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-sm"
+                                            ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)]"
                                             : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10"
                                 )}
                             >

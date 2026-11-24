@@ -81,7 +81,7 @@ export default function ConciseSirahPage() {
                     </div>
                 </header>
 
-                <section aria-label={t.conciseSirahAbout} className="space-y-3 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-4">
+                <section aria-label={t.conciseSirahAbout} className="space-y-3 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-4 shadow-[var(--shadow-card)]">
                     <ContentLangToggle />
                     <p lang={lang} className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{book.title}</p>
                     <p className="text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">
@@ -118,7 +118,7 @@ export default function ConciseSirahPage() {
                                 <li key={section.id}>
                                     <details
                                         className={cn(
-                                            "group rounded-2xl border transition-colors",
+                                            "group rounded-2xl border transition-colors shadow-[var(--shadow-card)]",
                                             done
                                                 ? "border-[rgb(var(--color-success))]/40 bg-[rgb(var(--color-success))]/10"
                                                 : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]"

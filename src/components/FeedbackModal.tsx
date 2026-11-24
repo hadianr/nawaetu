@@ -220,7 +220,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                     {!isAuthenticated ? (
                         /* Login Required Guard UI */
                         <div className={cn(
-                            "flex flex-col items-center justify-center text-center p-6 border rounded-2xl space-y-4 my-2",
+                            "flex flex-col items-center justify-center text-center p-6 border rounded-2xl space-y-4 my-2 shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20"
                         )}>
                             <div className={cn(
@@ -249,7 +249,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                             <div className="space-y-1.5">
                                 <Label className="text-xs font-bold text-[rgb(var(--color-text-muted))]">{t.feedbackTypeLabel}</Label>
                                 <div className={cn(
-                                    "flex p-1 rounded-xl border",
+                                    "flex p-1 rounded-xl border shadow-[var(--shadow-card)]",
                                     "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20"
                                 )}>
                                     <button
@@ -293,7 +293,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                     onChange={(e) => setMessage(e.target.value)}
                                     placeholder={t.feedbackMessagePlaceholder}
                                     className={cn(
-                                        "min-h-[100px] text-base md:text-xs leading-relaxed rounded-xl border resize-none focus-visible:ring-1 focus-visible:ring-[rgb(var(--color-primary-light))]",
+                                        "min-h-[100px] text-base md:text-xs leading-relaxed rounded-xl border resize-none focus-visible:ring-1 focus-visible:ring-[rgb(var(--color-primary-light))] shadow-[var(--shadow-card)]",
                                         "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20 text-[rgb(var(--color-text-strong))]"
                                     )}
                                 />
@@ -317,7 +317,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                         type="button"
                                         onClick={() => fileInputRef.current?.click()}
                                         className={cn(
-                                            "w-full flex flex-col items-center justify-center p-4 rounded-xl border border-dashed text-center hover:bg-[rgb(var(--color-surface-subtle))] cursor-pointer transition-all active:scale-[0.99] mb-3",
+                                            "w-full flex flex-col items-center justify-center p-4 rounded-xl border border-dashed text-center hover:bg-[rgb(var(--color-surface-subtle))] cursor-pointer transition-all active:scale-[0.99] mb-3 shadow-[var(--shadow-card)]",
                                             "border-[rgb(var(--color-border))]/30 hover:bg-[rgb(var(--color-surface-subtle))]"
                                         )}
                                     >
@@ -335,7 +335,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                             <div
                                                 key={idx}
                                                 className={cn(
-                                                    "relative border rounded-xl overflow-hidden aspect-video bg-[rgb(var(--color-surface-subtle))] group p-1 flex items-center justify-center",
+                                                    "relative border rounded-xl overflow-hidden aspect-video bg-[rgb(var(--color-surface-subtle))] group p-1 flex items-center justify-center shadow-[var(--shadow-card)]",
                                                     "border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]"
                                                 )}
                                             >

@@ -302,7 +302,7 @@ export default function VerseItem({
                     </>
                 )}
 
-                <div className={activeTafsirVerse === verse.verse_key ? 'mt-6 p-5 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/5 to-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-primary))]/20 animate-in slide-in-from-top-2' : 'hidden'}>
+                <div className={activeTafsirVerse === verse.verse_key ? 'mt-6 p-5 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/5 to-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-primary))]/20 animate-in slide-in-from-top-2 shadow-[var(--shadow-card)]' : 'hidden'}>
                     <div className="flex items-center gap-2 mb-3">
                         <Lightbulb className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                         <h3 className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{t.quranBriefTafsir || "Brief Explanation"}</h3>

@@ -64,7 +64,7 @@ export function InsightModal({
                 <div className="relative p-6">
                     <DialogHeader className="mb-6">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2.5 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                            <div className="p-2.5 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                                 {activeInsight === 'streak' && <Flame className="w-5 h-5 text-[rgb(var(--color-accent-strong))]" />}
                                 {activeInsight === 'prayers' && <AppIcon name="landmark" size="lg" tone="primary" label={t.stats.insights.prayers.title} />}
                                 {activeInsight === 'hasanah' && <Sparkles className="w-5 h-5 text-[rgb(var(--color-warning))]" />}
@@ -88,7 +88,7 @@ export function InsightModal({
                             <>
                                 <InsightRow label={t.stats.insights.streak.current} value={data.streakData.currentStreak.toString()} icon={<Flame className="w-3.5 h-3.5 text-[rgb(var(--color-accent-strong))]" />} />
                                 <InsightRow label={t.stats.insights.streak.longest} value={data.streakData.longestStreak.toString()} icon={<Award className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />} />
-                                <div className="p-4 bg-[rgb(var(--color-accent))]/10 border border-[rgb(var(--color-accent))]/20 rounded-2xl">
+                                <div className="p-4 bg-[rgb(var(--color-accent))]/10 border border-[rgb(var(--color-accent))]/20 rounded-2xl shadow-[var(--shadow-card)]">
                                     <div className="flex items-center gap-2 mb-2">
                                         <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-accent-strong))]" />
                                         <p className="text-xs font-bold text-[rgb(var(--color-accent-strong))]">{t.stats.insights.streak.status}</p>
@@ -107,7 +107,7 @@ export function InsightModal({
                             <>
                                 <InsightRow label={t.stats.insights.prayers.fardu} value={data.recentPrayerCount.toString()} icon={<AppIcon name="landmark" size="sm" tone="primary" />} />
                                 <InsightRow label={t.stats.insights.prayers.sunnah} value={data.sunnahTotal.toString()} icon={<AppIcon name="sparkles" size="sm" tone="primary" />} />
-                                <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl">
+                                <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl shadow-[var(--shadow-card)]">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
                                         <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))]">{t.stats.insights.prayers.insightTitle}</p>
@@ -135,7 +135,7 @@ export function InsightModal({
                             <>
                                 <InsightRow label={t.stats.insights.hasanah.weekly} value={data.weeklyHasanah.toLocaleString()} icon={<Sparkles className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />} />
                                 <InsightRow label={t.stats.insights.hasanah.avgDaily} value={data.avgDailyHasanah.toLocaleString()} icon={<Calendar className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />} />
-                                <div className="p-4 bg-[rgb(var(--color-warning))]/10 border border-[rgb(var(--color-warning))]/20 rounded-2xl">
+                                <div className="p-4 bg-[rgb(var(--color-warning))]/10 border border-[rgb(var(--color-warning))]/20 rounded-2xl shadow-[var(--shadow-card)]">
                                     <div className="flex items-center gap-2 mb-2">
                                         <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />
                                         <p className="text-xs font-bold text-[rgb(var(--color-warning))]">{t.stats.insights.hasanah.insightTitle}</p>
@@ -153,7 +153,7 @@ export function InsightModal({
                         {activeInsight === 'consistency' && (
                             <>
                                 <InsightRow label={t.stats.insights.consistency.rate} value={`${data.consistency}%`} icon={<Target className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />} />
-                                <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/20 rounded-2xl">
+                                <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/20 rounded-2xl shadow-[var(--shadow-card)]">
                                     <div className="flex items-center gap-2 mb-2">
                                         <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />
                                         <p className="text-xs font-bold text-[rgb(var(--color-info))]">
@@ -180,7 +180,7 @@ export function InsightModal({
                                         icon={<AppIcon name="calendar" size="sm" tone="info" />}
                                     />
                                 )}
-                                <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/20 rounded-2xl">
+                                <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/20 rounded-2xl shadow-[var(--shadow-card)]">
                                     <div className="flex items-center gap-2 mb-2">
                                         <Award className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />
                                         <p className="text-xs font-bold text-[rgb(var(--color-info))]">{t.stats.insights.quran.insightTitle || "Wawasan Tilawah"}</p>
@@ -201,7 +201,7 @@ export function InsightModal({
                         {activeInsight === 'dhikr' && (
                             <>
                                 <InsightRow label={t.stats.insights.dhikr.total} value={data.history.reduce((s, d) => s + (d.tasbihCount || 0), 0).toLocaleString()} icon={<AppIcon name="hands" size="sm" tone="primary" />} />
-                                <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl">
+                                <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl shadow-[var(--shadow-card)]">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
                                         <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))]">{t.stats.insights.dhikr.benefitTitle}</p>
@@ -215,7 +215,7 @@ export function InsightModal({
 
                         <Button
                             onClick={() => setActiveInsight(null)}
-                            className="w-full h-12 rounded-2xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-strong))] font-bold text-sm border border-[rgb(var(--color-border))] transition-all mt-2"
+                            className="w-full h-12 rounded-2xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-strong))] font-bold text-sm border border-[rgb(var(--color-border))] transition-all mt-2 shadow-[var(--shadow-card)]"
                         >
                             {t.stats.insights.close}
                         </Button>
@@ -228,7 +228,7 @@ export function InsightModal({
 
 export function InsightRow({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
     return (
-        <div className="flex items-center justify-between p-3.5 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
+        <div className="flex items-center justify-between p-3.5 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl shadow-[var(--shadow-card)]">
             <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-[rgb(var(--color-surface))] flex items-center justify-center">
                     {icon}

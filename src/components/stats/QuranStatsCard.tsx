@@ -63,10 +63,10 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
         },
     ];
 
-    if (!mounted) return <div className="h-48 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] animate-pulse" />;
+    if (!mounted) return <div className="h-48 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] animate-pulse shadow-[var(--shadow-card)]" />;
 
     return (
-        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5 shadow-[var(--shadow-card)]">
             <h2 className="font-bold text-sm mb-4 flex items-center gap-2">
                 <AppIcon name="book" size="sm" tone="primary" label={t.tilawahStatsTitle} />
                 {t.tilawahStatsTitle}
@@ -83,7 +83,7 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
                     <div
                         key={i}
                         className={cn(
-                            'relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br to-transparent p-3',
+                            'relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br to-transparent p-3 shadow-[var(--shadow-card)]',
                             stat.gradient
                         )}
                     >

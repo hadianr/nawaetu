@@ -57,7 +57,7 @@ export default function FAQModal({ open, onOpenChange }: FAQModalProps) {
                             {FAQ_DATA.map((faq, index) => (
                                 <div
                                     key={faq.id}
-                                    className="border border-[rgb(var(--color-border))] rounded-xl bg-[rgb(var(--color-surface-subtle))] overflow-hidden"
+                                    className="border border-[rgb(var(--color-border))] rounded-xl bg-[rgb(var(--color-surface-subtle))] overflow-hidden shadow-[var(--shadow-card)]"
                                 >
                                     <button
                                         onClick={() => setExpandedItem(expandedItem === faq.id ? null : faq.id)}
@@ -107,7 +107,7 @@ export default function FAQModal({ open, onOpenChange }: FAQModalProps) {
                         </div>
 
                         {/* Footer info */}
-                        <div className="mt-6 p-4 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                        <div className="mt-6 p-4 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                             <p className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed text-center">
                                 <span className="block mb-1 font-semibold text-[rgb(var(--color-text))]">
                                     <AppIcon name="warning" size="sm" tone="warning" /> {t.faqDisclaimerTitle || "Catatan Penting"}

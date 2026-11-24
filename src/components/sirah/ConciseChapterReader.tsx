@@ -56,7 +56,7 @@ const NOTE_TEXT = {
         disclaimer: "\u201cUnderstand More\u201d is written by Nawaetu and is not part of the book.",
     },
 } as const;
-const NOTE_BOX = "space-y-2 rounded-2xl border border-dashed border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary))]/5 p-4";
+const NOTE_BOX = "space-y-2 rounded-2xl border border-dashed border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary))]/5 p-4 shadow-[var(--shadow-card)]";
 
 function readIds(): string[] {
     try {
@@ -94,7 +94,7 @@ function ChapterBody({ chapter }: { chapter: ConciseSirahChapter }) {
 
     if (!asList) {
         return (
-            <div className="divide-y divide-[rgb(var(--color-border))] rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
+            <div className="divide-y divide-[rgb(var(--color-border))] rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]">
                 {topics.map((topic, i) => (
                     <article key={i} className="space-y-1.5 px-4 py-3">
                         {topic.title && <h2 className="text-sm font-bold text-[rgb(var(--color-primary-strong))]">{topic.title}</h2>}
@@ -117,7 +117,7 @@ function ChapterBody({ chapter }: { chapter: ConciseSirahChapter }) {
                     {allOpen ? t.conciseCollapseAll : t.conciseExpandAll}
                 </button>
             </div>
-            <div className="divide-y divide-[rgb(var(--color-border))] rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
+            <div className="divide-y divide-[rgb(var(--color-border))] rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]">
                 {topics.map((topic, i) =>
                     topic.title ? (
                         <details
@@ -179,7 +179,7 @@ function NameOrigins({ origins, lang }: { origins: ConciseNameOrigin[]; lang: "i
     return (
         <div className="space-y-1.5 pt-1">
             <p className="text-xs font-bold text-[rgb(var(--color-text-strong))]">{NOTE_TEXT[lang].origins}</p>
-            <ul className="divide-y divide-[rgb(var(--color-border))] rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
+            <ul className="divide-y divide-[rgb(var(--color-border))] rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]">
                 {origins.map((o) => (
                     <li key={o.fromEn}>
                         <details className="group">
@@ -274,7 +274,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
         saveRead(ref.id);
         setRead((r) => (r.includes(ref.id) ? r : [...r, ref.id]));
     };
-    const navCard = "flex min-h-11 items-center gap-1 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-3 text-sm hover:border-[rgb(var(--color-primary))]/40";
+    const navCard = "flex min-h-11 items-center gap-1 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-3 text-sm hover:border-[rgb(var(--color-primary))]/40 shadow-[var(--shadow-card)]";
 
     return (
         <div className="min-h-screen bg-[rgb(var(--color-background))] px-4 py-4 pb-nav font-sans text-[rgb(var(--color-text))] sm:px-6 sm:py-6">
@@ -313,7 +313,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
                 </div>
 
                 {total > 1 && (
-                    <details className="group rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
+                    <details className="group rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]">
                         <summary className={cn("flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 rounded-2xl px-4 text-sm font-semibold text-[rgb(var(--color-text-strong))] [&::-webkit-details-marker]:hidden", FOCUS)}>
                             {t.conciseSirahInThisSection}
                             <ChevronDown className="h-4 w-4 text-[rgb(var(--color-text-muted))] transition-transform group-open:rotate-180" aria-hidden />

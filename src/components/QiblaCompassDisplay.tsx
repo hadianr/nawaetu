@@ -204,7 +204,7 @@ const CompassDisplay = memo(({
                 {/* Alignment Success Badge */}
                 {aligned && (
                     <div className={cn(
-                        "inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all shadow-sm",
+                        "inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all shadow-[var(--shadow-card)]",
                         "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 shadow-[var(--shadow-card)]"
                     )}>
                         <div className={cn(

@@ -50,7 +50,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
                     className={`
                       flex items-center gap-1.5 sm:gap-2 transition-all duration-300 active:scale-95 group/niat w-full outline-none
                       ${variant === "pill"
-                            ? "rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-2.5 sm:p-4 hover:bg-[rgb(var(--color-surface))] active:opacity-80"
+                            ? "rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-2.5 sm:p-4 hover:bg-[rgb(var(--color-surface))] active:opacity-80 shadow-[var(--shadow-card)]"
                             : "text-left hover:opacity-80"
                         }
                     `}
@@ -84,7 +84,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
 
             <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-lg md:max-w-xl bg-[rgb(var(--color-surface))]/95 border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)] rounded-2xl z-[120]">
                 {/* Combined Header & Handle */}
-                <DialogHeader className="pointer-events-auto sticky top-0 z-[150] bg-[rgb(var(--color-surface))]/95 border-b border-[rgb(var(--color-border))] shadow-[var(--shadow-card)] flex flex-row items-center justify-between gap-3 px-6 py-4 space-y-0 text-left">
+                <DialogHeader className="pointer-events-auto sticky top-0 z-[150] bg-[rgb(var(--color-surface))]/95 border-b border-[rgb(var(--color-border))] flex flex-row items-center justify-between gap-3 px-6 py-4 space-y-0 text-left">
                     <DialogTitle className="font-bold text-[rgb(var(--color-text-strong))] text-base tracking-tight leading-tight flex-1">
                         {localizedTitle}
                     </DialogTitle>

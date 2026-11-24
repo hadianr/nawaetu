@@ -101,7 +101,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
     }
 
     return (
-        <div className="flex flex-col h-full bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] rounded-xl overflow-hidden relative">
+        <div className="flex flex-col h-full bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] rounded-xl overflow-hidden relative shadow-[var(--shadow-card)]">
             {/* Journal Texture Overlay */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/rice-paper.png')" }}></div>
 
@@ -165,7 +165,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                     <Button
                         onClick={handleSubmit}
                         disabled={!intention.trim() || isSubmitting}
-                        className="w-full bg-[rgb(var(--color-primary))] border border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] hover:bg-[rgb(var(--color-primary-light))] font-serif font-medium py-6 rounded-lg shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-[rgb(var(--color-primary))] border border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] hover:bg-[rgb(var(--color-primary-light))] font-serif font-medium py-6 rounded-lg shadow-[var(--shadow-card)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isSubmitting ? (
                             <>

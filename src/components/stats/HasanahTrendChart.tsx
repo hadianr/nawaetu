@@ -50,7 +50,7 @@ export function HasanahTrendChart({
                 </h2>
 
                 <div className={cn(
-                    "grid grid-cols-5 w-full sm:w-auto p-1 rounded-xl border",
+                    "grid grid-cols-5 w-full sm:w-auto p-1 rounded-xl border shadow-[var(--shadow-card)]",
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
                 )}>
                     {filters.map((f) => (

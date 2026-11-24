@@ -72,7 +72,7 @@ export default function SunnahFoodsWidget() {
                     {currentFoods.map((food) => (
                         <div
                             key={food.id}
-                            className="snap-start shrink-0 w-[180px] sm:w-[200px] bg-[rgb(var(--color-surface))] rounded-xl p-3 sm:p-4 border border-[rgb(var(--color-border))] flex flex-col"
+                            className="snap-start shrink-0 w-[180px] sm:w-[200px] bg-[rgb(var(--color-surface))] rounded-xl p-3 sm:p-4 border border-[rgb(var(--color-border))] flex flex-col shadow-[var(--shadow-card)]"
                         >
                             <div className="flex items-center justify-between mb-3">
                                 <div className="text-2xl sm:text-3xl filter drop-shadow">

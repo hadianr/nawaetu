@@ -97,7 +97,7 @@ export function DhikrHistory({
                     </div>
                 </button>
             </DialogTrigger>
-            <DialogContent className="dhikr-history-dialog w-[90%] max-w-sm rounded-2xl border z-[100] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]">
+            <DialogContent className=" w-[90%] max-w-sm rounded-2xl border z-[100] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]">
                 <DialogHeader>
                     <DialogTitle className="text-center text-sm font-bold opacity-60">Statistik Zikir</DialogTitle>
                 </DialogHeader>
@@ -113,7 +113,7 @@ export function DhikrHistory({
                                 .map(([id, total], index) => {
                                     const preset = allPresets.find(p => p.id === id);
                                     return (
-                                        <div key={id} className="flex justify-between items-center px-4 py-3 rounded-2xl border bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]">
+                                        <div key={id} className="flex justify-between items-center px-4 py-3 rounded-2xl border bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                                             <div className="flex items-center gap-3">
                                                 <span className={cn("text-xs font-bold w-4", index === 0 ? "text-[rgb(var(--color-primary-strong))]" : "opacity-30")}>#{index + 1}</span>
                                                 <div className="flex flex-col">
@@ -139,7 +139,7 @@ export function DhikrHistory({
                                 const progress = Math.min(100, ((lifetimeCount || 0) / ms.target) * 100);
 
                                 return (
-                                    <div key={ms.id} className={cn("flex flex-col gap-2 p-4 rounded-2xl border", isCompleted ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-60")}>
+                                    <div key={ms.id} className={cn("flex flex-col gap-2 p-4 rounded-2xl border shadow-[var(--shadow-card)]", isCompleted ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-60")}>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <Medal className={cn("h-4 w-4", isCompleted ? "text-[rgb(var(--color-primary-strong))]" : "opacity-30")} />

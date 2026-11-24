@@ -95,12 +95,12 @@ export default function LailatulQadrCard() {
             {/* Status Banner */}
             <div className="px-4 mb-3">
                 {allPassed ? (
-                    <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2.5 text-center">
+                    <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2.5 text-center shadow-[var(--shadow-card)]">
                         <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.lailatulQadrAllPassed}</p>
                     </div>
                 ) : isTonight ? (
                     <div
-                        className="rounded-xl border px-4 py-3 text-center"
+                        className="rounded-xl border px-4 py-3 text-center shadow-[var(--shadow-card)]"
                         style={{
                             background: "rgb(var(--color-primary) / 0.12)",
                             borderColor: "rgb(var(--color-primary) / 0.25)",
@@ -117,7 +117,7 @@ export default function LailatulQadrCard() {
                         </p>
                     </div>
                 ) : daysUntilNext !== null ? (
-                    <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 text-center">
+                    <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 text-center shadow-[var(--shadow-card)]">
                         <p className="text-xs font-bold text-[rgb(var(--color-text-muted))]">
                             {t.lailatulQadrIn.replace("{night}", String(nextNight))}
                         </p>
@@ -255,7 +255,7 @@ export default function LailatulQadrCard() {
             <div className="border-t border-[rgb(var(--color-border))] px-4 py-3">
                 <button
                     onClick={() => setGuideOpen(true)}
-                    className="w-full flex items-center gap-3 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-3.5 py-3 text-left transition-all duration-200 hover:bg-[rgb(var(--color-surface))] hover:-translate-y-0.5 active:scale-[0.98] group"
+                    className="w-full flex items-center gap-3 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-3.5 py-3 text-left transition-all duration-200 hover:bg-[rgb(var(--color-surface))] hover:-translate-y-0.5 active:scale-[0.98] group shadow-[var(--shadow-card)]"
                 >
                     <div
                         className="h-9 w-9 shrink-0 flex items-center justify-center rounded-lg"

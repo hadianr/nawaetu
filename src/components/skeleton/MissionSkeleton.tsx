@@ -28,7 +28,7 @@ export default function MissionSkeleton() {
 
             <div className="flex gap-2 overflow-hidden pb-2">
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex-shrink-0 w-[85%] sm:w-[300px] h-24 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse p-4 flex gap-4">
+                    <div key={i} className="flex-shrink-0 w-[85%] sm:w-[300px] h-24 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse p-4 flex gap-4 shadow-[var(--shadow-card)]">
                         <div className="h-10 w-10 rounded-full bg-[rgb(var(--color-border))]/20" />
                         <div className="flex-1 space-y-2">
                             <div className="h-4 w-3/4 bg-[rgb(var(--color-border))]/20 rounded" />

@@ -39,7 +39,7 @@ export default function GlobalStatsWidget() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-full relative overflow-hidden rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 via-[rgb(var(--color-surface-subtle))] to-transparent p-4 mb-4"
+            className="w-full relative overflow-hidden rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 via-[rgb(var(--color-surface-subtle))] to-transparent p-4 mb-4 shadow-[var(--shadow-card)]"
         >
 
             <div className="flex items-center gap-2 mb-4">
@@ -48,19 +48,19 @@ export default function GlobalStatsWidget() {
             </div>
 
             <div className="grid grid-cols-3 gap-2">
-                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                     <HeartHandshake className="w-5 h-5 text-[rgb(var(--color-accent-strong))] mb-1" />
                     <span className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{stats.missionsCompleted.toLocaleString()}</span>
                     <span className="text-xs text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactMissions}</span>
                 </div>
 
-                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                     <AppIcon name="landmark" size="md" tone="primary" className="mb-1" />
                     <span className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{stats.activeWorshipDays.toLocaleString()}</span>
                     <span className="text-xs text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactStreakDays}</span>
                 </div>
 
-                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                     <Users className="w-5 h-5 text-[rgb(var(--color-info))] mb-1" />
                     <span className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{stats.users.toLocaleString()}</span>
                     <span className="text-xs text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactUsers}</span>

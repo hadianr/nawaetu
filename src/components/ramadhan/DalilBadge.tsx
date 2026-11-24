@@ -127,7 +127,7 @@ export default function DalilBadge({ dalil, variant = "inline", label }: DalilBa
 
                 <div className="space-y-3 overflow-y-auto p-5">
                     {dalil.arabic && (
-                        <div className="rounded-xl border border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-primary))]/5 p-4">
+                        <div className="rounded-xl border border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-primary))]/5 p-4 shadow-[var(--shadow-card)]">
                             <p
                                 className="text-right text-2xl font-semibold leading-[2] text-[rgb(var(--color-text-strong))]"
                                 style={{ fontFamily: "var(--font-amiri)" }}
@@ -145,7 +145,7 @@ export default function DalilBadge({ dalil, variant = "inline", label }: DalilBa
                         </p>
                     )}
 
-                    <div className="rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))] p-4">
+                    <div className="rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))] p-4 shadow-[var(--shadow-card)]">
                         <p className="mb-1.5 text-xs font-bold text-[rgb(var(--color-text-muted))]">{String(t.evidenceTranslation)}</p>
                         <DialogDescription className="text-[15px] leading-relaxed text-[rgb(var(--color-text))]">
                             &ldquo;{localizedTranslation}&rdquo;
@@ -160,7 +160,7 @@ export default function DalilBadge({ dalil, variant = "inline", label }: DalilBa
                         <button
                             type="button"
                             onClick={copy}
-                            className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 px-3 text-sm font-medium text-[rgb(var(--color-text-strong))] outline-none transition-colors hover:bg-[rgb(var(--color-primary))]/10 focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] motion-reduce:transition-none"
+                            className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 px-3 text-sm font-medium text-[rgb(var(--color-text-strong))] outline-none transition-colors hover:bg-[rgb(var(--color-primary))]/10 focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] motion-reduce:transition-none shadow-[var(--shadow-card)]"
                         >
                             <Copy className="size-4" aria-hidden="true" />
                             {String(t.evidenceCopy)}

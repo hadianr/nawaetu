@@ -306,7 +306,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         return (
             <div className={cn("relative min-h-32 w-full", className)}>
                 <div className={cn(
-                    "relative min-h-32 rounded-2xl border p-3 animate-pulse",
+                    "relative min-h-32 rounded-2xl border p-3 animate-pulse shadow-[var(--shadow-card)]",
                     "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                 )}>
                     <div className="flex items-center justify-between gap-4">
@@ -403,7 +403,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     href="/journal"
                                     prefetch={false}
                                     className={cn(
-                                        "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none",
+                                        "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none shadow-[var(--shadow-card)]",
                                         "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
                                     )}
                                 >
@@ -427,7 +427,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                         type="button"
                                         onClick={() => setShowReflectionPrompt(true)}
                                         className={cn(
-                                            "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border px-4 py-2 transition-all active:scale-95 sm:flex-none",
+                                            "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border px-4 py-2 transition-all active:scale-95 sm:flex-none shadow-[var(--shadow-card)]",
                                             "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10"
                                         )}
                                     >
@@ -441,7 +441,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                         type="button"
                                         onClick={() => setShowReflectionPrompt(true)}
                                         className={cn(
-                                            "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border px-4 py-2 opacity-80 transition-all hover:opacity-100 sm:flex-none",
+                                            "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border px-4 py-2 opacity-80 transition-all hover:opacity-100 sm:flex-none shadow-[var(--shadow-card)]",
                                             "bg-[rgb(var(--color-success))]/10 border-[rgb(var(--color-success))]/20"
                                         )}
                                     >
@@ -455,7 +455,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     href="/journal"
                                     prefetch={false}
                                     className={cn(
-                                        "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none",
+                                        "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none shadow-[var(--shadow-card)]",
                                         "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
                                     )}
                                 >

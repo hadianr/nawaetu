@@ -266,7 +266,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 {/* Optimized Background */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-2xl -z-10 opacity-80`} />
 
-                <div className={`relative w-full bg-[rgb(var(--color-surface))]/80 border ${styles.border} rounded-2xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
+                <div className={`relative w-full bg-[rgb(var(--color-surface))]/80 border ${styles.border} rounded-2xl px-6 py-6 flex items-center justify-between overflow-hidden shadow-[var(--shadow-card)]`}>
 
 
                     {isRamadhan ? (
@@ -378,7 +378,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                         <p className="text-sm text-[rgb(var(--color-text-muted))] leading-relaxed">
                             {t.ramadhanInfoDesc}
                         </p>
-                        <div className="bg-[rgb(var(--color-primary))]/10 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
+                        <div className="bg-[rgb(var(--color-primary))]/10 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10 shadow-[var(--shadow-card)]">
                             <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] mb-1">{t.ramadhanImproveTitle}</p>
                             <ul className="list-disc list-inside text-xs text-[rgb(var(--color-text-muted))] space-y-1">
                                 <li>{t.ramadhanImproveItem1}</li>

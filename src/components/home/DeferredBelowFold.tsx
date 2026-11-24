@@ -30,12 +30,12 @@ const PrayerTimesDisplay = dynamic(() => import("@/components/PrayerTimesDisplay
 
 const MissionsWidget = dynamic(() => import("@/components/MissionsWidget"), {
   ssr: false,
-  loading: () => <div className="w-full h-48 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl" />,
+  loading: () => <div className="w-full h-48 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl shadow-[var(--shadow-card)]" />,
 });
 
 const DailySpiritWidget = dynamic(() => import("@/components/home/DailySpiritWidget"), {
   ssr: false,
-  loading: () => <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl" />,
+  loading: () => <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl shadow-[var(--shadow-card)]" />,
 });
 
 export default function DeferredBelowFold() {
@@ -96,7 +96,7 @@ export default function DeferredBelowFold() {
             {secondaryReady ? (
               <MissionsWidget />
             ) : (
-              <div className="w-full h-48 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl" />
+              <div className="w-full h-48 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl shadow-[var(--shadow-card)]" />
             )}
           </section>
 
@@ -111,7 +111,7 @@ export default function DeferredBelowFold() {
               {secondaryReady ? (
                 <DailySpiritWidget />
               ) : (
-                <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl" />
+                <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl shadow-[var(--shadow-card)]" />
               )}
             </div>
           </section>

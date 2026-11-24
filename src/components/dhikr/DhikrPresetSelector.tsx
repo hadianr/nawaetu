@@ -65,7 +65,7 @@ export function DhikrPresetSelector({
                 </Button>
             </DialogTrigger>
             <DialogContent className={cn(
-                "dhikr-preset-dialog w-[90%] max-w-sm rounded-2xl border",
+                " w-[90%] max-w-sm rounded-2xl border",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
             )}>
                 <DialogHeader>
@@ -83,7 +83,7 @@ export function DhikrPresetSelector({
                                         variant="outline"
                                         onClick={() => handleSequenceSelect(seq)}
                                         className={cn(
-                                            "justify-between h-auto py-3 px-4 w-full border-[rgb(var(--color-primary)/0.2)] bg-[rgb(var(--color-primary)/0.1)] rounded-2xl transition-all text-left shadow-sm",
+                                            "justify-between h-auto py-3 px-4 w-full border-[rgb(var(--color-primary)/0.2)] bg-[rgb(var(--color-primary)/0.1)] rounded-2xl transition-all text-left shadow-[var(--shadow-card)]",
                                             activeSequenceId === seq.id && "bg-[rgb(var(--color-primary)/0.25)] border-[rgb(var(--color-primary)/0.5)]"
                                         )}
                                     >

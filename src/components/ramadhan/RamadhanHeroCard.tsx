@@ -108,7 +108,7 @@ export default function RamadhanHeroCard() {
                 </div>
 
                 {/* Motivational text */}
-                <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 mb-2 sm:px-4 sm:py-3 sm:mb-3">
+                <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 mb-2 sm:px-4 sm:py-3 sm:mb-3 shadow-[var(--shadow-card)]">
                     <div className="flex items-center justify-between gap-2">
                         <p className="text-xs sm:text-xs text-[rgb(var(--color-text-strong))] leading-relaxed font-bold">
                             {periodData.text}

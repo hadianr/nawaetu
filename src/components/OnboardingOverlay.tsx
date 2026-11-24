@@ -321,7 +321,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                     <div className="space-y-3 relative z-10 flex-1">
                         <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] leading-tight">{slide.title}</h2>
                         <p className="text-sm text-[rgb(var(--color-text))] leading-relaxed">{slide.description}</p>
-                        <div className="bg-[rgb(var(--color-surface-subtle))]/60 border border-[rgb(var(--color-border))]/15 rounded-xl p-3 flex items-start gap-3 mt-4">
+                        <div className="bg-[rgb(var(--color-surface-subtle))]/60 border border-[rgb(var(--color-border))]/15 rounded-xl p-3 flex items-start gap-3 mt-4 shadow-[var(--shadow-card)]">
                             <div className="bg-[rgb(var(--color-primary))]/10 rounded-full p-1 mt-0.5">
                                 <Check className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
                             </div>
@@ -362,7 +362,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             onChange={(e) => setName(e.target.value)}
                             placeholder={translations.onboardingNamePlaceholder}
                             aria-label={translations.onboardingNamePlaceholder}
-                            className="w-full bg-[rgb(var(--color-canvas))]/40 border border-[rgb(var(--color-border))]/20 rounded-xl px-4 py-3 text-center text-[rgb(var(--color-text-strong))] placeholder:text-[rgb(var(--color-text-muted))] focus:outline-none focus:border-[rgb(var(--color-ring))] transition-all text-lg font-bold"
+                            className="w-full bg-[rgb(var(--color-canvas))]/40 border border-[rgb(var(--color-border))]/20 rounded-xl px-4 py-3 text-center text-[rgb(var(--color-text-strong))] placeholder:text-[rgb(var(--color-text-muted))] focus:outline-none focus:border-[rgb(var(--color-ring))] transition-all text-lg font-bold shadow-[var(--shadow-card)]"
                             onKeyDown={(e) => e.key === 'Enter' && name.trim() && handleNext()}
                         />
                         {/* Fixed height so the greeting appearing never moves the input. */}
@@ -407,7 +407,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                     aria-label={option.label}
                                     aria-pressed={gender === option.value}
                                     className={cn(
-                                        "p-4 rounded-xl border transition-colors flex items-center gap-4 text-left",
+                                        "p-4 rounded-xl border transition-colors flex items-center gap-4 text-left shadow-[var(--shadow-card)]",
                                         gender === option.value ? option.selected : "bg-[rgb(var(--color-surface-subtle))]/50 border-[rgb(var(--color-border))]/15 hover:bg-[rgb(var(--color-surface-subtle))]"
                                     )}
                                 >
@@ -456,7 +456,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                         disabled={isLocationLoading || isLocationSet}
                         variant="secondary"
                         className={cn(
-                            "w-full py-6 text-base font-bold rounded-xl transition-all flex border border-transparent items-center gap-2",
+                            "w-full py-6 text-base font-bold rounded-xl transition-all flex border border-transparent items-center gap-2 shadow-[var(--shadow-card)]",
                             isLocationSet ? "bg-[rgb(var(--color-success))]/20 text-[rgb(var(--color-success))] border-[rgb(var(--color-success))]/30 hover:bg-[rgb(var(--color-success))]/30 opacity-100" : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))]/80 border-[rgb(var(--color-border))]/20"
                         )}
                     >
@@ -573,7 +573,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                 sendGAEvent("onboarding_skipped", { stage: "welcome" });
                                 goTo(INTRO_COUNT);
                             }}
-                            className="text-sm text-[rgb(var(--color-text))] font-semibold px-5 py-2.5 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] rounded-xl border border-[rgb(var(--color-border))]/20 transition-all flex items-center gap-2"
+                            className="text-sm text-[rgb(var(--color-text))] font-semibold px-5 py-2.5 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] rounded-xl border border-[rgb(var(--color-border))]/20 transition-all flex items-center gap-2 shadow-[var(--shadow-card)]"
                         >
                             <span>{translations.onboardingSkip}</span>
                             <ChevronRight className="w-4 h-4" />

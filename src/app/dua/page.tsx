@@ -214,7 +214,7 @@ const DuaCard = memo(function DuaCard({
                     {/* Virtue / Fadhilah */}
                     {virtueText && (
                         <div className={cn(
-                            "p-2.5 rounded-xl text-xs space-y-1 border",
+                            "p-2.5 rounded-xl text-xs space-y-1 border shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20 text-[rgb(var(--color-text))]"
                         )}>
                             <p className="font-bold flex items-center gap-1 text-xs text-[rgb(var(--color-accent-strong))]">
@@ -232,7 +232,7 @@ const DuaCard = memo(function DuaCard({
                             type="button"
                             onClick={(e) => { e.stopPropagation(); onShare(item); }}
                             className={cn(
-                                "flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer shadow-xs",
+                                "flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border-[rgb(var(--color-accent))]/25 hover:bg-[rgb(var(--color-accent))]/20"
                             )}
                         >
@@ -245,7 +245,7 @@ const DuaCard = memo(function DuaCard({
                             type="button"
                             onClick={handleCopy}
                             className={cn(
-                                "py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all cursor-pointer",
+                                "py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all cursor-pointer shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface))]"
                             )}
                         >
@@ -268,7 +268,7 @@ const DuaCard = memo(function DuaCard({
                         <button
                             onClick={handleLaunchCounter}
                             className={cn(
-                                "w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border shadow-sm cursor-pointer",
+                                "w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border shadow-[var(--shadow-card)] cursor-pointer",
                                 "bg-[rgb(var(--color-accent))]/10 hover:bg-[rgb(var(--color-accent))]/20 border-[rgb(var(--color-accent))]/25 text-[rgb(var(--color-accent-strong))]"
                             )}
                         >
@@ -364,7 +364,7 @@ function DuaContent() {
                     <div className="px-2 mb-3">
                         <div className="flex items-center gap-2 mb-3">
                             <div className={cn(
-                                "p-2 rounded-xl border transition-colors",
+                                "p-2 rounded-xl border transition-colors shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                             )}>
                                 <BookOpen className="w-5 h-5 text-[rgb(var(--color-accent-strong))]" />
@@ -425,7 +425,7 @@ function DuaContent() {
                             <button
                                 onClick={handleLoadMore}
                                 className={cn(
-                                    "px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border inline-flex items-center gap-1.5 shadow-sm cursor-pointer",
+                                    "px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border inline-flex items-center gap-1.5 shadow-[var(--shadow-card)] cursor-pointer",
                                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-accent-strong))] hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-accent))]/30"
                                 )}
                             >

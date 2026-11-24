@@ -116,7 +116,7 @@ export default function DailyMissionCard({
         <button
             onClick={() => onClick(mission)}
             className={cn(
-                "w-full flex flex-col gap-2 p-3 rounded-2xl transition-all text-left group relative overflow-hidden",
+                "w-full flex flex-col gap-2 p-3 rounded-2xl transition-all text-left group relative overflow-hidden shadow-[var(--shadow-card)]",
                 "border",
                 isCompleted
                     ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-70"

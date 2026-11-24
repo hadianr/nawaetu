@@ -156,7 +156,7 @@ export default function BookmarkEditDialog({
                             id="note"
                             placeholder={t.bookmarksNotePlaceholder}
                             className={cn(
-                                "flex w-full rounded-2xl border px-4 py-3 text-sm ring-offset-background resize-none min-h-[100px] transition-all",
+                                "flex w-full rounded-2xl border px-4 py-3 text-sm ring-offset-background resize-none min-h-[100px] transition-all shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-muted))] focus-visible:ring-[rgb(var(--color-primary))]/30 focus-visible:bg-[rgb(var(--color-surface))]"
                             )}
                             value={note}
@@ -168,7 +168,7 @@ export default function BookmarkEditDialog({
                     <div
                         onClick={() => setIsLastRead(!isLastRead)}
                         className={cn(
-                            "flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all",
+                            "flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all shadow-[var(--shadow-card)]",
                             isLastRead
                                 ? 'bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/30'
                                 : 'bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/5'

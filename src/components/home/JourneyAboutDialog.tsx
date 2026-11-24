@@ -65,7 +65,7 @@ export default function JourneyAboutDialog({ open, onOpenChange, phase, dayNumbe
                                     key={item.phase}
                                     aria-current={current ? "step" : undefined}
                                     className={cn(
-                                        "rounded-xl border p-3 transition-colors motion-reduce:transition-none",
+                                        "rounded-xl border p-3 transition-colors motion-reduce:transition-none shadow-[var(--shadow-card)]",
                                         current
                                             ? "border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary))]/10"
                                             : "border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]",
@@ -128,12 +128,12 @@ export default function JourneyAboutDialog({ open, onOpenChange, phase, dayNumbe
                         })}
                     </ol>
 
-                    <div className="rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 p-3">
+                    <div className="rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 p-3 shadow-[var(--shadow-card)]">
                         <p className="text-xs font-semibold text-[rgb(var(--color-text-muted))]">{String(t.journeyAboutGoal)}</p>
                         <DalilBadge dalil={JOURNEY_GOAL_EVIDENCE} variant="link" label={label(JOURNEY_GOAL_EVIDENCE)} />
                     </div>
 
-                    <div className="flex items-start gap-3 rounded-xl border border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-primary))]/5 p-3 text-sm text-[rgb(var(--color-text))]">
+                    <div className="flex items-start gap-3 rounded-xl border border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-primary))]/5 p-3 text-sm text-[rgb(var(--color-text))] shadow-[var(--shadow-card)]">
                         <AnimatedCheck className="mt-0.5 size-5 shrink-0 text-[rgb(var(--color-primary-strong))]" />
                         <div className="space-y-1">
                             <p className="font-medium text-[rgb(var(--color-text-strong))]">{String(t.journeyAboutObligations)}</p>

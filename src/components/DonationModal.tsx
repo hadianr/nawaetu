@@ -138,7 +138,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                     {!session ? (
                         <div className="space-y-4">
                             <div className={cn(
-                                "rounded-2xl p-5 text-center border transition-all shadow-sm",
+                                "rounded-2xl p-5 text-center border transition-all shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25"
                             )}>
                                 <Sparkles className={cn(
@@ -250,7 +250,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                             value={customValue}
                                             onChange={(e) => setCustomValue(e.target.value)}
                                             className={cn(
-                                                "w-full h-12 border rounded-xl pl-12 pr-4 font-bold focus:ring-1 outline-none transition-all",
+                                                "w-full h-12 border rounded-xl pl-12 pr-4 font-bold focus:ring-1 outline-none transition-all shadow-[var(--shadow-card)]",
                                                 "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20 text-[rgb(var(--color-text-strong))] placeholder:text-[rgb(var(--color-text-muted))] focus:border-[rgb(var(--color-ring))] focus:ring-[rgb(var(--color-ring))]"
                                             )}
                                             autoFocus

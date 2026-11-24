@@ -350,18 +350,6 @@ nav {
   }
 }
 
-/* Card elevation is a semantic decision shared by every light surface. */
-/* :not(:focus-visible) keeps these from overriding the box-shadow that draws focus rings. */
-[data-color-mode="light"] :is([class~="rounded-2xl"], [class~="rounded-xl"])[class~="border"]:not(:focus-visible) {
-  box-shadow: var(--shadow-card) !important;
-}
-
-/* Settings and other light-theme cards share one surface and elevation. */
-[data-color-mode="light"] :is([class~="shadow-xs"], [class~="shadow-sm"], [class~="shadow-md"], [class~="shadow-lg"]):not(:focus-visible) {
-  --tw-shadow: var(--shadow-card) !important;
-  box-shadow: var(--shadow-card) !important;
-}
-
 [data-color-mode="light"] :is([data-slot="select-content"], select) {
   background-color: rgb(var(--color-surface)) !important;
   color: rgb(var(--color-text-strong)) !important;

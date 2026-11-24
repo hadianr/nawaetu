@@ -50,7 +50,7 @@ export function DhikrDisplay({
             <div className="w-full text-center z-10 pointer-events-none mt-1 xs:mt-6 shrink-0 relative">
                 {activeSequence && (
                     <div className={cn(
-                        "inline-flex items-center justify-center px-3 py-1 mb-2 rounded-full border text-xs font-bold tracking-wider uppercase shadow-sm",
+                        "inline-flex items-center justify-center px-3 py-1 mb-2 rounded-full border text-xs font-bold tracking-wider uppercase shadow-[var(--shadow-card)]",
                         "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25 shadow-[var(--shadow-card)]"
                     )}>
                         {activeSequence.label} ({sequenceIndex + 1}/{activeSequence.items.length})

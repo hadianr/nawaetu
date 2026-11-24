@@ -60,7 +60,7 @@ function HadithText({ text, moreLabel, lessLabel }: { text: string; moreLabel: s
     );
 }
 
-const navLink = "flex min-w-0 items-center gap-1 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] px-3 py-2.5 text-xs font-semibold text-[rgb(var(--color-primary-strong))] transition-colors hover:border-[rgb(var(--color-primary))]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]";
+const navLink = "flex min-w-0 items-center gap-1 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] px-3 py-2.5 text-xs font-semibold text-[rgb(var(--color-primary-strong))] transition-colors hover:border-[rgb(var(--color-primary))]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]";
 
 export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
     const { locale, t } = useLocale();

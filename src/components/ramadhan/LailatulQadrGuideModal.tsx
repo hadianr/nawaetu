@@ -44,7 +44,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
         const localizedSteps = locale === "en" && item.steps_en ? item.steps_en : item.steps;
 
         return (
-            <div key={item.id} className="border border-[rgb(var(--color-border))] rounded-xl bg-[rgb(var(--color-surface-subtle))] overflow-hidden transition-all duration-300">
+            <div key={item.id} className="border border-[rgb(var(--color-border))] rounded-xl bg-[rgb(var(--color-surface-subtle))] overflow-hidden transition-all duration-300 shadow-[var(--shadow-card)]">
                 <button
                     onClick={() => handleAccordionToggle(item.id)}
                     className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[rgb(var(--color-surface))] transition-all outline-none"

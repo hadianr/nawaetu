@@ -74,7 +74,7 @@ export default function PrivacyPolicyPage() {
                     <p className="text-[rgb(var(--color-text-muted))]">Effective date: November 24, 2026</p>
                 </header>
 
-                <div className="space-y-7 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-6 leading-relaxed text-[rgb(var(--color-text-muted))] sm:p-8">
+                <div className="space-y-7 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-6 leading-relaxed text-[rgb(var(--color-text-muted))] sm:p-8 shadow-[var(--shadow-card)]">
                     {sections.map((section) => (
                         <section className="space-y-3" key={section.title}>
                             <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">{section.title}</h2>

@@ -89,7 +89,7 @@ export default function QadhaTracker({ pendingItems, onMarkDone }: QadhaTrackerP
                             return (
                                 <div
                                     key={`${item.hijriYear}-${item.hijriDay}`}
-                                    className="flex items-center gap-2 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-3 py-2.5"
+                                    className="flex items-center gap-2 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-3 py-2.5 shadow-[var(--shadow-card)]"
                                 >
                                     <AppIcon name="calendar" size="sm" tone="warning" />
                                     <div className="flex-1 min-w-0">

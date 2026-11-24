@@ -86,7 +86,7 @@ export default function JourneyFasting({ adjustment, onVisible }: { adjustment: 
     const timingCopy = guide.timing.includes("ayyamulBidh") ? t.journeyFastBidh : t.journeyFastMonThu;
 
     return (
-        <div className="relative mt-3 rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))] p-3">
+        <div className="relative mt-3 rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))] p-3 shadow-[var(--shadow-card)]">
             {burst > 0 && (
                 <LottieMoment
                     key={burst}

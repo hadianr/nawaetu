@@ -74,7 +74,7 @@ export default function SirahFullPage() {
                     </div>
                 </header>
 
-                <div className="space-y-1.5 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-4">
+                <div className="space-y-1.5 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-4 shadow-[var(--shadow-card)]">
                     <div className="flex items-center justify-between text-xs font-bold">
                         <span id="sirah-full-progress" className="text-[rgb(var(--color-text-muted))]">{t.sirahReadingProgress}</span>
                         <span className="text-[rgb(var(--color-primary-strong))]">
@@ -104,7 +104,7 @@ export default function SirahFullPage() {
                             onChange={(e) => setSearchQuery(e.target.value)}
                             autoCapitalize="none"
                             autoCorrect="off"
-                            className="min-h-11 w-full rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] py-2 pl-10 pr-4 text-[16px] text-[rgb(var(--color-text))] outline-hidden transition-all placeholder:text-[rgb(var(--color-text-muted))] focus:border-[rgb(var(--color-primary))] focus:ring-2 focus:ring-[rgb(var(--color-primary))]/20 sm:text-sm"
+                            className="min-h-11 w-full rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] py-2 pl-10 pr-4 text-[16px] text-[rgb(var(--color-text))] outline-hidden transition-all placeholder:text-[rgb(var(--color-text-muted))] focus:border-[rgb(var(--color-primary))] focus:ring-2 focus:ring-[rgb(var(--color-primary))]/20 sm:text-sm shadow-[var(--shadow-card)]"
                         />
                     </div>
 
@@ -150,7 +150,7 @@ export default function SirahFullPage() {
                                     <Link
                                         href={`/sirah/${chap.slug}`}
                                         className={cn(
-                                            "group flex h-full flex-col justify-between gap-2 rounded-2xl border p-4 transition-all",
+                                            "group flex h-full flex-col justify-between gap-2 rounded-2xl border p-4 transition-all shadow-[var(--shadow-card)]",
                                             FOCUS,
                                             isAllDone
                                                 ? "border-[rgb(var(--color-success))]/40 bg-[rgb(var(--color-success))]/10"

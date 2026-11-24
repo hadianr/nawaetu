@@ -285,7 +285,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                         <div
                             role="radiogroup"
                             aria-label={t.storyShareThemeLabel}
-                            className="flex items-center justify-between rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-surface-subtle))] px-1"
+                            className="flex items-center justify-between rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-surface-subtle))] px-1 shadow-[var(--shadow-card)]"
                         >
                             {Object.values(THEMES).map(option => {
                                 const selected = option.id === themeId;
@@ -320,7 +320,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                         <div className="flex items-center gap-1.5 text-xs">
                             {/* Font Size Pills */}
                             <div className={cn(
-                                "flex flex-1 items-center gap-0.5 p-0.5 rounded-xl border",
+                                "flex flex-1 items-center gap-0.5 p-0.5 rounded-xl border shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-primary))]/20"
                             )}>
                                 <button
@@ -432,7 +432,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                         disabled={isExporting}
                         onClick={handleDownload}
                         className={cn(
-                            "p-2 rounded-xl border transition-all cursor-pointer flex items-center justify-center",
+                            "p-2 rounded-xl border transition-all cursor-pointer flex items-center justify-center shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                         )}
                         title={t.storyShareDownloadTitle}
@@ -446,7 +446,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                         disabled={isExporting}
                         onClick={handleCopyImage}
                         className={cn(
-                            "p-2 rounded-xl border transition-all cursor-pointer flex items-center justify-center",
+                            "p-2 rounded-xl border transition-all cursor-pointer flex items-center justify-center shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                         )}
                         title={t.storyShareCopyTitle}

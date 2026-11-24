@@ -28,7 +28,7 @@ export default function TermsOfServicePage() {
                     </p>
                 </div>
 
-                <div className="bg-[rgb(var(--color-surface))]/70 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))] space-y-6 text-[rgb(var(--color-text-muted))] leading-relaxed font-light">
+                <div className="bg-[rgb(var(--color-surface))]/70 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))] space-y-6 text-[rgb(var(--color-text-muted))] leading-relaxed font-light shadow-[var(--shadow-card)]">
                     <section className="space-y-3">
                         <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] mb-2">1. Agreement to Terms</h2>
                         <p>

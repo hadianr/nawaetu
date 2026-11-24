@@ -81,7 +81,7 @@ export function DhikrControls({
                 variant="ghost"
                 onClick={(e) => { e.stopPropagation(); toggleFeedback(); }}
                 className={cn(
-                    "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-all",
+                    "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-all shadow-[var(--shadow-card)]",
                     feedbackMode !== 'none'
                         ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
                         : "bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"

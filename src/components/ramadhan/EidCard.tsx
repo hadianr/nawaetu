@@ -57,7 +57,7 @@ export default function EidCard() {
                         <p className="text-sm text-[rgb(var(--color-text))] leading-relaxed font-medium">
                             {t.eidSunnahDesc}
                         </p>
-                        <div className="bg-[rgb(var(--color-primary-dark))]/20 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
+                        <div className="bg-[rgb(var(--color-primary-dark))]/20 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10 shadow-[var(--shadow-card)]">
                             <ul className="text-sm text-[rgb(var(--color-primary-strong))] space-y-3">
                                 <li className="flex items-start gap-2">
                                     <AppIcon name="heart-handshake" size="sm" tone="primary" className="mt-0.5" />

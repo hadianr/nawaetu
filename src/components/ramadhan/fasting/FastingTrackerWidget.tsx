@@ -79,11 +79,11 @@ export default function FastingTrackerWidget() {
     ];
 
     return (
-        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] overflow-hidden">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] overflow-hidden shadow-[var(--shadow-card)]">
 
             {/* ── Header ── */}
             <div className="flex items-center gap-3 px-4 pt-4 pb-3 border-b border-[rgb(var(--color-border))]">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0 bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0 bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)]">
                     <AppIcon name="moon" size="md" tone="primary" />
                 </div>
                 <div className="flex-1 min-w-0">

@@ -58,7 +58,7 @@ export default function QuranSearchModal() {
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className="p-4 shrink-0 border-b border-[rgb(var(--color-border))] shadow-sm relative z-0 bg-[rgb(var(--color-surface-subtle))]">
+                <div className="p-4 shrink-0 border-b border-[rgb(var(--color-border))] shadow-[var(--shadow-card)] relative z-0 bg-[rgb(var(--color-surface-subtle))]">
                     <form onSubmit={handleSearch} className="flex gap-2">
                         <Input
                             autoFocus
@@ -98,7 +98,7 @@ export default function QuranSearchModal() {
                                     key={verse.verse_key}
                                     href={`/quran/${verse.verse_key.split(':')[0]}#verse-${verse.verse_key.split(':')[1]}`}
                                     onClick={() => setOpen(false)}
-                                    className="block p-4 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/30 hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-surface))] transition-all group"
+                                    className="block p-4 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/30 hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-surface))] transition-all group shadow-[var(--shadow-card)]"
                                 >
                                     <div className="flex justify-between items-start mb-3 gap-4">
                                         <span className="inline-flex items-center justify-center px-2 py-1 rounded bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-strong))] text-xs font-bold shrink-0">

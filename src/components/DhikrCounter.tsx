@@ -307,7 +307,7 @@ export default function DhikrCounter() {
             {/* Achievement Layer */}
             <Dialog open={showReward} onOpenChange={setShowReward}>
                 <DialogContent className={cn(
-                    "dhikr-completion-dialog w-[85%] max-w-[280px] rounded-2xl border flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-[var(--shadow-floating)]",
+                    " w-[85%] max-w-[280px] rounded-2xl border flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-[var(--shadow-floating)]",
                     "bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
                 )}>
                     <DialogHeader className="flex flex-col items-center">
@@ -358,7 +358,7 @@ export default function DhikrCounter() {
                                                     }
                                                     setShowReward(false);
                                                 }}
-                                                className="flex-1 bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))] border border-[rgb(var(--color-border))] h-11 rounded-xl flex flex-row items-center justify-center gap-1.5 px-3"
+                                                className="flex-1 bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))] border border-[rgb(var(--color-border))] h-11 rounded-xl flex flex-row items-center justify-center gap-1.5 px-3 shadow-[var(--shadow-card)]"
                                             >
                                                 <RotateCcw className="h-3 w-3 opacity-70" />
                                                 <span className="text-xs font-bold">{t.tasbihRepeat}</span>

@@ -230,7 +230,7 @@ const HadithCard = memo(function HadithCard({
                     {/* Tadabbur / Commentary if available */}
                     {((locale === "en" && item.explanationEn) || item.explanation) && (
                         <div className={cn(
-                            "p-2.5 rounded-xl text-xs space-y-1 border",
+                            "p-2.5 rounded-xl text-xs space-y-1 border shadow-[var(--shadow-card)]",
                             "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-text))]"
                         )}>
                             <p className="font-bold flex items-center gap-1 text-xs text-[rgb(var(--color-primary-strong))]">
@@ -252,7 +252,7 @@ const HadithCard = memo(function HadithCard({
                                 onShare(item);
                             }}
                             className={cn(
-                                "flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer shadow-xs",
+                                "flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25 hover:bg-[rgb(var(--color-primary))]/20"
                             )}
                         >
@@ -264,7 +264,7 @@ const HadithCard = memo(function HadithCard({
                             type="button"
                             onClick={handleCopy}
                             className={cn(
-                                "py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all cursor-pointer",
+                                "py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all cursor-pointer shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface))]"
                             )}
                         >
@@ -339,7 +339,7 @@ function HadithContent() {
                         <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                                 <div className={cn(
-                                    "p-2 rounded-xl border transition-colors",
+                                    "p-2 rounded-xl border transition-colors shadow-[var(--shadow-card)]",
                                     "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                                 )}>
                                     <BookOpen className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
@@ -394,7 +394,7 @@ function HadithContent() {
                             <button
                                 onClick={handleLoadMore}
                                 className={cn(
-                                    "px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border inline-flex items-center gap-1.5 shadow-sm cursor-pointer",
+                                    "px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border inline-flex items-center gap-1.5 shadow-[var(--shadow-card)] cursor-pointer",
                                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-primary))]/30"
                                 )}
                             >

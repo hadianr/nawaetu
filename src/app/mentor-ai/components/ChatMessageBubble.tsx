@@ -47,10 +47,10 @@ export function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
 
                 {/* Bubble */}
                 <div className={cn(
-                    "p-3 rounded-2xl text-sm leading-relaxed shadow-sm",
+                    "p-3 rounded-2xl text-sm leading-relaxed shadow-[var(--shadow-card)]",
                     isUser
                         ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] rounded-tr-none px-4"
-                        : "bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text))] rounded-tl-none border border-[rgb(var(--color-border))] shadow-sm"
+                        : "bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text))] rounded-tl-none border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
                 )}>
                     {isUser ? (
                         <p>{msg.content}</p>
