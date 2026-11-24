@@ -86,7 +86,7 @@ const faqJsonLd = {
 
 export default function AboutPage() {
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 pt-8 pb-nav text-[rgb(var(--color-text))] font-sans sm:px-6">
+        <main className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 pt-8 pb-nav text-[rgb(var(--color-text))] font-sans sm:px-6">
             <div className="w-full max-w-none space-y-8 xl:max-w-4xl">
                 {/* Header */}
                 <div className="text-center space-y-4">
@@ -293,6 +293,6 @@ export default function AboutPage() {
                     </div>
                 </section>
             </div>
-        </div>
+        </main>
     );
 }

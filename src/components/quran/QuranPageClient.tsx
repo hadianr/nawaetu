@@ -36,7 +36,7 @@ export default function QuranPageClient() {
     if (!mounted) return null;
     
     return (
-        <div className="space-y-4">
+        <main className="space-y-4">
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild className="rounded-full text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]">
                     <Link href="/">
@@ -49,6 +49,6 @@ export default function QuranPageClient() {
                 </div>
             </div>
             <QuranReadingBanner />
-        </div>
+        </main>
     );
 }
