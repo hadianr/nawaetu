@@ -365,13 +365,21 @@ nav {
 [data-color-mode="light"] :is([data-slot="select-content"], select) {
   background-color: rgb(var(--color-surface)) !important;
   color: rgb(var(--color-text-strong)) !important;
-  border-color: rgb(var(--color-border)) !important;
   box-shadow: var(--shadow-floating) !important;
 }
 [data-color-mode="dark"] :is([data-slot="select-content"], select) {
   background-color: rgb(var(--color-surface)) !important;
   color: rgb(var(--color-text-strong)) !important;
+}
+/* The popover is a panel and keeps the quiet border; a native select is a control and needs 3:1. */
+[data-color-mode="light"] [data-slot="select-content"] {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="dark"] [data-slot="select-content"] {
   border-color: rgb(var(--color-border) / 0.35) !important;
+}
+[data-color-mode] select {
+  border-color: var(--input) !important;
 }
 [data-color-mode="light"] option,
 [data-color-mode="dark"] option {
