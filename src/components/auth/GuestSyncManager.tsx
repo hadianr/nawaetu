@@ -185,7 +185,7 @@ async function handleSyncToNewAccount(
         if (!res.ok) throw new Error("Sync failed");
 
         storage.set(STORAGE_KEYS.LAST_SYNC_USER_ID, userId);
-        toast.success(translations.syncUploadSuccess || "✨ Berhasil! Progress tamu kamu sudah aman di akun ini.");
+        toast.success(translations.syncUploadSuccess || "Berhasil! Progress tamu kamu sudah aman di akun ini.");
         sendGAEvent("sync_recovery_outcome", { outcome: "success" });
     } catch (error) {
         console.error(error);
@@ -370,7 +370,7 @@ export function GuestSyncManager() {
                     resetTrackerSnapshot();
 
                     // Success and Info Feedback
-                    toast.success(translations.syncHydrateSuccess || "✅ Sip! Data akun lamamu sudah kembali. Yuk lanjut ibadah!");
+                    toast.success(translations.syncHydrateSuccess || "Sip! Data akun lamamu sudah kembali. Yuk lanjut ibadah!");
                     setTimeout(() => {
                         toast.info(translations.syncHydrateInfo || "Data tamu di perangkat ini telah kami ganti dengan data akun utama.", { duration: 4000 });
                     }, 500);

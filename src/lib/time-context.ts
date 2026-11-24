@@ -106,7 +106,7 @@ export function getTimeSensitiveGreeting(name: string, timeContext: TimeContext)
     if (currentPeriod === "subuh") {
         return `Assalamualaikum ${name}! Masya Allah, sudah bangun pagi nih. Semangat shalatnya!`;
     } else if (currentPeriod === "pagi") {
-        return `Pagi yang berkah ${name}! ☀️ Sempat sholat Dhuha hari ini?`;
+        return `Pagi yang berkah ${name}! Sempat sholat Dhuha hari ini?`;
     } else if (currentPeriod === "siang") {
         return `Siang kak ${name}! Jangan lupa sholat Dzuhur ya~`;
     } else if (currentPeriod === "sore") {

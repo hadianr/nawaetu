@@ -765,7 +765,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                             // Always save locally first
                             getBookmarkRepository().saveBookmark(bookmark);
 
-                            toast.success((t as unknown as Record<string, string>).bookmarksSaved || "Tanda baca berhasil disimpan ✨");
+                            toast.success((t as unknown as Record<string, string>).bookmarksSaved || "Tanda baca berhasil disimpan");
                         } catch {
                         }
                     }}
