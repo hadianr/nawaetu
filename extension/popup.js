@@ -30,7 +30,9 @@ const T = {
         bersiap: 'Bersiap sholat!', adzanNear: 'Waktu adzan dalam',
         hijriOffset: 'Koreksi Tanggal Hijriyah',
         notifOn: 'On', notifOff: 'Off',
-        notifTooltipOn: 'Notifikasi adzan aktif', notifTooltipOff: 'Aktifkan notifikasi adzan'
+        notifTooltipOn: 'Notifikasi adzan aktif', notifTooltipOff: 'Aktifkan notifikasi adzan',
+        refreshLoc: 'Perbarui lokasi', refreshShort: 'Perbarui', hijriOffset: 'Koreksi tanggal Hijriyah',
+        hijriLess: 'Kurangi koreksi tanggal Hijriyah', hijriMore: 'Tambah koreksi tanggal Hijriyah', langSwitch: 'Ganti ke bahasa Inggris'
     },
     en: {
         nextPrayer: 'Next Prayer', towardsPrayer: 'to prayer',
@@ -46,7 +48,9 @@ const T = {
         bersiap: 'Prepare for prayer!', adzanNear: 'Adzan in',
         hijriOffset: 'Hijri Date Correction',
         notifOn: 'On', notifOff: 'Off',
-        notifTooltipOn: 'Adzan notifications active', notifTooltipOff: 'Enable adzan notifications'
+        notifTooltipOn: 'Adzan notifications active', notifTooltipOff: 'Enable adzan notifications',
+        refreshLoc: 'Update location', refreshShort: 'Update', hijriOffset: 'Hijri date correction',
+        hijriLess: 'Decrease Hijri date correction', hijriMore: 'Increase Hijri date correction', langSwitch: 'Switch to Indonesian'
     }
 };
 
@@ -94,7 +98,20 @@ function setupEventListeners() {
 }
 
 function applyLang() {
-    document.getElementById('lang-toggle').textContent = lang === 'id' ? 'EN' : 'ID';
+    document.documentElement.lang = lang;
+    const langBtn = document.getElementById('lang-toggle');
+    langBtn.textContent = lang === 'id' ? 'EN' : 'ID';
+    // Name starts with the visible code so voice users can say what they see.
+    langBtn.setAttribute('aria-label', `${langBtn.textContent}, ${t('langSwitch')}`);
+    const refreshBtn = document.getElementById('refresh-loc-btn');
+    if (refreshBtn) { refreshBtn.setAttribute('aria-label', t('refreshLoc')); refreshBtn.title = t('refreshLoc'); }
+    document.getElementById('offset-minus').setAttribute('aria-label', t('hijriLess'));
+    document.getElementById('offset-plus').setAttribute('aria-label', t('hijriMore'));
+    document.querySelector('.hijri-offset-inline').title = t('hijriOffset');
+    const notifBtn = document.getElementById('notif-toggle');
+    notifBtn.textContent = notifEnabled ? t('notifOn') : t('notifOff');
+    notifBtn.title = notifEnabled ? t('notifTooltipOn') : t('notifTooltipOff');
+    notifBtn.setAttribute('aria-label', `${notifBtn.textContent}, ${t('notifTooltipOff')}`);
     document.getElementById('open-web-btn').textContent = t('openFull');
     document.getElementById('countdown-label').textContent = t('towardsPrayer');
     document.getElementById('verse-label').textContent = t('verseLabel');
@@ -147,6 +164,8 @@ function renderNotifToggle() {
     const btn = document.getElementById('notif-toggle');
     btn.textContent = notifEnabled ? t('notifOn') : t('notifOff');
     btn.title = notifEnabled ? t('notifTooltipOn') : t('notifTooltipOff');
+    btn.setAttribute('aria-label', `${btn.textContent}, ${t('notifTooltipOff')}`);
+    btn.setAttribute('aria-pressed', String(notifEnabled));
     btn.classList.toggle('active', notifEnabled);
 
     btn.addEventListener('click', async () => {
@@ -164,6 +183,8 @@ function renderNotifToggle() {
         }
         btn.textContent = notifEnabled ? t('notifOn') : t('notifOff');
         btn.title = notifEnabled ? t('notifTooltipOn') : t('notifTooltipOff');
+        btn.setAttribute('aria-label', `${btn.textContent}, ${t('notifTooltipOff')}`);
+        btn.setAttribute('aria-pressed', String(notifEnabled));
         btn.classList.toggle('active', notifEnabled);
     });
 }
@@ -209,7 +230,7 @@ async function requestLocationAndLoad() {
 
 function setLocationUI(cityName) {
     document.getElementById('location-name').innerHTML =
-        `${cityName} <button id="refresh-loc-btn" class="refresh-loc-btn" title="Perbarui lokasi">Perbarui</button>`;
+        `${cityName} <button id="refresh-loc-btn" class="refresh-loc-btn" title="${t('refreshLoc')}" aria-label="${t('refreshLoc')}">${t('refreshShort')}</button>`;
     document.getElementById('refresh-loc-btn').addEventListener('click', async () => {
         document.getElementById('location-name').textContent = t('detectingLoc');
         try {

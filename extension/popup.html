@@ -20,7 +20,7 @@
     </div>
     <div class="header-actions">
       <button id="notif-toggle" class="notif-toggle" title="Aktifkan notifikasi adzan">Notifikasi</button>
-      <button id="lang-toggle" class="lang-toggle">EN</button>
+      <button id="lang-toggle" class="lang-toggle" aria-label="EN, Ganti ke bahasa Inggris">EN</button>
       <a id="open-web-btn" href="https://nawaetu.com" target="_blank" class="open-web-btn">Buka Lengkap</a>
     </div>
   </header>
@@ -47,8 +47,6 @@
 
       <!-- RAMADAN BANNER -->
       <div id="ramadan-banner" class="ramadan-banner" style="display:none;">
-        <div class="ramadan-glow-left"></div>
-        <div class="ramadan-glow-right"></div>
         <div class="ramadan-inner">
           <div class="ramadan-crescents">
             <span class="cr left" aria-hidden="true"></span>
@@ -69,14 +67,14 @@
           <span class="info-dot" aria-hidden="true"></span>
           <span class="location-inline" title="Lokasi GPS">
             <span id="location-name">Mendeteksi...</span>
-            <button id="refresh-loc-btn" class="refresh-loc-btn" title="Perbarui lokasi">↻</button>
+            <button id="refresh-loc-btn" class="refresh-loc-btn" title="Perbarui lokasi" aria-label="Perbarui lokasi"><span aria-hidden="true">↻</span></button>
           </span>
           <span class="info-dot" aria-hidden="true"></span>
           <div class="hijri-offset-inline" title="Koreksi Tanggal Hijriyah">
             <span class="settings-glyph" aria-hidden="true"></span>
-            <button id="offset-minus" class="offset-btn">−</button>
+            <button id="offset-minus" class="offset-btn" aria-label="Kurangi koreksi tanggal Hijriyah">−</button>
             <span id="hijri-offset-value">-1</span>
-            <button id="offset-plus" class="offset-btn">+</button>
+            <button id="offset-plus" class="offset-btn" aria-label="Tambah koreksi tanggal Hijriyah">+</button>
           </div>
         </div>
       </div>
