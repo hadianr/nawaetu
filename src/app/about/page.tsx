@@ -282,7 +282,7 @@ export default function AboutPage() {
                             href="/"
                             className="px-8 py-3 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] rounded-lg font-bold hover:opacity-90 transition-opacity"
                         >
-                            Mulai Sekarang
+                            Mulai dari niat hari ini
                         </Link>
                         <Link
                             href="/quran"

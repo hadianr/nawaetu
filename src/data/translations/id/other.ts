@@ -678,7 +678,7 @@ export const otherID = {
     intention_add_reflection: "Tambah refleksi malam",
     intention_journal_title: "Jurnal Niat",
     intention_history_journey: "Riwayat Perjalanan",
-    intention_start_now: "Mulai Sekarang",
+    intention_start_now: "Tulis niat hari ini",
     intention_reflection_note: "Catatan Refleksi",
     intention_no_reflection: "Belum ada refleksi",
     intention_history_title: "Perjalanan Anda",
