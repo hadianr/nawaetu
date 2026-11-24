@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react"; // Import useSession
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { trackInfaqCompleted } from "@/lib/analytics/analytics";
 import { Button } from "@/components/ui/button";
 import {
     Select,
@@ -115,6 +116,7 @@ export default function SettingsPageContent() {
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === "verified") {
+                        trackInfaqCompleted(data.amount);
                         update();
                     }
                 })

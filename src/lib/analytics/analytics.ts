@@ -184,6 +184,20 @@ export const trackAIQuery = (category?: string) => {
 /**
  * Track when user uses Kiblat feature
  */
+/** GA4 recommended names, so they can be marked as key events without renaming. */
+export const trackAccountAuth = (isNewAccount: boolean) => {
+    sendGAEvent(isNewAccount ? 'sign_up' : 'login', { method: 'google' });
+};
+
+export const trackInfaqStarted = (amount: number) => {
+    sendGAEvent('infaq_started', { currency: 'IDR', value: amount });
+};
+
+/** Only after the server confirms settlement, never on the redirect alone. */
+export const trackInfaqCompleted = (amount?: number) => {
+    sendGAEvent('infaq_completed', typeof amount === 'number' ? { currency: 'IDR', value: amount } : {});
+};
+
 export const trackKiblatView = () => {
     sendGAEvent('kiblat_view', {
         timestamp: new Date().toISOString()

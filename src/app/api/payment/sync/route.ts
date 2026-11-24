@@ -128,6 +128,7 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({
                 status: "verified",
                 isMuhsinin: true,
+                amount: latestTx.amount,
                 method: method
             });
         }

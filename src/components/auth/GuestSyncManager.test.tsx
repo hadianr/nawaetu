@@ -12,6 +12,7 @@ const mocks = vi.hoisted(() => ({
     useLocale: vi.fn(),
     fetch: vi.fn(),
     sendGAEvent: vi.fn(),
+    trackAccountAuth: vi.fn(),
     toast: {
         info: vi.fn(),
         success: vi.fn(),
@@ -30,7 +31,7 @@ vi.mock("@/context/LocaleContext", () => ({ useLocale: mocks.useLocale }));
 vi.mock("@/core/infrastructure/storage", () => ({
     getStorageService: () => mocks.storage,
 }));
-vi.mock("@/lib/analytics/analytics", () => ({ sendGAEvent: mocks.sendGAEvent }));
+vi.mock("@/lib/analytics/analytics", () => ({ sendGAEvent: mocks.sendGAEvent, trackAccountAuth: mocks.trackAccountAuth }));
 vi.mock("sonner", () => ({ toast: mocks.toast }));
 
 function jsonResponse(body: unknown, status = 200): Response {
@@ -110,6 +111,7 @@ describe("GuestSyncManager sync branches", () => {
 
         expect(mocks.fetch).toHaveBeenCalledTimes(1);
         expect(mocks.fetch).toHaveBeenCalledWith("/api/user/full-data");
+        expect(mocks.trackAccountAuth).toHaveBeenCalledWith(false);
         expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.USER_NAME, "Aisyah");
         expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.ONBOARDING_COMPLETED, "true");
         expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.LAST_SYNC_USER_ID, "user-1");
@@ -129,6 +131,7 @@ describe("GuestSyncManager sync branches", () => {
 
         expect(mocks.fetch).toHaveBeenCalledTimes(2);
         expect(mocks.fetch).toHaveBeenNthCalledWith(1, "/api/user/full-data");
+        expect(mocks.trackAccountAuth).toHaveBeenCalledWith(true);
         expect(mocks.fetch).toHaveBeenNthCalledWith(
             2,
             "/api/user/sync-guest",
