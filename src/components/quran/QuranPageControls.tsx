@@ -21,7 +21,6 @@
 
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CornerDownRight, Hash } from "@/components/ui/icons";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -49,16 +48,13 @@ export function PageJumpDialog({
     t
 }: PageJumpDialogProps) {
     return (
-        <Tooltip>
+        // A native title, not a Radix tooltip: an open tooltip layer took the first Escape from the dialog.
             <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-                <TooltipTrigger asChild>
                     <DialogTrigger asChild>
-                        <button className="h-9 w-9 p-0 flex items-center justify-center rounded-full hover:bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] transition-colors shrink-0" aria-label={t.quranJumpToVerse}>
+                        <button className="h-9 w-9 p-0 flex items-center justify-center rounded-full hover:bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] transition-colors shrink-0" aria-label={t.quranJumpToVerse} title={String(t.quranJumpToVerse)}>
                             <CornerDownRight className="h-5 w-5" />
                         </button>
                     </DialogTrigger>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">{t.quranJumpToVerse}</TooltipContent>
                 <DialogContent className="sm:max-w-xs bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] p-6 gap-6 shadow-[var(--shadow-floating)]">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold">{t.quranJumpToVerseTitle}</DialogTitle>
@@ -86,7 +82,6 @@ export function PageJumpDialog({
                     </form>
                 </DialogContent>
             </Dialog>
-        </Tooltip>
     );
 }
 

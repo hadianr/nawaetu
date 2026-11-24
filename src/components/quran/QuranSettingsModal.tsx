@@ -62,7 +62,7 @@ export default function QuranSettingsModal({
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button type="button" aria-label={String(t.quranSettingsTitle)} className="h-9 w-9 p-0 flex items-center justify-center rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface))] hover:text-[rgb(var(--color-text-strong))] transition-all hover:border-[rgb(var(--color-primary))]/50 shrink-0">
+                <button type="button" aria-label={String(t.quranSettingsTitle)} title={String(t.quranSettingsTitle)} className="h-9 w-9 p-0 flex items-center justify-center rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface))] hover:text-[rgb(var(--color-text-strong))] transition-all hover:border-[rgb(var(--color-primary))]/50 shrink-0">
                     <Settings className="h-5 w-5" aria-hidden="true" />
                 </button>
             </DialogTrigger>

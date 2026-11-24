@@ -549,9 +549,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                             />
 
                             {!isSearchOpen && (
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <div>
+                                <div>
                                             <QuranSettingsModal
                                                 viewMode={viewMode}
                                                 setViewMode={setViewMode}
@@ -569,10 +567,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                                 handleReciterChange={handleReciterChange}
                                                 isPending={isPending}
                                             />
-                                        </div>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="bottom">{t.quranSettingsTitle}</TooltipContent>
-                                </Tooltip>
+                                </div>
                             )}
                         </div>
                     </div>
