@@ -1,0 +1,602 @@
+<title>Nawaetu Design Audit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column on Nawaetu's own Daylight paper (light) and Emerald night (dark); tables scroll inside their own frame. */
+:root {
+  --canvas: #FAF8F3; --surface: #FFFFFF; --subtle: #F3F0E8;
+  --ink: #17211C; --text: #34403A; --muted: #5A665F; --border: #E4DFD3;
+  --primary: #158057; --primary-strong: #0E6342; --gold: #8A6316;
+  --high: #B91C1C; --medium: #8A5306; --low: #4B5852; --pass: #15803D;
+  --high-tint: #FBECEC; --pass-tint: #EAF4EE;
+  --font-ui: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Lora", Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #0E1311; --surface: #161D1A; --subtle: #1E2723;
+    --ink: #F0EDE4; --text: #D0D4CE; --muted: #9AA49E; --border: #2C3631;
+    --primary: #5EC494; --primary-strong: #5EC494; --gold: #D6AC56;
+    --high: #F87171; --medium: #FBBF24; --low: #B4BDB8; --pass: #34D399;
+    --high-tint: #2A1A1A; --pass-tint: #14261E;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --canvas: #0E1311; --surface: #161D1A; --subtle: #1E2723;
+  --ink: #F0EDE4; --text: #D0D4CE; --muted: #9AA49E; --border: #2C3631;
+  --primary: #5EC494; --primary-strong: #5EC494; --gold: #D6AC56;
+  --high: #F87171; --medium: #FBBF24; --low: #B4BDB8; --pass: #34D399;
+  --high-tint: #2A1A1A; --pass-tint: #14261E;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--canvas); color: var(--text);
+  font: 400 1rem/1.6 var(--font-ui);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 4rem;
+}
+.wrap { max-width: 46rem; margin: 0 auto; display: grid; gap: 3rem; }
+.wrap > * { min-width: 0; }
+h1, h2, h3 { color: var(--ink); text-wrap: balance; margin: 0; }
+h1 { font: 600 clamp(2rem, 6vw, 2.75rem)/1.15 var(--font-display); letter-spacing: -0.01em; }
+h2 { font: 600 1.5rem/1.25 var(--font-display); }
+h3 { font: 700 1.0625rem/1.4 var(--font-ui); }
+p { margin: 0; }
+a { color: var(--primary-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+code { font: 0.875em/1.4 var(--font-mono); background: var(--subtle); padding: 0.05em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.muted { color: var(--muted); }
+.label { font: 600 0.8125rem/1.3 var(--font-ui); letter-spacing: 0.04em; color: var(--muted); }
+section { display: grid; gap: 1.25rem; }
+section > header { display: grid; gap: 0.5rem; }
+
+/* Masthead */
+.masthead { display: grid; gap: 1rem; }
+.lede { font-size: 1.125rem; color: var(--text); max-width: 40rem; }
+.lede strong { color: var(--ink); }
+.toc { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; font-size: 0.9375rem; }
+.toc a { display: inline-block; padding-block: 0.5rem; }
+
+/* Summary */
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.summary div { padding: 1rem 1.125rem; display: grid; gap: 0.25rem; }
+.summary div + div { border-left: 1px solid var(--border); }
+@media (max-width: 40rem) { .summary div + div { border-left: 0; border-top: 1px solid var(--border); } }
+.summary b { font: 700 1.75rem/1 var(--font-ui); color: var(--ink); font-variant-numeric: tabular-nums; }
+.summary span { font-size: 0.875rem; color: var(--muted); }
+
+/* Severity marker: shape and word, never color alone */
+.sev { display: inline-flex; align-items: center; gap: 0.4rem; font: 700 0.8125rem/1 var(--font-ui); letter-spacing: 0.03em; }
+.sev::before { content: ""; width: 0.6rem; height: 0.6rem; background: currentColor; }
+.sev.high { color: var(--high); }
+.sev.high::before { border-radius: 1px; }
+.sev.medium { color: var(--medium); }
+.sev.medium::before { transform: rotate(45deg) scale(0.85); }
+.sev.low { color: var(--low); }
+.sev.low::before { border-radius: 50%; }
+
+/* Gate */
+.gate { display: grid; gap: 0; border-top: 1px solid var(--border); }
+.gate > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.25rem 1rem; padding: 0.875rem 0; border-bottom: 1px solid var(--border); }
+.gate p { grid-column: 1 / -1; font-size: 0.9375rem; color: var(--muted); }
+.verdict { font: 700 0.8125rem/1 var(--font-ui); letter-spacing: 0.04em; padding: 0.35rem 0.55rem; border-radius: 6px; align-self: start; }
+.verdict.fail { color: var(--high); background: var(--high-tint); }
+.verdict.pass { color: var(--pass); background: var(--pass-tint); }
+
+/* Filters */
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filters button {
+  font: 600 0.9375rem/1 var(--font-ui); color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; min-height: 44px; padding: 0 1rem; cursor: pointer;
+}
+.filters button:hover { border-color: var(--muted); color: var(--ink); }
+.filters button[aria-pressed="true"] { background: var(--ink); color: var(--canvas); border-color: var(--ink); }
+.filters button span { font-variant-numeric: tabular-nums; opacity: 0.75; margin-left: 0.25rem; }
+
+/* Findings */
+.findings { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--border); }
+.finding { padding: 1.5rem 0; border-bottom: 1px solid var(--border); display: grid; gap: 0.625rem; }
+.finding .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.875rem; }
+.finding .num { font: 600 0.875rem/1 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.finding .rules { font: 500 0.8125rem/1.3 var(--font-mono); color: var(--muted); }
+.finding .seen { font: 600 0.75rem/1 var(--font-ui); color: var(--primary-strong); border: 1px solid currentColor; border-radius: 4px; padding: 0.25rem 0.4rem; }
+.finding ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; font-size: 0.9375rem; }
+.finding .fix { font-size: 0.9375rem; }
+.finding .done { font: 700 0.75rem/1 var(--font-ui); color: var(--pass); background: var(--pass-tint); border-radius: 4px; padding: 0.3rem 0.45rem; }
+.after { display: grid; gap: 0.75rem; }
+.status { border: 1px solid var(--border); border-radius: 12px; background: var(--pass-tint); padding: 1rem 1.125rem; display: grid; gap: 0.35rem; }
+.status b { color: var(--ink); }
+.finding .fix b { color: var(--ink); }
+
+/* Tables */
+.scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 0.55rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+tbody tr:last-child td { border-bottom: 0; }
+thead th { font-weight: 600; color: var(--muted); background: var(--subtle); position: sticky; top: 0; }
+th[scope="row"] { font-weight: 500; color: var(--ink); }
+td.n { text-align: right; }
+td.bad { color: var(--high); font-weight: 700; background: var(--high-tint); }
+#contrast-body td.bad::after { content: " fail"; font-weight: 600; font-size: 0.75rem; }
+td.zero { color: var(--muted); }
+.note { font-size: 0.875rem; color: var(--muted); }
+
+/* Passes */
+.passes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.passes li { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.75rem; font-size: 0.9375rem; }
+.passes code.rule { background: none; padding: 0; color: var(--pass); font-weight: 600; }
+@media (max-width: 30rem) { .passes li { grid-template-columns: 1fr; gap: 0.125rem; } }
+
+.callout { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.25rem; display: grid; gap: 0.5rem; }
+footer { font-size: 0.875rem; color: var(--muted); border-top: 1px solid var(--border); padding-top: 1.25rem; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="label">antislop audit 001 &middot; 24 November 2026</p>
+  <h1>Nawaetu Design Audit</h1>
+  <p class="lede"><strong>Nawaetu does not read as AI-generated design.</strong> It has a written direction, one semantic token layer across five themes, an icon registry and honest copy. What it has instead is drift: feature code has outgrown its own <code>design.md</code>, and the gaps show up as contrast failures, unnamed controls and 6 to 11px text.</p>
+  <div class="status" role="note">
+    <p><b>Update, same day: 18 of 28 findings fixed.</b> All 15 high-priority findings, plus 14, 15 and 18, are fixed on a branch. A re-scan found 0 axe violations across 5 themes, 0 text under 12px and no overflow at 320px. See <a href="#after">After the fixes</a>.</p>
+  </div>
+  <nav class="toc" aria-label="Sections">
+    <a href="#after">After the fixes</a>
+    <a href="#gate">Delivery Gate</a>
+    <a href="#findings">Findings</a>
+    <a href="#contrast">Theme contrast</a>
+    <a href="#routes">Route scan</a>
+    <a href="#passes">What passes</a>
+    <a href="#method">Method</a>
+  </nav>
+</header>
+
+<div class="summary" role="group" aria-label="Summary">
+  <div><b>28</b><span>findings</span></div>
+  <div><b>15</b><span class="sev high">High, hard gate</span></div>
+  <div><b>6</b><span class="sev medium">Medium, purpose gate</span></div>
+  <div><b>7</b><span class="sev low">Low, quality lock</span></div>
+</div>
+
+<section id="after" aria-labelledby="after-h">
+  <header>
+    <h2 id="after-h">After the fixes</h2>
+    <p class="muted">The same scan, re-run on the fixed branch. Typecheck, lint and 987 tests pass, including 2 new ones for Zen mode keyboard use.</p>
+  </header>
+  <div class="scroll" role="region" aria-label="Before and after" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Measure</th><th scope="col">Before</th><th scope="col">After</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">axe violations, Daylight, 22 routes at 320px</th><td class="n">247</td><td class="n">0</td></tr>
+        <tr><th scope="row">axe violations, 5 themes &times; 10 routes</th><td class="n">contrast alone: 114</td><td class="n">0</td></tr>
+        <tr><th scope="row">Text elements under 12px at 320px</th><td class="n">953</td><td class="n">0</td></tr>
+        <tr><th scope="row">Unnamed buttons and links</th><td class="n">160+</td><td class="n">0</td></tr>
+        <tr><th scope="row">Routes without <code>main</code></th><td class="n">12 of 23</td><td class="n">0</td></tr>
+        <tr><th scope="row">Controls without a pointer cursor, surah page</th><td class="n">39 of 46</td><td class="n">0 of 46</td></tr>
+        <tr><th scope="row">Danger button contrast, dark themes</th><td class="n">2.77:1</td><td class="n">9.41:1</td></tr>
+        <tr><th scope="row">Input border contrast, lowest theme</th><td class="n">1.05:1</td><td class="n">3.85:1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Still open: 11 blur, 12 Sparkles, 13 direct Lucide imports, 16 tracked uppercase, and the low-priority 17, 19 to 23. Locked missions stay dimmed on purpose (WCAG exempts inactive controls). Not clicked through control by control.</p>
+</section>
+
+<section id="gate" aria-labelledby="gate-h">
+  <header>
+    <h2 id="gate-h">Delivery Gate</h2>
+    <p class="muted">antislop's four-block check. Any failing block means the design is not ready to ship as is.</p>
+  </header>
+  <div class="gate">
+    <div><h3>1. Hard Gate</h3><span class="verdict fail">FAIL</span><p>R-02 em dashes, R-03 tap targets, R-25 contrast, R-32 keyboard, R-34 dead theme styles, R-39 names and landmarks.</p></div>
+    <div><h3>2. Purpose-Gate</h3><span class="verdict fail">FAIL</span><p>R-01 decorative gradients, R-04 default Sparkles, R-06 tracked uppercase, R-10 blur in 65 files, R-19 endless animation.</p></div>
+    <div><h3>3. Liveliness</h3><span class="verdict fail">FAIL</span><p>No dials declared. The focal point, the accent and an identity motif (Arabic script, emerald, warm paper) are all present.</p></div>
+    <div><h3>4. Craftsmanship and Quality Locks</h3><span class="verdict fail">FAIL</span><p>R-15 one generic CTA, R-29 off-palette colors, R-31 runtime CSS patches without a written reason.</p></div>
+  </div>
+</section>
+
+<section id="findings" aria-labelledby="findings-h">
+  <header>
+    <h2 id="findings-h">Findings</h2>
+    <p class="muted">Numbered for the fix request. Priority follows the rule tier. Findings marked <span class="seen" style="display:inline-block">Seen in browser</span> were confirmed in the running app.</p>
+  </header>
+  <div class="filters" role="group" aria-label="Filter by priority">
+    <button type="button" data-filter="all" aria-pressed="true">All<span>28</span></button>
+    <button type="button" data-filter="high" aria-pressed="false">High<span>15</span></button>
+    <button type="button" data-filter="medium" aria-pressed="false">Medium<span>6</span></button>
+    <button type="button" data-filter="low" aria-pressed="false">Low<span>7</span></button>
+  </div>
+  <p class="note" id="filter-status" aria-live="polite">Showing all 28 findings.</p>
+
+  <ol class="findings">
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">01</span><span class="sev high">High</span><span class="rules">R-25</span></div>
+      <h3>Delete and danger buttons are unreadable in every dark theme</h3>
+      <p>The destructive <code>Button</code> puts white text on <code>--color-danger</code>, which is #F87171 in Emerald, Midnight and Sunset: <b>2.77:1</b> against a 4.5:1 minimum. The intended dark fallback never applies (see 08).</p>
+      <ul><li><code>src/components/ui/button.tsx:32</code>, <code>src/context/themes.ts</code> (<code>danger</code>)</li></ul>
+      <p class="fix"><b>Fix:</b> give dark themes a <code>dangerForeground</code> of near-black, or a deeper danger fill for buttons.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">02</span><span class="sev high">High</span><span class="rules">R-25</span><span class="seen">Seen in browser</span></div>
+      <h3>Primary-colored text fails on Midnight cards</h3>
+      <p>138 places use <code>text-[rgb(var(--color-primary))]</code>. Light themes remap it to the strong shade, dark themes do not. Midnight #3B82F6 on its card surface is <b>3.98:1</b>; axe found the same class of failure at 3.59:1 on <code>/quran</code>.</p>
+      <ul><li><code>src/app/globals.css:474</code> (light-only remap)</li></ul>
+      <p class="fix"><b>Fix:</b> point text use at <code>--color-primary-strong</code> in every theme and give Midnight a lighter strong value.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">03</span><span class="sev high">High</span><span class="rules">R-25 &middot; R-29</span></div>
+      <h3>Off-palette streak and stats colors ignore the theme</h3>
+      <p>Hardcoded <code>sky-400</code>, <code>violet-400</code> and <code>orange-400</code> measure <b>2.14</b>, <b>2.72</b> and <b>2.26:1</b> on white, below even the 3:1 bar for icons.</p>
+      <ul>
+        <li><code>src/components/streak/StreakWeek.tsx:44,69</code>, <code>src/components/StreakBadge.tsx:222</code></li>
+        <li><code>src/components/stats/StatsOverview.tsx:156</code>, <code>src/components/auth/LoginNudge.tsx:86</code></li>
+      </ul>
+      <p class="fix"><b>Fix:</b> map streak freeze to <code>--color-info</code> and the rest to existing tokens.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">04</span><span class="sev high">High</span><span class="rules">R-25 non-text</span></div>
+      <h3>Input borders are close to invisible</h3>
+      <p>Form fields need a 3:1 boundary. Measured: <b>1.05 to 1.08:1</b> in the dark themes (the border token at 16% alpha), <b>1.33:1</b> in Daylight, <b>1.44:1</b> in Blossom.</p>
+      <ul><li><code>src/app/globals.css:109-110</code>, <code>src/context/themes.ts</code> (<code>border</code>)</li></ul>
+      <p class="fix"><b>Fix:</b> add an <code>--color-border-strong</code> for inputs and controls; keep the quiet border for card separation.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">05</span><span class="sev high">High</span><span class="rules">R-03 &middot; R-25 &middot; design.md</span><span class="seen">Seen in browser</span></div>
+      <h3>Most text on small phones is under 12px, some of it 7px</h3>
+      <p>418 arbitrary sizes in code (<code>text-[10px]</code> 226, <code>[9px]</code> 103, <code>[11px]</code> 52, <code>[8px]</code> 22, <code>[7px]</code>/<code>[6px]</code> 15). At 320px wide the browser shows it plainly: 120 of 121 text elements on <code>/hadith</code> and 118 of 119 on <code>/dua</code> render below 12px, because <code>globals.css</code> also shrinks <code>text-xs</code> and <code>text-sm</code> on screens up to 390px.</p>
+      <ul>
+        <li>7px: dhikr counter label (<code>DhikrDisplay.tsx:135</code>), level badge on <code>/stats</code>, prayer badges on home</li>
+        <li><code>src/app/globals.css:336-343</code> (the shrink)</li>
+      </ul>
+      <p class="fix"><b>Fix:</b> delete the shrink, then replace arbitrary sizes with a 12px floor (<code>text-xs</code>) for metadata.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">06</span><span class="sev high">High</span><span class="rules">R-02</span></div>
+      <h3>Em dashes in user-facing copy, including the app name</h3>
+      <p>About 40 strings in both locales, plus <code>Nawaetu — Worship with Intention</code> as the install name and every tab title. Licensed HadeethEnc and QuranEnc text is excluded.</p>
+      <ul>
+        <li><code>src/app/_manifest.ts:28</code>, <code>src/components/DynamicTitle.tsx:33,37</code></li>
+        <li><code>translations/{en,id}/other.ts</code>, <code>ramadhan.ts</code>, <code>hijri-calendar.ts</code>, <code>fasting-tracker.ts</code>, <code>quran.ts</code>, <code>rewards.ts</code></li>
+        <li>Empty-value glyph in <code>QuranStatsCard.tsx:43,51,59</code></li>
+      </ul>
+      <p class="fix"><b>Fix:</b> colon, comma or period. The dash before a hadith source is a quotation convention and is left for the owner to decide.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">07</span><span class="sev high">High</span><span class="rules">R-39</span><span class="seen">Seen in browser</span></div>
+      <h3>Buttons show an arrow cursor, not a hand</h3>
+      <p>Tailwind v4 resets buttons to <code>cursor: default</code> and nothing restores it. In the browser: 39 of 46 controls on a surah page, 30 of 36 on <code>/missions</code>, 13 of 24 on <code>/settings</code>.</p>
+      <p class="fix"><b>Fix:</b> one base rule for enabled <code>button</code>, <code>[role=button]</code>, <code>summary</code>, <code>label[for]</code>.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">08</span><span class="sev high">High</span><span class="rules">R-34</span></div>
+      <h3>Every <code>dark:</code> style in the primitives is dead</h3>
+      <p><code>@custom-variant dark</code> waits for a <code>.dark</code> class that nothing sets; themes use <code>data-color-mode</code>. The destructive, outline and input dark recipes never apply.</p>
+      <ul><li><code>src/app/globals.css:5</code></li></ul>
+      <p class="fix"><b>Fix:</b> <code>@custom-variant dark (&amp;:where([data-color-mode="dark"], [data-color-mode="dark"] *));</code></p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">09</span><span class="sev high">High</span><span class="rules">R-34 &middot; R-26</span></div>
+      <h3>Broken color values silently drop backgrounds</h3>
+      <ul>
+        <li><code>rgb(var(--color-secondary))</code> becomes <code>rgb(rgb(...))</code>: About page CTA and section, profile header. <code>about/page.tsx:151,283</code>, <code>ProfileHeader.tsx:42</code></li>
+        <li><code>color-mix()</code> on raw RGB channels: all 15 declarations in <code>RamadhanHeroCard.tsx</code> are invalid, so its gradient never paints.</li>
+      </ul>
+      <p class="fix"><b>Fix:</b> use <code>rgb(var(--color-surface-subtle))</code> and <code>rgb(var(--color-primary-light) / 0.2)</code>.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">10</span><span class="sev high">High</span><span class="rules">R-03 &middot; R-32</span></div>
+      <h3>36px inputs, and a Zen mode with no keyboard path</h3>
+      <p><code>Input</code> is <code>h-9</code> while <code>design.md</code> sets 44px; the global 44px rule skips inputs. Zen mode counts through a full-screen <code>div</code> with <code>onClick</code> (<code>DhikrZenMode.tsx:74</code>).</p>
+      <p class="fix"><b>Fix:</b> <code>h-11</code> on <code>Input</code>; add Space and Enter handling or a real button in Zen mode.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">24</span><span class="sev high">High</span><span class="rules">R-39</span><span class="seen">Seen in browser</span></div>
+      <h3>Over 160 controls have no accessible name</h3>
+      <p>A screen reader announces these as "button" or "link" with nothing else.</p>
+      <ul>
+        <li>115 quick-play buttons on <code>/quran</code>: icon only, 28px on desktop. <code>SurahList.tsx:436</code></li>
+        <li>37 verse actions on a surah page: the label lives only in a tooltip. <code>VerseItem.tsx:120-200</code></li>
+        <li>Back links with only a chevron on <code>/journal</code>, <code>/missions</code>, <code>/settings</code> and surah pages. <code>journal/page.tsx:147</code></li>
+        <li>5 date tiles and an icon button on <code>/settings</code>; an <code>aria-expanded</code> on an element that cannot expand</li>
+        <li>Language buttons on <code>/sirah/concise</code> whose label does not contain their visible text</li>
+      </ul>
+      <p class="fix"><b>Fix:</b> <code>aria-label</code> from translations on each icon-only control; mark the icons <code>aria-hidden</code>.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">25</span><span class="sev high">High</span><span class="rules">R-32</span><span class="seen">Seen in browser</span></div>
+      <h3>Surah links remove the focus ring</h3>
+      <p>Every surah title link has <code>outline-none</code> with no replacement. Tabbing down the surah list shows no position at all: 38 of the first 80 focusable elements on <code>/quran</code> had no visible indicator.</p>
+      <ul><li><code>src/components/quran/SurahList.tsx:399</code></li></ul>
+      <p class="fix"><b>Fix:</b> delete <code>outline-none</code>; the base <code>:focus-visible</code> ring already works.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">26</span><span class="sev high">High</span><span class="rules">R-25</span><span class="seen">Seen in browser</span></div>
+      <h3>The status badge recipe fails contrast</h3>
+      <p>Badges put a status color on its own 10% tint, often at reduced opacity. The tokens pass on plain surfaces, but not on the tint: success <b>4.38</b>, warning <b>4.31</b>, gold <b>4.35</b>, danger at 80% <b>3.91</b>, primary at 70% <b>3.62</b> in Daylight. Blossom drops to <b>2.27:1</b> on <code>/missions</code>.</p>
+      <ul><li>axe, Daylight at 320px: 25 on <code>/dua</code>, 13 on <code>/hadith</code>, 11 on <code>/missions</code>. Blossom: 25, 13 and 5. Dark themes: 3 each on <code>/missions</code>.</li></ul>
+      <p class="fix"><b>Fix:</b> one shared badge component using the strong status shade at full opacity for text.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">27</span><span class="sev high">High</span><span class="rules">R-32</span><span class="seen">Seen in browser</span></div>
+      <h3>Horizontal tag strips cannot be scrolled by keyboard</h3>
+      <p>Hidden-scrollbar rows hold content past the edge with nothing focusable inside: 12 on <code>/hadith</code>, 9 on <code>/dua</code>, 1 on <code>/stats</code>.</p>
+      <p class="fix"><b>Fix:</b> let the tags wrap; or give the strip <code>tabindex="0"</code> and a label.</p>
+    </li>
+
+    <li class="finding" data-sev="high">
+      <div class="meta"><span class="num">28</span><span class="sev high">High</span><span class="rules">R-39</span><span class="seen">Seen in browser</span></div>
+      <h3>Half the routes have no main landmark</h3>
+      <p>12 of 23 routes render without <code>&lt;main&gt;</code>, including <code>/quran</code>, <code>/stats</code>, <code>/settings</code> and <code>/about</code>. <code>/qibla</code> has no <code>h1</code>; <code>/dhikr</code> has two.</p>
+      <p class="fix"><b>Fix:</b> one <code>&lt;main&gt;</code> in the root layout around page content.</p>
+    </li>
+
+    <li class="finding" data-sev="medium">
+      <div class="meta"><span class="num">11</span><span class="sev medium">Medium</span><span class="rules">R-10</span></div>
+      <h3>Backdrop blur in 65 files</h3>
+      <p>118 <code>backdrop-blur</code> utilities against 13 uses of the sanctioned <code>glass-surface</code>: cards, dialogs (<code>backdrop-blur-3xl</code> in <code>DhikrHistory</code>), sticky headers, the chat input. Many sit on an opaque surface, where blur paints nothing and only costs GPU on low-end Android.</p>
+      <p class="fix"><b>Fix:</b> keep blur on the bottom nav only; delete the rest.</p>
+    </li>
+
+    <li class="finding" data-sev="medium">
+      <div class="meta"><span class="num">12</span><span class="sev medium">Medium</span><span class="rules">R-04</span></div>
+      <h3>Sparkles as a default icon</h3>
+      <p>96 references. Defensible for Lailatul Qadr; not for "early mission", About, insights or check-in success, and it spins as a loading indicator in <code>StoryShareModal.tsx:262</code>.</p>
+      <p class="fix"><b>Fix:</b> write the reason per use, or swap for a content icon. Use the existing spinner for loading.</p>
+    </li>
+
+    <li class="finding" data-sev="medium">
+      <div class="meta"><span class="num">13</span><span class="sev medium">Medium</span><span class="rules">R-04 &middot; design.md</span></div>
+      <h3>112 files import Lucide directly</h3>
+      <p>Lucide is a documented choice, so it passes. Bypassing <code>AppIcon</code> skips the registry's size, tone and <code>aria-hidden</code> handling, which is how a lightning icon reached the stats grid.</p>
+      <p class="fix"><b>Fix:</b> an ESLint <code>no-restricted-imports</code> rule for <code>lucide-react</code> outside <code>AppIcon</code>.</p>
+    </li>
+
+    <li class="finding" data-sev="medium">
+      <div class="meta"><span class="num">14</span><span class="sev medium">Medium</span><span class="rules">R-01 &middot; R-19</span></div>
+      <h3>A mesh gradient that animates forever</h3>
+      <p><code>RamadhanHeroCard</code> stacks a linear gradient, three radial orbs, blur and a 4s infinite <code>animate-gradient-shift</code>. Reduced motion stops it. Today it is also invisible (see 09).</p>
+      <p class="fix"><b>Fix:</b> give it one job (deepen across the three 10-day periods) and drop the loop.</p>
+    </li>
+
+    <li class="finding" data-sev="medium">
+      <div class="meta"><span class="num">15</span><span class="sev medium">Medium</span><span class="rules">R-01 &middot; R-29</span></div>
+      <h3>Rainbow stat tiles</h3>
+      <p>Four tiles, four washes: orange, primary, yellow, violet. Five hues on one screen with no hierarchy reason. <code>StatsOverview.tsx:136-160</code></p>
+      <p class="fix"><b>Fix:</b> primary for the one stat that matters, neutral surfaces for the rest.</p>
+    </li>
+
+    <li class="finding" data-sev="medium">
+      <div class="meta"><span class="num">16</span><span class="sev medium">Medium</span><span class="rules">R-06 &middot; AGENTS.md</span></div>
+      <h3>Tracked uppercase labels in 73 files</h3>
+      <p>170 <code>uppercase tracking-wider</code> lines. Not extreme spacing, but at this dose and at 9 to 10px it becomes a house look. Includes an untranslated, hardcoded <code>HARI KE-{viewDay} — LOKASI SHOLAT WAJIB</code> (<code>DailyPrayerTracker.tsx:138</code>).</p>
+      <p class="fix"><b>Fix:</b> sentence case for labels; move the hardcoded string to both locales.</p>
+    </li>
+
+    <li class="finding" data-sev="low">
+      <div class="meta"><span class="num">17</span><span class="sev low">Low</span><span class="rules">R-33 spirit &middot; R-31</span></div>
+      <h3><code>globals.css</code> patches components by matching class strings</h3>
+      <p>Selectors such as <code>[class*="from-[rgb(var(--color-primary))"]</code> with <code>!important</code> restyle components at runtime per theme (<code>globals.css:186-198, 474-523</code>). Brittle to any class change, and why 02 is only half fixed.</p>
+    </li>
+
+    <li class="finding" data-sev="low">
+      <div class="meta"><span class="num">18</span><span class="sev low">Low</span><span class="rules">R-03</span></div>
+      <h3>Utilities silently redefined at 390px</h3>
+      <p><code>.px-3</code>, <code>.py-3</code>, <code>.gap-3</code>, <code>.text-xs</code>, <code>.text-sm</code> change meaning on small screens (<code>globals.css:320-344</code>). Fix together with 05.</p>
+    </li>
+
+    <li class="finding" data-sev="low">
+      <div class="meta"><span class="num">19</span><span class="sev low">Low</span><span class="rules">design.md</span></div>
+      <h3>Emoji in product copy</h3>
+      <p>Toast fallbacks (<code>GuestSyncManager.tsx:188,373</code>, <code>PrayerCheckInWidget.tsx:237</code>), push titles (<code>push-copy.ts:19,51</code>), a greeting (<code>time-context.ts:109</code>).</p>
+    </li>
+
+    <li class="finding" data-sev="low">
+      <div class="meta"><span class="num">20</span><span class="sev low">Low</span><span class="rules">R-15</span></div>
+      <h3>One generic CTA</h3>
+      <p><code>"Mulai Sekarang"</code> (<code>id/other.ts:681</code>). Name the action, for example "Tulis niat hari ini".</p>
+    </li>
+
+    <li class="finding" data-sev="low">
+      <div class="meta"><span class="num">21</span><span class="sev low">Low</span><span class="rules">Liveliness</span></div>
+      <h3>No declared dials</h3>
+      <p>Suggested line for <code>design.md</code>, for the owner to confirm: a daily worship companion PWA for Indonesian Muslims, in a calm, warm emerald-and-paper language, <b>ENERGY 1 / RHYTHM 2 / MOTION 1</b>.</p>
+    </li>
+
+    <li class="finding" data-sev="low">
+      <div class="meta"><span class="num">22</span><span class="sev low">Low</span><span class="rules">antislop-code</span></div>
+      <h3>Dead and duplicated CSS</h3>
+      <p>Two identical reduced-motion blocks, an empty rule, banner comments, and a header that still calls Daylight a "Light Glassmorphism Design System".</p>
+    </li>
+
+    <li class="finding" data-sev="low">
+      <div class="meta"><span class="num">23</span><span class="sev low">Low</span><span class="rules">R-39</span></div>
+      <h3><code>&lt;html lang="id"&gt;</code> is static</h3>
+      <p><code>LocaleContext</code> corrects it after hydration (the browser showed <code>en</code>), but server HTML always says <code>id</code>. <code>layout.tsx:180</code></p>
+    </li>
+  </ol>
+</section>
+
+<section id="contrast" aria-labelledby="contrast-h">
+  <header>
+    <h2 id="contrast-h">Theme contrast</h2>
+    <p class="muted">Every token pair in all five themes, computed with the WCAG 2.x formula from <code>src/context/themes.ts</code>. Text needs 4.5:1, borders and rings 3:1. Alpha borders are blended over their surface first.</p>
+  </header>
+  <div class="scroll" role="region" aria-label="Contrast by theme" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Pair</th><th scope="col">Need</th><th scope="col">Emerald</th><th scope="col">Daylight</th><th scope="col">Midnight</th><th scope="col">Sunset</th><th scope="col">Blossom</th></tr></thead>
+      <tbody id="contrast-body"></tbody>
+    </table>
+  </div>
+  <p class="note">Accent as text fails in Daylight and Blossom but nothing uses it as text today; keep it that way.</p>
+</section>
+
+<section id="routes" aria-labelledby="routes-h">
+  <header>
+    <h2 id="routes-h">Route scan at 320px</h2>
+    <p class="muted">Every route loaded in the running app at 320px wide, Daylight theme, with axe-core 4.14 (WCAG 2.2 AA rules) and custom checks. No route overflowed sideways.</p>
+  </header>
+  <div class="scroll" role="region" aria-label="Route results" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Route</th><th scope="col">Text under 12px</th><th scope="col">Smallest</th><th scope="col">Unnamed</th><th scope="col">Contrast</th><th scope="col">No focus ring</th><th scope="col">No pointer</th><th scope="col">main</th></tr></thead>
+      <tbody id="route-body"></tbody>
+    </table>
+  </div>
+  <p class="note">"Unnamed" counts axe button-name, link-name and label mismatch nodes. The 10px minimum on most routes is the bottom navigation label. The 9px text on <code>/settings</code> is a development-only panel.</p>
+</section>
+
+<section id="passes" aria-labelledby="passes-h">
+  <header><h2 id="passes-h">What passes</h2></header>
+  <ul class="passes">
+    <li><code class="rule">R-03</code><span>No horizontal overflow on any of the 23 routes at 320px. Element boxes were measured, so the <code>overflow-x: clip</code> on body could not hide a leak.</span></li>
+    <li><code class="rule">R-17 R-18 R-36</code><span>No user counts, ratings, testimonials, compliance or speed claims in either locale. The one statistic is a cited hadith.</span></li>
+    <li><code class="rule">R-16</code><span>No buzzwords. "The ultimate goal" in <code>journey.ts</code> is literal.</span></li>
+    <li><code class="rule">R-24 R-26</code><span>Debug routes return 404 in production and their links only render in development. No nav item points at a missing page.</span></li>
+    <li><code class="rule">R-21</code><span>Light Daylight is the default; four more themes are a real choice.</span></li>
+    <li><code class="rule">R-37</code><span><code>design.md</code> exists and is specific.</span></li>
+    <li><code class="rule">R-12</code><span>All 252 shadows use the two shadow tokens. No colored glow.</span></li>
+    <li><code class="rule">R-39 motion</code><span>Reduced motion and reduced transparency are both handled. Zoom is not blocked.</span></li>
+    <li><code class="rule">R-40</code><span>No raw <code>img</code>; media uses <code>next/image</code>. Lottie loads after first paint.</span></li>
+    <li><code class="rule">Tap size</code><span>Only inline text links fall under 24px, which WCAG exempts.</span></li>
+    <li><code class="rule">Console</code><span>No errors after load on any route, and the Next.js overlay reported no issues.</span></li>
+  </ul>
+</section>
+
+<section id="method" aria-labelledby="method-h">
+  <header><h2 id="method-h">Method and limits</h2></header>
+  <ul class="passes">
+    <li><code class="rule">Rulebook</code><span>antislop core (R-01 to R-40) and its UI, human, layoutmobile, copywriting and code skills, judged against Nawaetu's own <code>design.md</code>.</span></li>
+    <li><code class="rule">Code</code><span>Pattern sweeps over <code>src/</code> without tests. Token contrast from <code>anti-slop/theme-contrast.mts</code>, failing pairs re-checked with antislop's <code>contrast-check.py</code>.</span></li>
+    <li><code class="rule">Browser</code><span>Dev server, every route in a 320px frame: element overflow, tap sizes, cursor, keyboard focus ring on the first 80 focusable elements, text sizes, axe-core. Contrast re-run in the four other themes at 390px on the ten busiest routes.</span></li>
+    <li><code class="rule">Not done</code><span>Clicking through each control (form submits, dialogs, audio), signed-in pages, the Android wrapper and the browser extension. axe skips text over gradients and blur, so its contrast counts are a floor.</span></li>
+  </ul>
+</section>
+
+<div class="callout">
+  <h2>Suggested first fixes</h2>
+  <p>Mostly token and base-layer edits, a few lines each: <b>01, 02, 04, 07, 08, 09, 25, 28</b>. Then <b>05 with 18</b>, and <b>24 with 26</b> as one badge and icon-button pass.</p>
+</div>
+
+<footer>Audited against antislop, an open rulebook for catching generic AI design. Nothing in the Nawaetu source was changed by this audit.</footer>
+</div>
+
+<script>
+(function () {
+  var pairs = [
+    ["Strong text on canvas", 4.5, [16.02, 15.57, 20.13, 19.76, 12.58]],
+    ["Body text on surface", 4.5, [11.42, 10.82, 11.87, 12.30, 10.07]],
+    ["Muted text on surface", 4.5, [6.06, 6.00, 5.71, 5.92, 6.63]],
+    ["Muted text on nested surface", 4.5, [5.42, 5.27, 5.71, 5.71, 6.02]],
+    ["Muted text on canvas", 4.5, [6.62, 5.65, 7.85, 7.70, 6.50]],
+    ["Primary as text on surface", 4.5, [5.72, 7.29, 3.98, 6.70, 8.27]],
+    ["Accent as text on surface", 4.5, [8.08, 3.16, 8.11, 9.09, 2.22]],
+    ["Strong accent as text", 4.5, [8.08, 5.42, 8.11, 9.09, 6.13]],
+    ["Primary button label", 4.5, [8.75, 4.93, 7.02, 10.59, 6.00]],
+    ["Accent button label", 4.5, [8.84, 5.24, 9.90, 10.69, 5.78]],
+    ["Danger button label", 4.5, [2.77, 6.47, 2.77, 2.77, 6.47]],
+    ["Danger text on surface", 4.5, [6.20, 6.47, 5.29, 5.48, 6.26]],
+    ["Warning text on surface", 4.5, [10.27, 4.92, 8.76, 9.09, 4.77]],
+    ["Success text on surface", 4.5, [8.92, 5.02, 7.61, 7.89, 4.86]],
+    ["Info text on surface", 4.5, [6.74, 6.70, 5.75, 5.97, 6.49]],
+    ["Card border on surface", 3, [1.05, 1.33, 1.05, 1.05, 1.44]],
+    ["Input border on surface", 3, [1.07, 1.33, 1.07, 1.08, 1.44]],
+    ["Focus ring on canvas", 3, [8.75, 4.65, 7.92, 11.71, 4.10]]
+  ];
+  var cb = document.getElementById("contrast-body");
+  pairs.forEach(function (p) {
+    var tr = document.createElement("tr");
+    var th = document.createElement("th"); th.scope = "row"; th.textContent = p[0]; tr.appendChild(th);
+    var need = document.createElement("td"); need.className = "n"; need.textContent = p[1] + ":1"; tr.appendChild(need);
+    p[2].forEach(function (v) {
+      var td = document.createElement("td"); td.className = "n" + (v < p[1] ? " bad" : "");
+      td.textContent = v.toFixed(2); tr.appendChild(td);
+    });
+    cb.appendChild(tr);
+  });
+
+  // route, under12, total text, smallest, unnamed, contrast, noFocus, noPointer, main
+  var routes = [
+    ["/", 26, 44, "7px", 0, 1, 0, "11/17", true],
+    ["/quran", 346, 576, "9px", 116, 1, 38, "2/237", false],
+    ["/quran/1", 9, 32, "9px", 38, 1, 0, "39/46", false],
+    ["/dhikr", 17, 27, "7px", 0, 0, 0, "5/12", true],
+    ["/qibla", 7, 10, "10px", 0, 2, 0, "1/6", false],
+    ["/hadith", 120, 121, "9px", 0, 13, 0, "11/69", true],
+    ["/dua", 118, 119, "9px", 0, 25, 0, "9/67", true],
+    ["/sirah", 14, 23, "10px", 0, 0, 0, "0/8", true],
+    ["/sirah/concise", 26, 82, "10px", 2, 0, 0, "2/51", true],
+    ["/stats", 96, 104, "7px", 1, 0, 0, "12/19", false],
+    ["/settings", 30, 48, "9px", 6, 2, 0, "13/24", false],
+    ["/missions", 97, 130, "8px", 1, 11, 0, "30/36", false],
+    ["/journal", 5, 7, "10px", 1, 0, 0, "0/6", true],
+    ["/bookmarks", 5, 10, "10px", 1, 0, 0, "0/7", false],
+    ["/about", 5, 74, "10px", 0, 0, 0, "0/19", false],
+    ["/ramadhan", 5, 7, "10px", 0, 0, 0, "0/5", false],
+    ["/hijri-calendar", 6, 9, "10px", 0, 0, 0, "1/8", true],
+    ["/mentor-ai", 0, 4, "12.8px", 0, 0, 0, "1/2", false],
+    ["/rewards", 6, 24, "10px", 0, 1, 0, "2/9", true],
+    ["/privacy", 5, 47, "10px", 0, 0, 0, "0/8", true],
+    ["/terms", 5, 23, "10px", 0, 0, 0, "0/5", false],
+    ["/delete-account", 5, 19, "10px", 0, 0, 0, "0/9", true],
+    ["404 page", 5, 7, "10px", 0, 0, 0, "0/5", false]
+  ];
+  var rb = document.getElementById("route-body");
+  function cell(tr, text, cls) { var td = document.createElement("td"); td.textContent = text; if (cls) td.className = cls; tr.appendChild(td); }
+  routes.forEach(function (r) {
+    var tr = document.createElement("tr");
+    var th = document.createElement("th"); th.scope = "row"; th.textContent = r[0]; tr.appendChild(th);
+    var share = r[1] / r[2];
+    cell(tr, r[1] + " of " + r[2], "n" + (share > 0.5 ? " bad" : ""));
+    cell(tr, r[3], parseFloat(r[3]) < 9 ? "bad" : "");
+    cell(tr, String(r[4]), "n" + (r[4] ? " bad" : " zero"));
+    cell(tr, String(r[5]), "n" + (r[5] ? " bad" : " zero"));
+    cell(tr, String(r[6]), "n" + (r[6] ? " bad" : " zero"));
+    cell(tr, r[7], "n");
+    cell(tr, r[8] ? "yes" : "missing", r[8] ? "" : "bad");
+    rb.appendChild(tr);
+  });
+
+  var fixed = ["01","02","03","04","05","06","07","08","09","10","14","15","18","24","25","26","27","28"];
+  document.querySelectorAll(".finding").forEach(function (li) {
+    var num = li.querySelector(".num");
+    if (num && fixed.indexOf(num.textContent) !== -1) {
+      var tag = document.createElement("span"); tag.className = "done"; tag.textContent = "Fixed";
+      li.querySelector(".meta").appendChild(tag);
+    }
+  });
+
+  var buttons = document.querySelectorAll(".filters button");
+  var items = document.querySelectorAll(".finding");
+  var status = document.getElementById("filter-status");
+  var names = { all: "all 28 findings", high: "15 high-priority findings", medium: "6 medium-priority findings", low: "7 low-priority findings" };
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var f = b.getAttribute("data-filter");
+      buttons.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      items.forEach(function (li) { li.hidden = f !== "all" && li.getAttribute("data-sev") !== f; });
+      status.textContent = "Showing " + names[f] + ".";
+    });
+  });
+})();
+</script>
