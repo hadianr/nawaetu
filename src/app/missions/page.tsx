@@ -237,7 +237,7 @@ export default function MisiPage() {
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] text-[rgb(var(--color-text))] px-4 py-6 font-sans sm:px-6 pb-nav">
+        <main className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] text-[rgb(var(--color-text))] px-4 py-6 font-sans sm:px-6 pb-nav">
             <div className="w-full max-w-none space-y-6 xl:max-w-md">
 
                 {/* Header */}
@@ -320,6 +320,6 @@ export default function MisiPage() {
                 )}
 
             </div>
-        </div>
+        </main>
     );
 }

@@ -57,10 +57,10 @@ export function DhikrDisplay({
                     </div>
                 )}
                 <div className="mb-0.5 xs:mb-2">
-                    <h1 className={cn(
+                    <h2 className={cn(
                         "text-lg xs:text-xl font-bold tracking-tight leading-tight",
                         "text-[rgb(var(--color-text-strong))]"
-                    )}>{t.tasbihTitle}</h1>
+                    )}>{t.tasbihTitle}</h2>
                     <p className={cn(
                         "text-xs xs:text-xs uppercase tracking-wider",
                         "text-[rgb(var(--color-text-muted))]"

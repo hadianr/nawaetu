@@ -22,18 +22,20 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 const QiblaCompass = dynamic(() => import("@/components/QiblaCompass"), { ssr: false, loading: () => <div className="animate-pulse w-32 h-32 rounded-full border-4 border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-surface-subtle))]" /> });
 import { trackKiblatView } from "@/lib/analytics/analytics";
+import { useLocale } from "@/context/LocaleContext";
 
 export default function QiblaPage() {
+    const { t } = useLocale();
     useEffect(() => {
         trackKiblatView();
     }, []);
 
     return (
-        <div className="flex h-[100dvh] w-full max-w-full flex-col items-center justify-center font-sans overflow-hidden fixed inset-0 transition-colors duration-500 bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]">
-            {/* Main Content - Centered & Full Width */}
+        <main className="flex h-[100dvh] w-full max-w-full flex-col items-center justify-center font-sans overflow-hidden fixed inset-0 transition-colors duration-500 bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]">
+            <h1 className="sr-only">{t.navQibla}</h1>
             <div className="w-full h-full flex items-center justify-center relative">
                 <QiblaCompass />
             </div>
-        </div>
+        </main>
     );
 }

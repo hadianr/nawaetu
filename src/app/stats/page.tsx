@@ -229,7 +229,7 @@ export default function StatsPage() {
     }
 
     return (
-            <div className="stats-page min-h-screen bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))] pb-nav">
+            <main className="stats-page min-h-screen bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))] pb-nav">
                 <StatsHeader t={t} playerStats={playerStats} />
 
                 <div className="w-full max-w-none mx-auto px-6 pt-5 xl:max-w-2xl">
@@ -349,6 +349,6 @@ export default function StatsPage() {
                         }}
                     />
                 </div>
-            </div>
+            </main>
     );
 }

@@ -386,7 +386,7 @@ export default function MentorAIClient() {
     // 1. Access Control Check
     if (status === "unauthenticated") {
         return (
-            <div className={cn(
+            <main className={cn(
                 "min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden font-sans bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]"
             )}>
 
@@ -434,7 +434,7 @@ export default function MentorAIClient() {
                         </Link>
                     </div>
                 </div>
-            </div>
+            </main>
         );
     }
 
@@ -442,7 +442,7 @@ export default function MentorAIClient() {
     // Removed full-page blocking spinner to improve perceived performance
 
     return (
-        <div className={cn(
+        <main className={cn(
             "h-screen h-[100dvh] flex flex-col font-sans relative overflow-hidden",
             "bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]"
         )}>
@@ -602,6 +602,6 @@ export default function MentorAIClient() {
                 DAILY_LIMIT={DAILY_LIMIT}
                 t={t}
             />
-        </div>
+        </main>
     );
 }

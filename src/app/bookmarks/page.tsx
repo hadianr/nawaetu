@@ -90,7 +90,7 @@ export default function BookmarksPage() {
     if (!mounted) return null;
 
     return (
-        <div className={cn(
+        <main className={cn(
             "bookmarks-page flex min-h-screen flex-col items-center px-4 pt-8 pb-nav font-sans sm:px-6 transition-colors",
             "bg-[rgb(var(--color-background))] text-[rgb(var(--color-text))]"
         )}>
@@ -258,6 +258,6 @@ export default function BookmarksPage() {
                     )}
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
