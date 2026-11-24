@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Nawaetu",
-    "version": "1.9.4",
+    "version": "1.10.0",
     "description": "Jadwal sholat, countdown adzan, notifikasi, dan ayat Al-Quran harian – companion Muslim terpadu.",
     "icons": {
         "16": "icons/icon-16.png",
