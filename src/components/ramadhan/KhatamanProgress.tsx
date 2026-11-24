@@ -99,7 +99,7 @@ export default function KhatamanProgress() {
         : null;
 
     return (
-        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-transparent backdrop-blur-xl shadow-[var(--shadow-card)] overflow-hidden transition-all duration-300">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-transparent shadow-[var(--shadow-card)] overflow-hidden transition-all duration-300">
             {/* Header */}
             <div className="flex items-center justify-between px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
                 <div className="flex items-center gap-2">
@@ -125,7 +125,7 @@ export default function KhatamanProgress() {
                 </div>
 
                 {/* Progress bar */}
-                <div className="h-3 w-full rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden shadow-inner backdrop-blur-sm">
+                <div className="h-3 w-full rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden shadow-inner">
                     <div
                         className="h-full rounded-full transition-all duration-500 shadow-[var(--shadow-card)]"
                         style={{
@@ -148,7 +148,7 @@ export default function KhatamanProgress() {
                 <button
                     onClick={() => adjustJuz(-1)}
                     disabled={currentJuz <= 0}
-                    className="rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] p-2.5 text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface))] hover:border-[rgb(var(--color-primary))]/40 disabled:opacity-30 transition-all active:scale-90 backdrop-blur-sm shadow-[var(--shadow-card)]"
+                    className="rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] p-2.5 text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface))] hover:border-[rgb(var(--color-primary))]/40 disabled:opacity-30 transition-all active:scale-90 shadow-[var(--shadow-card)]"
                 >
                     <Minus className="h-4 w-4" />
                 </button>
@@ -159,7 +159,7 @@ export default function KhatamanProgress() {
                 <button
                     onClick={() => adjustJuz(1)}
                     disabled={currentJuz >= 30}
-                    className="rounded-full p-2.5 hover:opacity-80 disabled:opacity-30 transition-all active:scale-90 border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-strong))] backdrop-blur-sm shadow-[var(--shadow-card)]"
+                    className="rounded-full p-2.5 hover:opacity-80 disabled:opacity-30 transition-all active:scale-90 border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)]"
                 >
                     <Plus className="h-4 w-4" />
                 </button>
@@ -167,14 +167,14 @@ export default function KhatamanProgress() {
 
             {/* Estimate */}
             {estimatedFinishDay && estimatedFinishDay <= 30 && (
-                <div className="mx-3 mb-2 rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
+                <div className="mx-3 mb-2 rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center shadow-[var(--shadow-card)]">
                     <p className="text-xs text-[rgb(var(--color-primary-strong))]">
                         {t.khatamanEstimateFinish.replace("{day}", String(estimatedFinishDay))}
                     </p>
                 </div>
             )}
             {currentJuz >= 30 && (
-                <div className="mx-3 mb-2 rounded-xl border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
+                <div className="mx-3 mb-2 rounded-xl border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center shadow-[var(--shadow-card)]">
                     <p className="text-sm font-bold text-[rgb(var(--color-primary-strong))]">{t.khatamanAlhamdulillah}</p>
                 </div>
             )}

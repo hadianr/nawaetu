@@ -19,7 +19,7 @@ interface IslamicSubTabBarProps {
 
 export function IslamicSubTabBar({ activeTab, t }: IslamicSubTabBarProps) {
     return (
-        <div className="grid grid-cols-2 p-1 rounded-2xl border mb-3 bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] backdrop-blur-md">
+        <div className="grid grid-cols-2 p-1 rounded-2xl border mb-3 bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]">
             <Link
                 href="/hadith"
                 className={cn(

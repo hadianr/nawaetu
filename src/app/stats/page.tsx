@@ -285,7 +285,7 @@ export default function StatsPage() {
 
                     {/* Rank Details Modal */}
                     <Dialog open={isRankModalOpen} onOpenChange={setIsRankModalOpen}>
-                        <DialogContent showCloseButton={false} className="bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] backdrop-blur-2xl p-0 overflow-hidden max-w-[360px] rounded-2xl text-[rgb(var(--color-text-strong))]">
+                        <DialogContent showCloseButton={false} className="bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] p-0 overflow-hidden max-w-[360px] rounded-2xl text-[rgb(var(--color-text-strong))]">
                             <div className="relative p-6">
                                 <DialogHeader className="mb-6">
                                     <div className="flex items-center gap-3 mb-2">

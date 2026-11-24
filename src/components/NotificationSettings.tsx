@@ -368,7 +368,7 @@ export default function NotificationSettings() {
     // RENDER: DENIED STATE
     if (permissionStatus === "denied") {
         return (
-            <div className="bg-[rgb(var(--color-danger))]/10 backdrop-blur-xl border border-[rgb(var(--color-danger))]/25 rounded-2xl p-4 shadow-[var(--shadow-card)] flex items-start gap-3">
+            <div className="bg-[rgb(var(--color-danger))]/10 border border-[rgb(var(--color-danger))]/25 rounded-2xl p-4 shadow-[var(--shadow-card)] flex items-start gap-3">
                 <BellOff className="w-5 h-5 text-[rgb(var(--color-danger))] mt-0.5 flex-shrink-0" />
                 <div>
                     <h3 className="font-semibold text-[rgb(var(--color-danger))] text-sm mb-1">

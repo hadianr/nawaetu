@@ -94,7 +94,7 @@ export default function MissionDetailDialog({
                 className={cn(
                     "max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 shadow-[var(--shadow-floating)] transition-colors duration-500",
                     surface,
-                    "backdrop-blur-3xl"
+                    ""
                 )}
             >
                 <DialogHeader className="p-6 pb-2 relative">

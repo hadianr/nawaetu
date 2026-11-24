@@ -315,17 +315,6 @@
     will-change: transform, opacity;
   }
 
-  /* Mobile performance: reduce blur on small screens */
-  @media (max-width: 768px) {
-    .blur-3xl {
-      @apply blur-2xl;
-    }
-
-    .backdrop-blur-3xl {
-      @apply backdrop-blur-2xl;
-    }
-  }
-
   /* Disable animations on mobile for better performance */
   @media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
     .animate-shimmer {

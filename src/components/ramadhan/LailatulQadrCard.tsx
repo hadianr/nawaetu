@@ -74,7 +74,7 @@ export default function LailatulQadrCard() {
         ODD_NIGHTS.includes(night as (typeof ODD_NIGHTS)[number]);
 
     return (
-        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-md shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)] overflow-hidden">
 
             {/* Header */}
             <div className="flex items-center justify-between px-4 pt-4 pb-3">

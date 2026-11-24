@@ -116,7 +116,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-lg md:max-w-2xl bg-[rgb(var(--color-surface))]/95 backdrop-blur-xl border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)]">
+            <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-lg md:max-w-2xl bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)]">
                 <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] relative flex flex-row items-start justify-between">
                     <div className="flex-1 min-w-0 pr-2">
                         <DialogTitle className="text-left flex items-start sm:items-center gap-2 font-bold text-base sm:text-lg">

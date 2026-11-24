@@ -194,7 +194,7 @@ export default function RamadhanWrappedCard() {
 
     if (loading) {
         return (
-            <div className="w-full flex items-center justify-center p-6 border border-[rgb(var(--color-border))] rounded-2xl bg-[rgb(var(--color-surface))] backdrop-blur-sm">
+            <div className="w-full flex items-center justify-center p-6 border border-[rgb(var(--color-border))] rounded-2xl bg-[rgb(var(--color-surface))]">
                 <Loader2 className="w-5 h-5 mr-3 animate-spin text-[rgb(var(--color-primary-strong))]" />
                 <span className="text-sm text-[rgb(var(--color-text-muted))] animate-pulse">{t.wrappedLoading || "Menghimpun Amal Ramadhan..."}</span>
             </div>
@@ -372,10 +372,10 @@ export default function RamadhanWrappedCard() {
 
     // ─── Fullscreen modal ───────────────────────────────────────────────────
     const wrappedModal = (
-        <div className="fixed inset-0 z-[9999] bg-[rgb(var(--color-text-strong))]/90 backdrop-blur-md overflow-y-auto grid place-items-center p-4 pb-12 pt-16">
+        <div className="fixed inset-0 z-[9999] bg-[rgb(var(--color-text-strong))]/90 overflow-y-auto grid place-items-center p-4 pb-12 pt-16">
             <button
                 onClick={() => setIsOpen(false)}
-                className="fixed top-4 right-4 z-[100] p-3 rounded-full hover:bg-[rgb(var(--color-surface))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] transition-colors border border-[rgb(var(--color-border))] backdrop-blur-md"
+                className="fixed top-4 right-4 z-[100] p-3 rounded-full hover:bg-[rgb(var(--color-surface))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] transition-colors border border-[rgb(var(--color-border))]"
             >
                 <X className="w-5 h-5" />
             </button>

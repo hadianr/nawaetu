@@ -164,7 +164,7 @@ export default function PrayerTimesDisplay() {
             <PrayerCheckInWidget />
 
             <div className={cn(
-                "glass-surface flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5",
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5",
                 "border-[rgb(var(--color-border))]",
             )}>
                 <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">

@@ -65,7 +65,7 @@ export function DhikrPresetSelector({
                 </Button>
             </DialogTrigger>
             <DialogContent className={cn(
-                "dhikr-preset-dialog w-[90%] max-w-sm rounded-2xl border backdrop-blur-3xl",
+                "dhikr-preset-dialog w-[90%] max-w-sm rounded-2xl border",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
             )}>
                 <DialogHeader>

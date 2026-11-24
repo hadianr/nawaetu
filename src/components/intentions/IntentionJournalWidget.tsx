@@ -324,7 +324,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     return (
         <div className={cn("relative min-h-32 w-full group", className)}>
             <div className={cn(
-                "glass-surface relative min-h-32 overflow-hidden rounded-2xl p-3 transition-all duration-300 hover:shadow-[var(--shadow-card)] sm:p-4",
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] relative min-h-32 overflow-hidden rounded-2xl p-3 transition-all duration-300 hover:shadow-[var(--shadow-card)] sm:p-4",
                 "border shadow-[var(--shadow-card)]"
             )}>
                 <div className="flex flex-col gap-2">

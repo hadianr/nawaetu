@@ -117,7 +117,7 @@ export default function DailyMissionCard({
             onClick={() => onClick(mission)}
             className={cn(
                 "w-full flex flex-col gap-2 p-3 rounded-2xl transition-all text-left group relative overflow-hidden",
-                "border backdrop-blur-sm",
+                "border",
                 isCompleted
                     ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-70"
                     : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/5 hover:border-[rgb(var(--color-primary-light))]"

@@ -24,7 +24,7 @@ export function SirahQuranBridgeModal({ refData, onClose }: SirahQuranBridgeModa
     const surahName = surahNames[refData.surah] || `Surah ${refData.surah}`;
 
     return (
-        <div className="sirah-quran-bridge-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-[rgb(var(--color-text-strong))]/60 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="sirah-quran-bridge-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-[rgb(var(--color-text-strong))]/60 animate-in fade-in duration-200">
             <div className="w-full max-w-md rounded-2xl border border-[rgb(var(--color-border))] p-5 shadow-[var(--shadow-floating)] transition-all bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text))]">
                 <div className="flex items-center justify-between border-b border-[rgb(var(--color-border))] pb-3 mb-4">
                     <div className="flex items-center gap-2.5">

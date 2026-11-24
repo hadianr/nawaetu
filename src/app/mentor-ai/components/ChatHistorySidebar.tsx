@@ -47,7 +47,7 @@ export function ChatHistorySidebar({
         <div className="fixed inset-0 z-50 flex justify-end">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-[rgb(var(--color-canvas))]/70 backdrop-blur-sm animate-in fade-in duration-300"
+                className="absolute inset-0 bg-[rgb(var(--color-canvas))]/70 animate-in fade-in duration-300"
                 onClick={() => setShowHistory(false)}
             />
 

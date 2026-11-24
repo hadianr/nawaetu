@@ -129,7 +129,7 @@ export default function FastingDayModal({
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 overscroll-none">
             {/* Opaque backdrop with high blur for maximum focus */}
             <div
-                className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/80 backdrop-blur-3xl"
+                className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/80"
                 onClick={onClose}
             />
 

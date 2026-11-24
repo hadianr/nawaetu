@@ -223,7 +223,7 @@ export default function MissionsWidget() {
     return (
         <div className={cn(
             "relative overflow-hidden rounded-2xl p-4 sm:p-5 transition-all",
-            "glass-surface border shadow-[var(--shadow-card)]"
+            "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] border shadow-[var(--shadow-card)]"
         )}>
 
             <div className="flex items-center justify-between mb-4 relative z-10 w-full">
@@ -241,7 +241,7 @@ export default function MissionsWidget() {
                 </div>
 
                 <div className={cn(
-                    "text-xs px-3 py-1 rounded-full font-medium border backdrop-blur-sm",
+                    "text-xs px-3 py-1 rounded-full font-medium border",
                     completedCount === missions.length
                         ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))]"
                         : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"

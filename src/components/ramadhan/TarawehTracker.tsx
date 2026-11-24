@@ -76,7 +76,7 @@ export default function TarawehTracker() {
     };
 
     return (
-        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] backdrop-blur-md shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)] overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
                 <div className="flex items-center gap-2">
@@ -88,11 +88,11 @@ export default function TarawehTracker() {
 
             {/* Stats row */}
             <div className="flex gap-1.5 px-3 mb-2 sm:gap-2 sm:px-4 sm:mb-3">
-                <div className="flex-1 rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] px-3 py-2 text-center backdrop-blur-sm shadow-[var(--shadow-card)]">
+                <div className="flex-1 rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] px-3 py-2 text-center shadow-[var(--shadow-card)]">
                     <p className="text-lg font-bold text-[rgb(var(--color-primary-strong))] flex items-center justify-center gap-1">{streak > 0 && <AppIcon name="sparkles" size="sm" tone="primary" />}{streak || "—"}</p>
                     <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.tarawehStreakNights}</p>
                 </div>
-                <div className="flex-1 rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] px-3 py-2 text-center backdrop-blur-sm shadow-[var(--shadow-card)]">
+                <div className="flex-1 rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] px-3 py-2 text-center shadow-[var(--shadow-card)]">
                     <p className="text-lg font-bold text-[rgb(var(--color-primary-strong))]">{totalNights}</p>
                     <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.tarawehTotalNights}</p>
                 </div>

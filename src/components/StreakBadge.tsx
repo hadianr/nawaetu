@@ -239,7 +239,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
                 setShareOpen(true);
               }}
               className={cn(
-                "flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border px-4 font-bold backdrop-blur-xl transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                "flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border px-4 font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                 "border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] hover:bg-[rgb(var(--color-primary-light))]",
               )}
             >

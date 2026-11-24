@@ -66,7 +66,7 @@ export default function QuranSettingsModal({
                     <Settings className="h-5 w-5" aria-hidden="true" />
                 </button>
             </DialogTrigger>
-            <DialogContent className="border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-xl max-w-sm max-h-[90vh] p-0 overflow-hidden flex flex-col quran-settings-modal text-[rgb(var(--color-text))]">
+            <DialogContent className="border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] max-w-sm max-h-[90vh] p-0 overflow-hidden flex flex-col quran-settings-modal text-[rgb(var(--color-text))]">
                 <DialogHeader className="p-6 pb-2 shrink-0">
                     <DialogTitle>{t.quranSettingsTitle}</DialogTitle>
                 </DialogHeader>

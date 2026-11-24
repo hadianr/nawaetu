@@ -266,7 +266,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 {/* Optimized Background */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-2xl -z-10 opacity-80`} />
 
-                <div className={`relative w-full bg-[rgb(var(--color-surface))]/80 backdrop-blur-md border ${styles.border} rounded-2xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
+                <div className={`relative w-full bg-[rgb(var(--color-surface))]/80 border ${styles.border} rounded-2xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
 
 
                     {isRamadhan ? (
@@ -368,7 +368,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
             {/* Info Dialog */}
             <Dialog open={showInfo} onOpenChange={setShowInfo}>
-                <DialogContent className="bg-[rgb(var(--color-surface))] backdrop-blur-xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] w-[90%] rounded-2xl shadow-[var(--shadow-floating)]">
+                <DialogContent className="bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] w-[90%] rounded-2xl shadow-[var(--shadow-floating)]">
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold flex items-center gap-2">
                             <MoonIcon className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" /> {t.ramadhanInfoTitle}

@@ -99,7 +99,7 @@ export default function AboutPage() {
                 </div>
 
                 {/* What is Nawaetu */}
-                <section className="bg-[rgb(var(--color-surface))]/70 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
+                <section className="bg-[rgb(var(--color-surface))]/70 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
                     <h2 className="text-2xl sm:text-3xl font-bold mb-4 flex items-center gap-2">
                         <Heart className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
                         Apa itu Nawaetu?
@@ -186,7 +186,7 @@ export default function AboutPage() {
                 </section>
 
                 {/* Why Choose Nawaetu */}
-                <section className="bg-[rgb(var(--color-surface))]/70 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
+                <section className="bg-[rgb(var(--color-surface))]/70 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
                     <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
                         Kenapa Memilih Nawaetu?
                     </h2>
@@ -286,7 +286,7 @@ export default function AboutPage() {
                         </Link>
                         <Link
                             href="/quran"
-                            className="px-8 py-3 bg-[rgb(var(--color-surface-subtle))] backdrop-blur-sm rounded-lg font-bold border border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface))] transition-colors"
+                            className="px-8 py-3 bg-[rgb(var(--color-surface-subtle))] rounded-lg font-bold border border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface))] transition-colors"
                         >
                             Baca Al-Qur&apos;an
                         </Link>

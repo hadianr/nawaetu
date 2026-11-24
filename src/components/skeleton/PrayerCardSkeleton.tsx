@@ -19,7 +19,7 @@
 
 export default function PrayerCardSkeleton() {
     return (
-        <div className="w-full max-w-md rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-6 backdrop-blur-md shadow-[var(--shadow-card)]">
+        <div className="w-full max-w-md rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-6 shadow-[var(--shadow-card)]">
             {/* Prayer Times Skeleton (7 items to match Imsak + 5 Prayers + Sunrise) */}
             <div className="space-y-3">
                 {[...Array(7)].map((_, i) => (

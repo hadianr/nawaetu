@@ -55,7 +55,7 @@ export default function IntentionStreak({
         <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className={`relative overflow-hidden rounded-2xl p-5 backdrop-blur-md border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)] text-[rgb(var(--color-text))] ${className}`}
+            className={`relative overflow-hidden rounded-2xl p-5 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)] text-[rgb(var(--color-text))] ${className}`}
         >
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-transparent pointer-events-none" />

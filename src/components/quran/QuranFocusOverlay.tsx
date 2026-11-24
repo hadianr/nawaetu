@@ -110,7 +110,7 @@ export function QuranFocusBadge({ sessionSeconds, onExit }: FocusBadgeProps) {
 
     return (
         <div className={cn(
-            "fixed top-3 left-1/2 -translate-x-1/2 z-[200] flex items-center rounded-full border shadow-[var(--shadow-card)] backdrop-blur-xl transition-all overflow-hidden",
+            "fixed top-3 left-1/2 -translate-x-1/2 z-[200] flex items-center rounded-full border shadow-[var(--shadow-card)] transition-all overflow-hidden",
             "bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
         )}>
             {/* Left content: live dot + label + time */}
@@ -165,7 +165,7 @@ export function QuranFocusExitConfirm({ sessionSeconds, onConfirm, onCancel }: {
     return (
         <div className="fixed inset-0 z-[9998] flex items-end justify-center pb-8 px-4">
             <div
-                className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/60 backdrop-blur-sm"
+                className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/60"
                 onClick={onCancel}
             />
             <div className={cn(

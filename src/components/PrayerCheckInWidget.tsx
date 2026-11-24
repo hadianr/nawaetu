@@ -302,7 +302,7 @@ export default function PrayerCheckInWidget() {
     return (
         <>
             <div className={cn(
-                "glass-surface prayer-checkin-widget relative overflow-hidden rounded-2xl border px-4 py-3.5 transition-all",
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] prayer-checkin-widget relative overflow-hidden rounded-2xl border px-4 py-3.5 transition-all",
                 "shadow-[var(--shadow-card)]"
             )}>
 
@@ -584,7 +584,7 @@ export default function PrayerCheckInWidget() {
                     onClick={() => setSheet(null)}
                 >
                     {/* Backdrop */}
-                    <div className="absolute inset-0 bg-[rgb(var(--color-canvas))]/70 backdrop-blur-sm" />
+                    <div className="absolute inset-0 bg-[rgb(var(--color-canvas))]/70" />
 
                     <div
                         className={cn(

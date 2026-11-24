@@ -59,7 +59,7 @@ export function PageJumpDialog({
                     </DialogTrigger>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">{t.quranJumpToVerse}</TooltipContent>
-                <DialogContent className="sm:max-w-xs bg-[rgb(var(--color-surface))] backdrop-blur-xl border-[rgb(var(--color-border))] p-6 gap-6 shadow-[var(--shadow-floating)]">
+                <DialogContent className="sm:max-w-xs bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] p-6 gap-6 shadow-[var(--shadow-floating)]">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold">{t.quranJumpToVerseTitle}</DialogTitle>
                     </DialogHeader>

@@ -448,7 +448,7 @@ export default function MentorAIClient() {
         )}>
             {/* Header */}
             <div className={cn(
-                "fixed top-0 left-0 right-0 z-40 backdrop-blur-md border-b",
+                "fixed top-0 left-0 right-0 z-40 border-b",
                 "bg-[rgb(var(--color-surface))]/80 border-[rgb(var(--color-border))]"
             )}>
                 <div className="w-full max-w-none mx-auto px-4 h-16 flex items-center justify-between xl:max-w-md">

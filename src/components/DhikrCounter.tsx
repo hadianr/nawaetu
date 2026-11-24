@@ -307,7 +307,7 @@ export default function DhikrCounter() {
             {/* Achievement Layer */}
             <Dialog open={showReward} onOpenChange={setShowReward}>
                 <DialogContent className={cn(
-                    "dhikr-completion-dialog w-[85%] max-w-[280px] rounded-2xl border backdrop-blur-2xl flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-[var(--shadow-floating)]",
+                    "dhikr-completion-dialog w-[85%] max-w-[280px] rounded-2xl border flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-[var(--shadow-floating)]",
                     "bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
                 )}>
                     <DialogHeader className="flex flex-col items-center">

@@ -142,7 +142,7 @@ export default function JournalPage() {
     return (
         <div className="min-h-screen pb-20 bg-[rgb(var(--color-background))] text-[rgb(var(--color-text))]">
             {/* Header */}
-            <div className="sticky top-0 z-10 backdrop-blur-md border-b bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))]">
+            <div className="sticky top-0 z-10 border-b bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))]">
                 <div className="w-full max-w-none mx-auto px-4 py-4 flex items-center justify-between xl:max-w-md">
                     <Link href="/" aria-label={String(t.quranBack)} className="p-2 -ml-2 rounded-full transition-colors hover:bg-[rgb(var(--color-surface-subtle))]">
                         <ChevronLeft className="w-6 h-6 text-[rgb(var(--color-text-muted))]" aria-hidden="true" />
