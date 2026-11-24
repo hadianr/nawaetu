@@ -462,10 +462,6 @@ function scheduleAdzanNotifications(timings) {
     }
 }
 
-function openOptions() {
-    chrome.runtime.openOptionsPage();
-}
-
 // ==========================================
 // TABS NAVIGATION & VIEWS
 // ==========================================
