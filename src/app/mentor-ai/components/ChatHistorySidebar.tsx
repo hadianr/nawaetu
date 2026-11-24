@@ -18,9 +18,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X, MessageSquare, Trash2, Plus } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { ChatSession } from "@/lib/chat-storage";
+import { useLocale } from "@/context/LocaleContext";
 
 interface ChatHistorySidebarProps {
     showHistory: boolean;
@@ -41,35 +43,31 @@ export function ChatHistorySidebar({
     handleDeleteSession,
     handleNewChat
 }: ChatHistorySidebarProps) {
-    if (!showHistory) return null;
+    const { t, locale } = useLocale();
 
     return (
-        <div className="fixed inset-0 z-50 flex justify-end">
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-[rgb(var(--color-canvas))]/70 animate-in fade-in duration-300"
-                onClick={() => setShowHistory(false)}
-            />
+        <DialogPrimitive.Root open={showHistory} onOpenChange={setShowHistory}>
+            <DialogPrimitive.Portal>
+            <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[rgb(var(--color-canvas))]/70 animate-in fade-in duration-300" />
 
-            {/* Drawer Content */}
-            <div className={cn(
-                "relative w-[300px] h-full border-l shadow-[var(--shadow-floating)] p-4 flex flex-col animate-in slide-in-from-right duration-300",
+            <DialogPrimitive.Content aria-describedby={undefined} className={cn(
+                "fixed right-0 top-0 z-50 w-[300px] h-full border-l shadow-[var(--shadow-floating)] p-4 flex flex-col animate-in slide-in-from-right duration-300",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
             )}>
                 <div className="flex items-center justify-between mb-6 pt-2">
-                    <h2 className={cn(
+                    <DialogPrimitive.Title className={cn(
                         "text-lg font-bold",
                         "text-[rgb(var(--color-text-strong))]"
-                    )}>Riwayat Chat</h2>
-                    <button
-                        onClick={() => setShowHistory(false)}
+                    )}>{t.tanyaHistory}</DialogPrimitive.Title>
+                    <DialogPrimitive.Close
+                        aria-label={t.tanyaClose}
                         className={cn(
                             "p-1.5 rounded-full",
                             "hover:bg-[rgb(var(--color-primary))]/10"
                         )}
                     >
                         <X className="w-5 h-5 text-[rgb(var(--color-text-muted))]" />
-                    </button>
+                    </DialogPrimitive.Close>
                 </div>
 
                 <div className="flex-1 overflow-y-auto space-y-2 pr-1">
@@ -78,50 +76,55 @@ export function ChatHistorySidebar({
                             "text-center py-10 text-sm",
                             "text-[rgb(var(--color-text-muted))]"
                         )}>
-                            Belum ada riwayat percakapan.
+                            {t.tanyaNoHistory}
                         </div>
                     ) : (
                         sessions.map(session => (
                             <div
                                 key={session.id}
-                                onClick={() => handleSwitchSession(session.id)}
                                 className={cn(
-                                    "group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer",
+                                    "flex items-center justify-between rounded-xl border transition-all",
                                         activeSessionId === session.id
                                             ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-sm"
                                             : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10"
                                 )}
                             >
-                                <div className="flex items-center gap-3 min-w-0">
+                                <button
+                                    type="button"
+                                    onClick={() => handleSwitchSession(session.id)}
+                                    aria-current={activeSessionId === session.id ? "true" : undefined}
+                                    className="flex flex-1 items-center gap-3 min-w-0 p-3 text-left rounded-xl"
+                                >
                                     <MessageSquare className={cn(
                                         "w-4 h-4 shrink-0",
                                         activeSessionId === session.id
                                             ? "text-[rgb(var(--color-primary-strong))]"
                                             : "text-[rgb(var(--color-text-muted))]"
                                     )} />
-                                    <div className="min-w-0">
-                                        <p className={cn(
-                                            "text-sm font-medium truncate",
+                                    <span className="min-w-0">
+                                        <span className={cn(
+                                            "block text-sm font-medium truncate",
                                             activeSessionId === session.id
                                                 ? "text-[rgb(var(--color-text-strong))]"
                                                 : "text-[rgb(var(--color-text))]"
                                         )}>
-                                            {session.title || "Percakapan Baru"}
-                                        </p>
-                                        <p className={cn(
-                                            "text-xs",
+                                            {session.title || t.tanyaUntitled}
+                                        </span>
+                                        <span className={cn(
+                                            "block text-xs",
                                             "text-[rgb(var(--color-text-muted))]"
                                         )}>
-                                            {new Date(session.updatedAt).toLocaleDateString()}
-                                        </p>
-                                    </div>
-                                </div>
-                                {/* Delete Button (Visible on hover or active) */}
+                                            {new Date(session.updatedAt).toLocaleDateString(locale)}
+                                        </span>
+                                    </span>
+                                </button>
                                 <button
+                                    type="button"
                                     onClick={(e) => handleDeleteSession(e, session.id)}
+                                    aria-label={`${t.tanyaDeleteChat}: ${session.title || t.tanyaUntitled}`}
                                     className={cn(
-                                        "p-1.5 rounded-full transition-colors",
-                                        "text-[rgb(var(--color-text-muted))] opacity-0 group-hover:opacity-100 hover:text-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/10"
+                                        "p-1.5 mr-2 rounded-full transition-colors",
+                                        "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/10"
                                     )}
                                 >
                                     <Trash2 className="w-3.5 h-3.5" />
@@ -136,14 +139,16 @@ export function ChatHistorySidebar({
                     "border-[rgb(var(--color-border))]"
                 )}>
                     <button
+                        type="button"
                         onClick={handleNewChat}
                         className="w-full py-3 rounded-xl bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] font-bold text-sm flex items-center justify-center gap-2 hover:bg-[rgb(var(--color-primary-strong))] transition-colors shadow-[var(--shadow-card)]"
                     >
                         <Plus className="w-4 h-4" />
-                        Chat Baru
+                        {t.tanyaNewChat}
                     </button>
                 </div>
-            </div>
-        </div>
+            </DialogPrimitive.Content>
+            </DialogPrimitive.Portal>
+        </DialogPrimitive.Root>
     );
 }

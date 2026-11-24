@@ -83,3 +83,27 @@ describe("MentorAIClient daily credits", () => {
         await waitFor(() => expect(credits()).toBe(0));
     });
 });
+
+describe("MentorAIClient chat history", () => {
+    beforeEach(() => {
+        localStorage.clear();
+        vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => [] }));
+        Element.prototype.scrollIntoView = vi.fn();
+    });
+    afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
+
+    it("opens as a named dialog with keyboard-reachable rows and closes on Escape", async () => {
+        vi.mocked(askMentor).mockResolvedValue("Jawaban");
+        render(<MentorAIClient />);
+        await ask("Apa itu sabar?");
+        await waitFor(() => expect(screen.getByText("Jawaban")).toBeTruthy());
+
+        fireEvent.click(screen.getByRole("button", { name: "tanyaHistory" }));
+        const dialog = await screen.findByRole("dialog", { name: "tanyaHistory" });
+        expect(dialog.querySelector("button[aria-current='true']")).toBeTruthy();
+        expect(screen.getByRole("button", { name: /^tanyaDeleteChat: / })).toBeTruthy();
+
+        fireEvent.keyDown(dialog, { key: "Escape" });
+        await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    });
+});

@@ -101,6 +101,7 @@ export function ChatInputArea({
                         <button
                             type="submit"
                             disabled={!input.trim() || isTyping}
+                            aria-label={t.tanyaSend}
                             className={cn(
                                 "w-10 h-10 rounded-full text-[rgb(var(--color-primary-foreground))] flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all bg-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                             )}
