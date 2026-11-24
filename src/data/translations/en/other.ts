@@ -678,7 +678,7 @@ export const otherEN = {
     intention_add_reflection: "Add evening reflection",
     intention_journal_title: "Intention Journal",
     intention_history_journey: "Journey History",
-    intention_start_now: "Start Now",
+    intention_start_now: "Write today's intention",
     intention_reflection_note: "Reflection Note",
     intention_no_reflection: "No reflection yet",
     intention_history_title: "Your Journey",
