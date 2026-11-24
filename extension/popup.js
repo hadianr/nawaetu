@@ -31,7 +31,7 @@ const T = {
         hijriOffset: 'Koreksi Tanggal Hijriyah',
         notifOn: 'On', notifOff: 'Off',
         notifTooltipOn: 'Notifikasi adzan aktif', notifTooltipOff: 'Aktifkan notifikasi adzan',
-        refreshLoc: 'Perbarui lokasi', refreshShort: 'Perbarui', hijriOffset: 'Koreksi tanggal Hijriyah',
+        refreshLoc: 'Perbarui lokasi', hijriOffset: 'Koreksi tanggal Hijriyah',
         hijriLess: 'Kurangi koreksi tanggal Hijriyah', hijriMore: 'Tambah koreksi tanggal Hijriyah', langSwitch: 'Ganti ke bahasa Inggris'
     },
     en: {
@@ -49,7 +49,7 @@ const T = {
         hijriOffset: 'Hijri Date Correction',
         notifOn: 'On', notifOff: 'Off',
         notifTooltipOn: 'Adzan notifications active', notifTooltipOff: 'Enable adzan notifications',
-        refreshLoc: 'Update location', refreshShort: 'Update', hijriOffset: 'Hijri date correction',
+        refreshLoc: 'Update location', hijriOffset: 'Hijri date correction',
         hijriLess: 'Decrease Hijri date correction', hijriMore: 'Increase Hijri date correction', langSwitch: 'Switch to Indonesian'
     }
 };
@@ -229,19 +229,8 @@ async function requestLocationAndLoad() {
 }
 
 function setLocationUI(cityName) {
-    document.getElementById('location-name').innerHTML =
-        `${cityName} <button id="refresh-loc-btn" class="refresh-loc-btn" title="${t('refreshLoc')}" aria-label="${t('refreshLoc')}">${t('refreshShort')}</button>`;
-    document.getElementById('refresh-loc-btn').addEventListener('click', async () => {
-        document.getElementById('location-name').textContent = t('detectingLoc');
-        try {
-            const pos = await getCoords();
-            localStorage.removeItem(CACHE_KEY_PRAYERS);
-            await loadPrayersWithCoords(pos.coords.latitude, pos.coords.longitude, false);
-        } catch {
-            document.getElementById('location-name').textContent = t('locationDenied');
-            await loadPrayersWithCoords(-6.2088, 106.8456, true);
-        }
-    });
+    // The ↻ button next to this span refreshes the location; a second injected button duplicated it and its id.
+    document.getElementById('location-name').textContent = cityName;
 }
 
 function showLocationPrompt() {
@@ -729,17 +718,19 @@ function renderQuranList(surahs) {
     listContainer.innerHTML = '';
 
     surahs.forEach(surah => {
-        const item = document.createElement('div');
+        // A real button so the surah list works with Tab, Enter and Space.
+        const item = document.createElement('button');
+        item.type = 'button';
         item.className = 'list-item surah-item';
         item.innerHTML = `
-            <div style="display: flex; align-items: center; max-width: 65%;">
-                <div class="surah-num">${surah.number}</div>
-                <div class="surah-details">
-                    <div class="surah-name">${surah.name.transliteration.id}</div>
-                    <div class="surah-meta">${surah.name.translation.id} (${surah.numberOfVerses} ayat)</div>
-                </div>
-            </div>
-            <div class="surah-arabic">${surah.name.short}</div>
+            <span style="display: flex; align-items: center; max-width: 65%;">
+                <span class="surah-num">${surah.number}</span>
+                <span class="surah-details">
+                    <span class="surah-name">${surah.name.transliteration.id}</span>
+                    <span class="surah-meta">${surah.name.translation.id} (${surah.numberOfVerses} ayat)</span>
+                </span>
+            </span>
+            <span class="surah-arabic" lang="ar">${surah.name.short}</span>
         `;
 
         item.addEventListener('click', () => {
@@ -1010,10 +1001,10 @@ function renderSpiritualCategories(items) {
     });
 
     categoryListCont.innerHTML = Object.keys(grouped).map(cat => `
-        <div class="category-card" data-category="${cat}">
-            <div class="category-title">${getCategoryName(cat)}</div>
-            <div class="category-count">${grouped[cat].length} Item</div>
-        </div>
+        <button type="button" class="category-card" data-category="${cat}">
+            <span class="category-title">${getCategoryName(cat)}</span>
+            <span class="category-count">${grouped[cat].length} Item</span>
+        </button>
     `).join('');
 
     categoryListCont.querySelectorAll('.category-card').forEach(card => {
