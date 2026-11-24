@@ -19,7 +19,7 @@
  */
 
 import { useCallback, useState, useEffect } from "react";
-import { ArrowLeft, Check, Sparkles, Trophy, AlertCircle } from "lucide-react";
+import { ArrowLeft, Check, Trophy, AlertCircle, Clock } from "lucide-react";
 import { getMissionsForGender, Mission, Gender, getLocalizedMission } from "@/data/missions";
 import { addHasanah } from "@/lib/habits/leveling";
 import { updateStreak } from "@/lib/habits/streak-utils";
@@ -209,7 +209,7 @@ export default function MisiPage() {
                         </div>
                     ) : validation.isEarly ? (
                         <div className="flex items-center gap-1 mt-1 text-[rgb(var(--color-primary-strong))]">
-                            <Sparkles className="w-3 h-3" />
+                            <Clock className="w-3 h-3" />
                             <p className="text-xs font-medium">{translations.home_mission_early_bonus}</p>
                         </div>
                     ) : (

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { User, Sparkles } from "lucide-react";
+import { User, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ChatMessage } from "@/lib/chat-storage";
 import { parseAIResponse, formatMarkdown } from "@/lib/message-parser";
@@ -42,7 +42,7 @@ export function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
                         ? "bg-[rgb(var(--color-surface-subtle))]"
                         : "bg-[rgb(var(--color-primary))]/20"
                 )}>
-                    {isUser ? <User className="w-4 h-4 text-[rgb(var(--color-text-muted))]" /> : <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />}
+                    {isUser ? <User className="w-4 h-4 text-[rgb(var(--color-text-muted))]" /> : <MessageCircle className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />}
                 </div>
 
                 {/* Bubble */}

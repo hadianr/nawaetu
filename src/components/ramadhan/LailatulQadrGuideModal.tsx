@@ -72,7 +72,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                         {localizedSteps && localizedSteps.length > 0 && (
                             <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] p-4 mt-3 shadow-[var(--shadow-card)]">
                                 <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                                    <AppIcon name="sparkles" size="xs" tone="primary" /> {t.practicesTipsLabel || "Panduan / Tata Cara"}
+                                    <AppIcon name="lightbulb" size="xs" tone="primary" /> {t.practicesTipsLabel || "Panduan / Tata Cara"}
                                 </p>
                                 <ul className="space-y-2">
                                     {localizedSteps.map((step, i) => (

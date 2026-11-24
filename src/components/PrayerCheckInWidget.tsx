@@ -467,7 +467,7 @@ export default function PrayerCheckInWidget() {
                         "mt-2.5 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border relative z-10 transition-colors",
                         "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                     )}>
-                        <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
+                        <Check className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
                         <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] text-center">
                             {t.homePrayerCheckInDone}
                         </p>

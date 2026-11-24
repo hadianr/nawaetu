@@ -211,7 +211,7 @@ export default function PrayerTimesDisplay() {
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
-                        <AppIcon name="sparkles" size="xs" tone="primary" />
+                        <AppIcon name="message" size="xs" tone="primary" />
                         <span className="truncate text-xs font-bold uppercase tracking-tight">{t.homeQuickAi}</span>
                     </Link>
                 </div>

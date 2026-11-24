@@ -122,7 +122,7 @@ export default function JournalPage() {
 
     const getRatingIcon = (rating?: number) => {
         if (!rating) return "help" as const;
-        const icons = ["warning", "help", "target", "heart-handshake", "sparkles"] as const;
+        const icons = ["warning", "help", "target", "heart-handshake", "star"] as const;
         return icons[rating - 1] || "help";
     };
 

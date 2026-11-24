@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Sparkles, AlertCircle, Check } from "lucide-react";
+import { AlertCircle, Check, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Mission } from "@/data/missions";
 import type { TranslationTree } from "@/context/LocaleContext";
@@ -90,7 +90,7 @@ export default function DailyMissionCard({
                 if (minsSinceStart <= 60 && minsSinceStart >= 0) {
                     urgencyNode = (
                         <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20">
-                            <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-strong))] mt-0.5 shrink-0" />
+                            <Clock className="w-3 h-3 text-[rgb(var(--color-primary-strong))] mt-0.5 shrink-0" />
                             <div>
                                 <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] leading-tight">{t.home_mission_early_title}</p>
                                 <p className="text-xs text-[rgb(var(--color-primary-strong))] leading-tight italic">{t.home_mission_early_quote}</p>
@@ -175,7 +175,7 @@ export default function DailyMissionCard({
                             </span>
                         ) : validation.isEarly ? (
                             <span className="text-xs text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20 flex items-center gap-1 font-medium ml-auto">
-                                <Sparkles className="w-2.5 h-2.5" /> {t.home_mission_early}
+                                <Clock className="w-2.5 h-2.5" /> {t.home_mission_early}
                             </span>
                         ) : null}
                     </div>

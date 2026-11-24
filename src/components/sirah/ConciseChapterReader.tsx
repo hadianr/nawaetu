@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Lightbulb, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Lightbulb, ShieldCheck } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { useSirahContentLang, useSirahPathPrefix } from "@/hooks/useSirahContentLang";
 import { cn } from "@/lib/utils";
@@ -226,7 +226,7 @@ function ChapterNote({ note, lang }: { note: ConciseNote; lang: "id" | "en" }) {
 
     return (
         <aside aria-label={NOTE_TEXT[lang].label} className={NOTE_BOX}>
-            <NoteLabel><Sparkles className="h-3.5 w-3.5" aria-hidden />{NOTE_TEXT[lang].label}</NoteLabel>
+            <NoteLabel><Lightbulb className="h-3.5 w-3.5" aria-hidden />{NOTE_TEXT[lang].label}</NoteLabel>
             <p lang={lang} className="text-sm leading-relaxed">{isEn ? note.contextEn : note.contextId}</p>
             {note.origins && <NameOrigins origins={note.origins} lang={lang} />}
 

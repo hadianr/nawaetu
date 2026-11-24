@@ -136,6 +136,7 @@ UI must use the existing Lucide-based `AppIcon` registry. Use a named icon from 
 - Icon-only controls require an accessible label; decorative icons are hidden from assistive technology.
 - Icons support the label; they do not replace clear text for important actions.
 - Keep icon stroke weight, size, and tone consistent with the surrounding control.
+- `sparkles` means virtue or extra reward: sunnah, fadhilah, hasanah, Lailatul Qadr, Eid. Never use it for AI, loading, updates, ratings, health states, or decoration. No lightning, wand, or gem icons.
 
 Content may contain Arabic or quoted religious text as content. That does not make a symbol a UI icon. Do not use emoji as the sole status, action, or navigation signal.
 

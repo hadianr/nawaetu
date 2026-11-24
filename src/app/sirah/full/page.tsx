@@ -23,7 +23,7 @@ const ERA_TABS: { id: SirahEra | "all"; labelKey: "sirahEraAll" | "sirahEraMakka
     { id: "madinah", labelKey: "sirahEraMadinah", icon: "landmark" },
     { id: "ghazwah", labelKey: "sirahEraGhazwah", icon: "shield-check" },
     { id: "diplomacy", labelKey: "sirahEraDiplomacy", icon: "scroll" },
-    { id: "legacy", labelKey: "sirahEraLegacy", icon: "sparkles" },
+    { id: "legacy", labelKey: "sirahEraLegacy", icon: "library" },
 ];
 
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]";

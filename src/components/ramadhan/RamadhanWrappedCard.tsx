@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import * as htmlToImage from "html-to-image";
-import { Download, Share2, Check, Loader2, X, Sparkles } from "lucide-react";
+import { Download, Share2, Check, Loader2, X, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -222,7 +222,7 @@ export default function RamadhanWrappedCard() {
             {/* ── Header ── */}
             <div className="z-10 text-center mb-4">
                 <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: "rgb(var(--color-primary-strong) / 0.7)" }}>
-                    <span className="inline-flex items-center gap-1"><AppIcon name="sparkles" size="xs" tone="primary" /> {t.wrappedTitleLabel || "Nawaetu Wrapped"} <AppIcon name="sparkles" size="xs" tone="primary" /></span>
+                    <span className="inline-flex items-center gap-1"><AppIcon name="moon" size="xs" tone="primary" /> {t.wrappedTitleLabel || "Nawaetu Wrapped"} <AppIcon name="moon" size="xs" tone="primary" /></span>
                 </p>
                 <h2 className="text-[22px] font-serif font-bold text-[rgb(var(--color-text-strong))] leading-tight">
                     {t.wrappedTitle?.replace("{year}", stats.hijriYear?.toString() || "") || `Rapor Ramadhan ${stats.hijriYear}H`}
@@ -243,7 +243,7 @@ export default function RamadhanWrappedCard() {
                 </div>
                 {/* Tarawih */}
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-primary) / 0.08)", borderColor: "rgb(var(--color-primary) / 0.25)" }}>
-                    <AppIcon name="sparkles" size="sm" tone="primary" className="mb-0.5" />
+                    <AppIcon name="moon" size="sm" tone="primary" className="mb-0.5" />
                     <span className="text-xl font-bold text-[rgb(var(--color-text-strong))] leading-none">{stats.tarawehCount}</span>
                     <span className="text-xs uppercase tracking-wider mt-0.5" style={{ color: "rgb(var(--color-primary-strong) / 0.7)" }}>{t.wrappedTaraweh || "Tarawih"}</span>
                 </div>
@@ -321,7 +321,7 @@ export default function RamadhanWrappedCard() {
             {/* ── AI Insight Box ── */}
             <div className="z-10 flex-1 rounded-2xl p-3 border flex flex-col justify-center" style={{ background: "rgb(var(--color-primary) / 0.06)", borderColor: "rgb(var(--color-primary) / 0.2)" }}>
                 <div className="flex items-center gap-1.5 mb-2">
-                    <Sparkles className="w-3 h-3" style={{ color: "rgb(var(--color-primary-strong))" }} />
+                    <Lightbulb className="w-3 h-3" style={{ color: "rgb(var(--color-primary-strong))" }} />
                     <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "rgb(var(--color-primary-strong) / 0.7)" }}>
                         {t.wrappedAIInsight || "AI Insight"}
                     </span>

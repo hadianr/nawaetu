@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Gift, Heart, Mail, Send, Sparkles } from "lucide-react";
+import { ArrowLeft, Gift, Heart, Mail, Send } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { signInWithGoogle } from "@/lib/auth-client";
@@ -85,7 +85,7 @@ export default function RewardsPage() {
 
                 <section className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-6">
                     <div className="flex items-start gap-3">
-                        <Sparkles className="mt-1 h-5 w-5 shrink-0 text-[rgb(var(--color-warning))]" />
+                        <Gift className="mt-1 h-5 w-5 shrink-0 text-[rgb(var(--color-warning))]" />
                         <div className="space-y-2 text-sm leading-relaxed">
                             <h2 className="text-lg font-bold">{copy.emptyTitle}</h2>
                             <p className="text-[rgb(var(--color-text-muted))]">

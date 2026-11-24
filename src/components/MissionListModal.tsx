@@ -24,7 +24,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Mission } from "@/data/missions";
 import { cn } from "@/lib/utils";
-import { Check, Sparkles, AlertCircle, X, ExternalLink } from "lucide-react";
+import { Check, AlertCircle, X, ExternalLink, Clock } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { getRulingLabel, type ValidationResult } from "@/lib/habits/mission-utils";
 import { resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
@@ -237,7 +237,7 @@ export default function MissionListModal({
                                     )}
                                     {!isLocked && validation.isEarly && (
                                         <span className="text-xs text-[rgb(var(--color-primary-strong))] flex items-center gap-1 font-bold bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20">
-                                            <Sparkles className="w-3 h-3" /> {t.home_mission_early}
+                                            <Clock className="w-3 h-3" /> {t.home_mission_early}
                                         </span>
                                     )}
                                 </div>

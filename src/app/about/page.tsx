@@ -18,7 +18,7 @@
 
 import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import Link from "next/link";
-import { Zap, Heart } from "lucide-react";
+import { Heart, Trophy } from "lucide-react";
 import RewardsSupportCard from "@/components/RewardsSupportCard";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { pageMetadata } from "@/lib/seo";
@@ -151,7 +151,7 @@ export default function AboutPage() {
                 <section className="bg-[rgb(var(--color-primary))]/10 rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))]">
                     <div className="flex items-start gap-4 mb-4">
                         <div className="p-3 bg-[rgb(var(--color-primary))]/30 rounded-lg">
-                            <Zap className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
+                            <Trophy className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
                         </div>
                         <div>
                             <h2 className="text-2xl sm:text-3xl font-bold mb-2">
@@ -171,7 +171,7 @@ export default function AboutPage() {
                             </p>
                         </div>
                         <div className="bg-[rgb(var(--color-surface-subtle))] rounded-lg p-4">
-                            <h3 className="font-bold text-lg mb-2 flex items-center gap-2"><AppIcon name="sparkles" size="sm" tone="primary" /> Streak System</h3>
+                            <h3 className="font-bold text-lg mb-2 flex items-center gap-2"><AppIcon name="calendar" size="sm" tone="primary" /> Streak System</h3>
                             <p className="text-sm text-[rgb(var(--color-text-muted))]">
                                 Lihat pola konsistensi tanpa menghakimi hari yang terlewat
                             </p>

@@ -41,7 +41,7 @@ const STATUS_COLORS: Record<string, { bg: string; border: string }> = {
 
 const STATUS_ICONS: Record<string, AppIconName> = {
     fasting: "shield-check", not_fasting: "warning", sick: "help",
-    traveling: "compass", menstruation: "sparkles", postpartum: "sparkles",
+    traveling: "compass", menstruation: "droplets", postpartum: "droplets",
     pregnant: "hands", breastfeeding: "hands", elderly: "help",
 };
 

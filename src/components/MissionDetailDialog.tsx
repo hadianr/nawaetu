@@ -29,7 +29,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
-import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, Sparkles, X, ExternalLink } from "lucide-react";
+import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, X, ExternalLink, Clock } from "lucide-react";
 import { Mission } from "@/data/missions";
 import { getLocalizedMissionContent } from "@/data/missions";
 import { cn } from "@/lib/utils";
@@ -530,7 +530,7 @@ export default function MissionDetailDialog({
                                 "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                             )}>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <Sparkles className="w-4 h-4 shrink-0 text-[rgb(var(--color-primary-strong))]" />
+                                    <Clock className="w-4 h-4 shrink-0 text-[rgb(var(--color-primary-strong))]" />
                                     <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))]">{t.home_mission_early_prayer_title}</p>
                                 </div>
                                 <p className="text-xs leading-tight italic font-medium text-[rgb(var(--color-primary-strong))]">

@@ -22,7 +22,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 interface UpdateCheckerProps {
     currentVersion: string;
@@ -231,7 +231,7 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
             <div className="bg-[rgb(var(--color-surface))]/95 border border-[rgb(var(--color-border))]/30 p-4 rounded-2xl flex items-center justify-between shadow-[var(--shadow-floating)] animate-in slide-in-from-bottom-5 text-[rgb(var(--color-text))]">
                 <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-[rgb(var(--color-primary))]/15 flex items-center justify-center">
-                        <Sparkles className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
+                        <RefreshCw className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
                     </div>
                     <div>
                         <h3 className="text-[rgb(var(--color-text-strong))] font-bold text-sm">Update Tersedia!</h3>
