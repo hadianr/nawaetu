@@ -137,7 +137,7 @@ export default function IntentionPrompt({
                         {/* Streak Display */}
                         {currentStreak > 0 && (
                             <div className="mt-4 flex items-center justify-center gap-2 border border-[rgb(var(--color-accent))]/30 bg-[rgb(var(--color-accent))]/10 rounded-full px-4 py-1.5 w-fit mx-auto">
-                                <AppIcon name="sparkles" size="md" tone="primary" />
+                                <AppIcon name="target" size="md" tone="primary" />
                                 <span className="text-xs font-semibold text-[rgb(var(--color-accent-strong))]">
                                     {currentStreak} {t.intention_streak_label}
                                 </span>
@@ -198,7 +198,7 @@ export default function IntentionPrompt({
                                     }}
                                     className="text-xs font-bold flex items-center gap-1 transition-colors uppercase tracking-wider text-[rgb(var(--color-primary-strong))] hover:text-[rgb(var(--color-primary-strong))]"
                                 >
-                                    <AppIcon name="sparkles" size="xs" tone="primary" />
+                                    <AppIcon name="refresh" size="xs" tone="primary" />
                                     {t.intention_random_btn}
                                 </button>
                             </div>

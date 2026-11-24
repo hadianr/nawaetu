@@ -20,7 +20,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { BookOpen, Sparkles, Quote, Copy, Check, ChevronRight, Share2 } from "lucide-react";
+import { BookOpen, Quote, Copy, Check, ChevronRight, Share2 } from "lucide-react";
 import { getSpiritualItemOfDay, SpiritualItem, getLocalizedContent } from "@/data/spiritual-content";
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
@@ -133,7 +133,7 @@ export default function DailySpiritWidget() {
                     <div className="flex items-center gap-3 pt-1">
                         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[rgb(var(--color-border))] to-transparent" />
                         <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
-                            <Sparkles className="w-2.5 h-2.5 text-[rgb(var(--color-accent-strong))]" />
+                            <Quote className="w-2.5 h-2.5 text-[rgb(var(--color-accent-strong))]" />
                             <span className="text-xs font-bold uppercase tracking-wider whitespace-nowrap text-[rgb(var(--color-text-muted))]">
                                 {item.content.source}
                             </span>

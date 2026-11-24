@@ -46,7 +46,7 @@ export default function QadhaTracker({ pendingItems, onMarkDone }: QadhaTrackerP
     if (pendingItems.length === 0) {
         return (
             <div className="text-center py-6">
-                <AppIcon name="sparkles" size="lg" tone="success" className="mx-auto mb-2" />
+                <AppIcon name="shield-check" size="lg" tone="success" className="mx-auto mb-2" />
                 <p className="text-sm text-[rgb(var(--color-text-muted))]">{t.fastingQadhaEmpty}</p>
             </div>
         );

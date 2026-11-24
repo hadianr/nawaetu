@@ -2,14 +2,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import {
-    ChevronLeft,
-    Star,
-    Flame,
-    ZapIcon,
-    Target,
-    Info
-} from "lucide-react";
+import { ChevronLeft, Star, Flame, Target, Info, Gift, Sparkles } from "lucide-react";
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";
@@ -120,7 +113,7 @@ export function StatsOverview({
                 href="/rewards"
                 className="flex items-center justify-center gap-2 rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-4 py-3 text-xs font-bold text-[rgb(var(--color-primary-strong))] transition-colors hover:bg-[rgb(var(--color-primary))]/20"
             >
-                <ZapIcon className="h-4 w-4" />
+                <Gift className="h-4 w-4" />
                 {t.rewards.cta}
             </Link>
 
@@ -145,7 +138,7 @@ export function StatsOverview({
                     },
                     {
                         id: 'hasanah' as const,
-                        icon: <ZapIcon className="w-4 h-4 text-[rgb(var(--color-warning))]" />,
+                        icon: <Sparkles className="w-4 h-4 text-[rgb(var(--color-warning))]" />,
                         label: `Hasanah ${t.stats.chart.filters[timeRange === 'today' ? 'today' : timeRange === '7d' ? 'last7d' : timeRange === '30d' ? 'last30d' : timeRange === '90d' ? 'last90d' : 'last1y']}`,
                         value: totalHasanah.toLocaleString(),
                         sub: timeRange === 'today' ? t.stats.chart.subtitle : `${timeRange.toUpperCase()} ${t.stats.quick.lastDays}`,

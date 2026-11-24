@@ -11,7 +11,7 @@
 
 import { useState, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { X, Share2, Download, Copy, Check, Sparkles } from "lucide-react";
+import { X, Share2, Download, Copy, Check, Loader2 } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { THEMES, resolveThemeId, type ThemeId } from "@/context/ThemeContext";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -259,7 +259,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                             />
                             {isExporting && (
                                 <div className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/60 flex items-center justify-center text-[rgb(var(--color-primary-foreground))] text-xs font-bold gap-1.5 animate-in fade-in">
-                                    <Sparkles className="w-3.5 h-3.5 animate-spin text-[rgb(var(--color-primary-strong))]" />
+                                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[rgb(var(--color-primary-strong))]" />
                                     <span>{t.storyShareCompressing || "Mengompres..."}</span>
                                 </div>
                             )}

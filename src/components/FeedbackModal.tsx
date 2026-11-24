@@ -27,7 +27,7 @@ import { Label } from "@/components/ui/label";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { signInWithGoogle } from "@/lib/auth-client";
-import { Bug, Lightbulb, Upload, X, ShieldAlert, Sparkles } from "lucide-react";
+import { Bug, Lightbulb, Upload, X, ShieldAlert, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { APP_CONFIG } from "@/config/app-config";
@@ -205,7 +205,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
 
                 <DialogHeader className="px-6 pt-6 pb-2 relative z-10">
                     <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
+                        <MessageSquare className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
                         {t.feedbackModalTitle}
                     </DialogTitle>
                     <DialogDescription className={cn(

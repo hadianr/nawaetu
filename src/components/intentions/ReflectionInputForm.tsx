@@ -42,7 +42,7 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
         { icon: "help" as const, label: t.niat_rating_difficult, color: "text-[rgb(var(--color-warning))]" },
         { icon: "target" as const, label: t.niat_rating_okay, color: "text-[rgb(var(--color-accent-strong))]" },
         { icon: "heart-handshake" as const, label: t.niat_rating_good, color: "text-[rgb(var(--color-success))]" },
-        { icon: "sparkles" as const, label: t.niat_rating_excellent, color: "text-[rgb(var(--color-primary-strong))]" },
+        { icon: "star" as const, label: t.niat_rating_excellent, color: "text-[rgb(var(--color-primary-strong))]" },
     ];
 
     const [rating, setRating] = useState(0);

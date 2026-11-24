@@ -20,7 +20,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocale } from "@/context/LocaleContext";
-import { Sparkles, BookOpen, Calendar } from "lucide-react";
+import { BookOpen, Calendar, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import BrandIcon from "@/components/BrandIcon";
 
@@ -67,7 +67,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                             "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20"
                         )}>
                             <h3 className="text-xs font-bold flex items-center gap-2">
-                                <Sparkles className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
+                                <Info className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
                                 {t.aboutWhatIsTitle}
                             </h3>
                             <p className={cn(

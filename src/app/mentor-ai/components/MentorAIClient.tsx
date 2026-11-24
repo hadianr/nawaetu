@@ -20,7 +20,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Send, Sparkles, History, Lock, Plus } from "lucide-react";
+import { ArrowLeft, Send, History, Lock, Plus, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getActivityRepository } from "@/core/repositories/activity.repository";
 import { getDisplayStreak } from "@/lib/habits/streak-utils";
@@ -525,7 +525,7 @@ export default function MentorAIClient() {
                     // Empty State / Greeting
                     <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in duration-700 min-h-[calc(100vh-250px)]">
                         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] flex items-center justify-center mb-6 shadow-[var(--shadow-floating)]">
-                            <Sparkles className="w-8 h-8 text-[rgb(var(--color-primary-foreground))]" />
+                            <MessageCircle className="w-8 h-8 text-[rgb(var(--color-primary-foreground))]" />
                         </div>
                         <h2 className={cn(
                             "text-xl font-bold mb-2",
@@ -578,7 +578,7 @@ export default function MentorAIClient() {
                             <div className="flex w-full justify-start animate-fade-in">
                                 <div className="flex gap-2 max-w-[85%]">
                                     <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/20 flex items-center justify-center shrink-0 mt-1 border border-[rgb(var(--color-primary))]/30">
-                                        <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
+                                        <MessageCircle className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                                     </div>
                                     <div className="bg-[rgb(var(--color-surface-subtle))] p-3 rounded-2xl rounded-tl-none border border-[rgb(var(--color-border))] flex items-center gap-1 h-10">
                                         <span className="w-1.5 h-1.5 bg-[rgb(var(--color-text-muted))]/60 rounded-full animate-bounce [animation-delay:-0.3s]" />

@@ -9,16 +9,7 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-    Flame,
-    ZapIcon,
-    Target,
-    BookOpen,
-    Award,
-    TrendingUp,
-    Calendar,
-    MessageSquare
-} from "lucide-react";
+import { Flame, Target, BookOpen, Award, TrendingUp, Calendar, MessageSquare, Sparkles } from "lucide-react";
 import { InsightKey, DailyActivity } from "@/hooks/useStatsInsights";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { AppIcon } from "@/components/ui/AppIcon";
@@ -76,7 +67,7 @@ export function InsightModal({
                             <div className="p-2.5 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
                                 {activeInsight === 'streak' && <Flame className="w-5 h-5 text-[rgb(var(--color-accent-strong))]" />}
                                 {activeInsight === 'prayers' && <AppIcon name="landmark" size="lg" tone="primary" label={t.stats.insights.prayers.title} />}
-                                {activeInsight === 'hasanah' && <ZapIcon className="w-5 h-5 text-[rgb(var(--color-warning))]" />}
+                                {activeInsight === 'hasanah' && <Sparkles className="w-5 h-5 text-[rgb(var(--color-warning))]" />}
                                 {activeInsight === 'consistency' && <Target className="w-5 h-5 text-[rgb(var(--color-info))]" />}
                                 {activeInsight === 'quran' && <BookOpen className="w-5 h-5 text-[rgb(var(--color-info))]" />}
                                 {activeInsight === 'dhikr' && <AppIcon name="hands" size="lg" tone="primary" label={t.stats.insights.dhikr.title} />}
@@ -142,7 +133,7 @@ export function InsightModal({
 
                         {activeInsight === 'hasanah' && (
                             <>
-                                <InsightRow label={t.stats.insights.hasanah.weekly} value={data.weeklyHasanah.toLocaleString()} icon={<ZapIcon className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />} />
+                                <InsightRow label={t.stats.insights.hasanah.weekly} value={data.weeklyHasanah.toLocaleString()} icon={<Sparkles className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />} />
                                 <InsightRow label={t.stats.insights.hasanah.avgDaily} value={data.avgDailyHasanah.toLocaleString()} icon={<Calendar className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />} />
                                 <div className="p-4 bg-[rgb(var(--color-warning))]/10 border border-[rgb(var(--color-warning))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">

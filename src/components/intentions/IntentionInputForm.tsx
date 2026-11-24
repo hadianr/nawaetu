@@ -22,7 +22,7 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Sparkles, BookHeart } from "lucide-react";
+import { Loader2, BookHeart } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IntentionDalil, getRandomDalil } from "@/data/intention-dalils";
 import { guestHeaders } from "@/lib/guest-secret-client";
@@ -92,7 +92,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 className="flex flex-col items-center justify-center p-8 md:p-12 space-y-4 text-center"
             >
                 <div className="w-20 h-20 bg-[rgb(var(--color-primary))]/10 rounded-full flex items-center justify-center mb-4">
-                    <Sparkles className="w-10 h-10 text-[rgb(var(--color-primary-strong))]" />
+                    <BookHeart className="w-10 h-10 text-[rgb(var(--color-primary-strong))]" />
                 </div>
                 <h3 className="text-2xl font-serif text-[rgb(var(--color-text-strong))]">{t.intention_success_title}</h3>
                 <p className="text-[rgb(var(--color-text-muted))] text-base font-serif italic max-w-xs">{t.intention_success_desc}</p>

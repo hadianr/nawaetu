@@ -10,7 +10,7 @@
 import { useState, useMemo, useEffect, Suspense, memo } from "react";
 import TargetIdReader from "@/components/TargetIdReader";
 import dynamic from "next/dynamic";
-import { BookOpen, Quote, Sparkles, Copy, Check, ChevronDown, ChevronUp, ShieldCheck, User, Share2, ChevronDown as MoreIcon } from "lucide-react";
+import { BookOpen, Quote, Copy, Check, ChevronDown, ChevronUp, ShieldCheck, User, Share2, ChevronDown as MoreIcon, Lightbulb } from "lucide-react";
 import { HADITH_LIBRARY, HadithItem, HADITH_TOPIC_DEFINITIONS, HadithTopic } from "@/data/hadiths";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
@@ -234,7 +234,7 @@ const HadithCard = memo(function HadithCard({
                             "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-text))]"
                         )}>
                             <p className="font-bold flex items-center gap-1 text-xs uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
-                                <Sparkles className="w-3 h-3" /> {t.hadithTadabburTitle || "Tadabbur Hadits"}
+                                <Lightbulb className="w-3 h-3" /> {t.hadithTadabburTitle || "Tadabbur Hadits"}
                             </p>
                             <p className="text-xs leading-relaxed">{(locale === "en" && item.explanationEn) ? item.explanationEn : item.explanation}</p>
                         </div>
