@@ -234,7 +234,7 @@ export default function PrayerCheckInWidget() {
         completeMission(missionId, finalHasanah, selectedDate);
         window.dispatchEvent(new CustomEvent(APP_EVENTS.MISSION_UPDATED));
 
-        toast.success(t.homePrayerCheckInToastTitle || "Alhamdulillah! ✅", {
+        toast.success(t.homePrayerCheckInToastTitle || "Alhamdulillah!", {
             description: (t.homePrayerCheckInToastDesc || "Sholat tercatat (+{hasanah} Hasanah)").replace("{hasanah}", String(finalHasanah)),
             duration: 2500,
             icon: <AppIcon name="sparkles" size="sm" tone="primary" />,

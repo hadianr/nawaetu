@@ -16,7 +16,7 @@ const prayerCopy: Record<Locale, Record<Prayer, CopyPair[]>> = {
       { title: "Lock in bareng Subuh", body: "Lima menit untuk menghadap Allah, lalu lanjutkan harimu." },
     ],
     Dhuhr: [
-      { title: "Dzuhur time ☀️", body: "Pause sebentar dari ramainya hari. Yuk tunaikan Dzuhur." },
+      { title: "Dzuhur time", body: "Pause sebentar dari ramainya hari. Yuk tunaikan Dzuhur." },
       { title: "Waktunya Dzuhur", body: "Reset sejenak dengan wudhu dan sholat Dzuhur." },
       { title: "Midday check-in", body: "Dzuhur sudah masuk. Tarik napas, lalu menghadap Allah." },
     ],
@@ -48,7 +48,7 @@ const prayerCopy: Record<Locale, Record<Prayer, CopyPair[]>> = {
       { title: "Lock in with Fajr", body: "A few minutes to turn to Allah, then carry on with your day." },
     ],
     Dhuhr: [
-      { title: "Dhuhr time ☀️", body: "Pause the busy day for a moment. Come pray Dhuhr." },
+      { title: "Dhuhr time", body: "Pause the busy day for a moment. Come pray Dhuhr." },
       { title: "Time for Dhuhr", body: "Reset with wudu and Dhuhr prayer." },
       { title: "Midday check-in", body: "Dhuhr is in. Breathe, then turn to Allah." },
     ],
