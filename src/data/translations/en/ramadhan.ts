@@ -193,6 +193,26 @@ export const ramadhanEN = {
     wrappedRendering: "Rendering...",
     wrappedSaved: "Saved",
     wrappedFooterQuote: "\"May Allah accept (good deeds) from us and from you\"",
+
+    // Daily prayer tracker
+    dailyPrayerTitle: "Daily prayers",
+    dailyPrayerSubtitle: "Location and Ramadan sunnah",
+    dailyPrayerMasjid: "Mosque",
+    dailyPrayerHome: "Home",
+    dailyPrayerSunnahCount: "Sunnah",
+    dailyPrayerNotYet: "Not yet",
+    dailyPrayerDay: "Day {day}",
+    dailyPrayerDayLocation: "Day {day}: where you prayed the obligatory prayers",
+    dailyPrayerAtMasjid: "{prayer} at the mosque",
+    dailyPrayerAtHome: "{prayer} at home",
+    dailyPrayerSunnahTitle: "Sunnah prayers",
+    dailySunnahDhuha: "Dhuha",
+    dailySunnahQabliyah: "Qabliyah",
+    dailySunnahBadiyah: "Ba'diyah",
+    dailySunnahWitir: "Witr",
+    dailySunnahIstikharah: "Istikharah",
+    dailySunnahHajat: "Hajah",
+    dailySunnahTaubat: "Tawbah",
 } as const;
 
 export type RamadhanTranslationKeys = keyof typeof ramadhanEN;
