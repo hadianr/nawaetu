@@ -181,6 +181,8 @@ export default function RootLayout({
       <head>
         {/* Applies the saved theme before first paint so no other theme flashes. */}
         <script dangerouslySetInnerHTML={{ __html: prePaintThemeScript(STORAGE_KEYS.SETTINGS_THEME, STORAGE_KEYS.ONBOARDING_COMPLETED) }} />
+        {/* Same rule as LocaleContext, applied before paint so assistive tech never reads English UI as Indonesian. */}
+        <script dangerouslySetInnerHTML={{ __html: `try{var l=localStorage.getItem(${JSON.stringify(STORAGE_KEYS.SETTINGS_LOCALE)});if(l!=="en"&&l!=="id")l=navigator.language.toLowerCase().indexOf("id")===0?"id":"en";document.documentElement.lang=l}catch(e){}` }} />
         {/* Resource Hints - Preconnect to critical origins */}
         {/* DNS Prefetch for analytics/monitoring (non-critical) */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
