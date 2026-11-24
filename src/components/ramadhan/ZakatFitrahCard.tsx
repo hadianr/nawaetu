@@ -28,7 +28,7 @@ export default function ZakatFitrahCard() {
 
     return (
         <>
-            <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-lg shadow-[var(--shadow-card)]">
+            <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]">
                 {/* Header */}
                 <div className="px-3 pt-3 pb-2 sm:px-4 sm:pt-4 flex items-center justify-between">
                     <div>
@@ -45,13 +45,13 @@ export default function ZakatFitrahCard() {
 
                     {/* Timeline Alert Pill */}
                     {currentPhase === 1 && (
-                        <div className="flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-success))]/30 bg-[rgb(var(--color-success))]/10 px-2.5 py-1 backdrop-blur-sm">
+                        <div className="flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-success))]/30 bg-[rgb(var(--color-success))]/10 px-2.5 py-1">
                             <Clock className="h-3.5 w-3.5 text-[rgb(var(--color-success))]" />
                             <span className="text-xs font-semibold text-[rgb(var(--color-success))]">Waktu Mubah</span>
                         </div>
                     )}
                     {currentPhase === 3 && (
-                        <div className="flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-warning))]/30 bg-[rgb(var(--color-warning))]/10 px-2.5 py-1 backdrop-blur-sm">
+                        <div className="flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-warning))]/30 bg-[rgb(var(--color-warning))]/10 px-2.5 py-1">
                             <AlertCircle className="h-3.5 w-3.5 text-[rgb(var(--color-warning))]" />
                             <span className="text-xs font-semibold text-[rgb(var(--color-warning))]">Waktu Afdhal</span>
                         </div>
@@ -83,7 +83,7 @@ export default function ZakatFitrahCard() {
                     </div>
 
                     {/* Kewajiban / Amount Info */}
-                    <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3 backdrop-blur-sm">
+                    <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3">
                         <div className="flex items-center gap-2 mb-2">
                             <HandHeart className="h-4 w-4 text-[rgb(var(--color-success))]" />
                             <h4 className="font-semibold text-[rgb(var(--color-text-strong))] text-sm">{t.zakatObligationTitle || "Kewajiban Zakat"}</h4>
@@ -107,7 +107,7 @@ export default function ZakatFitrahCard() {
                     <div className="grid grid-cols-2 gap-2">
                         {/* Makanan Pokok */}
                         <div className="rounded-2xl border border-[rgb(var(--color-warning))]/20 bg-[rgb(var(--color-warning))]/10 p-3">
-                            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-warning))]/20 to-[rgb(var(--color-warning))]/10 backdrop-blur-sm">
+                            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-warning))]/20 to-[rgb(var(--color-warning))]/10">
                                 <Wheat className="h-4 w-4 text-[rgb(var(--color-warning))]" />
                             </div>
                             <h4 className="mb-1 font-semibold text-[rgb(var(--color-text-strong))] text-xs">
@@ -120,7 +120,7 @@ export default function ZakatFitrahCard() {
 
                         {/* Uang */}
                         <div className="rounded-2xl border border-[rgb(var(--color-success))]/20 bg-[rgb(var(--color-success))]/10 p-3">
-                            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-success))]/20 to-[rgb(var(--color-success))]/10 backdrop-blur-sm">
+                            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-success))]/20 to-[rgb(var(--color-success))]/10">
                                 <Coins className="h-4 w-4 text-[rgb(var(--color-success))]" />
                             </div>
                             <h4 className="mb-1 font-semibold text-[rgb(var(--color-text-strong))] text-xs">

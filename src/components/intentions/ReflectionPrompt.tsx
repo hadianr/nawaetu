@@ -92,7 +92,7 @@ export default function ReflectionPrompt({
         >
             {/* Backdrop - fixed to stay put while card scrolls */}
             <div
-                className="fixed inset-0 bg-[rgb(var(--color-background))]/70 backdrop-blur-md"
+                className="fixed inset-0 bg-[rgb(var(--color-background))]/70"
                 onClick={onSkip}
             />
 
@@ -155,7 +155,7 @@ export default function ReflectionPrompt({
                     {/* Content */}
                     <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 relative z-10">
                         {/* Today's Intention */}
-                        <div className="backdrop-blur-md border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] rounded-2xl p-5 relative overflow-hidden">
+                        <div className=" border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] rounded-2xl p-5 relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-1 h-full bg-[rgb(var(--color-primary))]" />
                             <p className="text-xs sm:text-xs font-bold uppercase tracking-wider mb-1 sm:mb-2 text-[rgb(var(--color-text-muted))]">{t.intention_todays_niat}</p>
                             <p className="text-base sm:text-lg font-medium italic leading-relaxed text-[rgb(var(--color-text))]">&quot;{intentionText}&quot;</p>
@@ -202,7 +202,7 @@ export default function ReflectionPrompt({
                                 placeholder={t.intention_notes_placeholder}
                                 maxLength={1000}
                                 rows={3}
-                                className="w-full backdrop-blur-sm border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] rounded-2xl px-4 py-3 resize-none transition-all text-sm text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-muted))] focus:outline-none focus:ring-1 focus:border-[rgb(var(--color-primary))]/50 focus:ring-[rgb(var(--color-primary))]/30"
+                                className="w-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] rounded-2xl px-4 py-3 resize-none transition-all text-sm text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-muted))] focus:outline-none focus:ring-1 focus:border-[rgb(var(--color-primary))]/50 focus:ring-[rgb(var(--color-primary))]/30"
                             />
                             <div className="text-xs mt-1 text-right text-[rgb(var(--color-text-muted))]">
                                 {reflectionText.length}/1000

@@ -89,7 +89,7 @@ export default function DalilBadge({ dalil, variant = "inline", label }: DalilBa
                     className={`
                       flex items-center gap-0.5 sm:gap-1 transition-all duration-300 active:scale-95 group/dalil outline-none
                       ${variant === "pill"
-                            ? "rounded-sm border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-1 py-[0.5px] sm:px-2 sm:py-0.5 backdrop-blur-sm hover:bg-[rgb(var(--color-primary))]/20 active:opacity-80 shadow-[var(--shadow-card)]"
+                            ? "rounded-sm border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-1 py-[0.5px] sm:px-2 sm:py-0.5 hover:bg-[rgb(var(--color-primary))]/20 active:opacity-80 shadow-[var(--shadow-card)]"
                             : "text-left hover:opacity-80"
                         }
                     `}

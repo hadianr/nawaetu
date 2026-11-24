@@ -49,7 +49,7 @@ export default function OfflineIndicator() {
                 isOnline ? "translate-y-10 opacity-0" : "translate-y-0 opacity-100"
             )}
         >
-            <div className="backdrop-blur-md px-4 py-2 rounded-full shadow-[var(--shadow-floating)] flex items-center gap-2.5 max-w-[90%] pointer-events-auto bg-[rgb(var(--color-surface))]/95 border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]">
+            <div className=" px-4 py-2 rounded-full shadow-[var(--shadow-floating)] flex items-center gap-2.5 max-w-[90%] pointer-events-auto bg-[rgb(var(--color-surface))]/95 border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]">
                 {isOnline ? (
                     <div className="w-2 h-2 rounded-full bg-[rgb(var(--color-success))] animate-pulse" />
                 ) : (

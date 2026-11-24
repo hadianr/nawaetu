@@ -65,7 +65,7 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
 
     return (
         <div className="fixed bottom-20 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-10 fade-in duration-700">
-            <div className="bg-[rgb(var(--color-surface))]/95 backdrop-blur-xl border border-[rgb(var(--color-border))]/30 p-4 rounded-2xl shadow-[var(--shadow-floating)] relative overflow-hidden text-[rgb(var(--color-text))]">
+            <div className="bg-[rgb(var(--color-surface))]/95 border border-[rgb(var(--color-border))]/30 p-4 rounded-2xl shadow-[var(--shadow-floating)] relative overflow-hidden text-[rgb(var(--color-text))]">
                 {/* Background Noise */}
                 <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none"></div>
 

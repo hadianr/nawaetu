@@ -30,7 +30,7 @@ export default function RamadhanPracticesList() {
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
     return (
-        <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-md shadow-[var(--shadow-card)] transition-all duration-300">
+        <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)] transition-all duration-300">
             {/* Header */}
             <div className="px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
                 <div className="flex items-center gap-2">
@@ -84,10 +84,10 @@ export default function RamadhanPracticesList() {
 
                             {/* Expanded detail */}
                             {isExpanded && (
-                                <div className="px-3 pb-4 pt-2 space-y-3 sm:px-4 sm:pb-6 sm:space-y-4 animate-in slide-in-from-top-2 fade-in duration-300 bg-[rgb(var(--color-surface-subtle))] backdrop-blur-sm">
+                                <div className="px-3 pb-4 pt-2 space-y-3 sm:px-4 sm:pb-6 sm:space-y-4 animate-in slide-in-from-top-2 fade-in duration-300 bg-[rgb(var(--color-surface-subtle))]">
                                     {/* Tips */}
                                     {localizedTips && localizedTips.length > 0 && (
-                                        <div className="rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] p-4 shadow-[var(--shadow-card)] backdrop-blur-sm">
+                                        <div className="rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] p-4 shadow-[var(--shadow-card)]">
                                             <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-4">
                                                 {t.practicesTipsLabel}
                                             </p>

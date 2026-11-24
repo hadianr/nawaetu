@@ -32,7 +32,7 @@ export default function RamadhanGuideCard() {
 
     return (
         <>
-            <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-transparent backdrop-blur-lg shadow-[var(--shadow-card)]">
+            <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-transparent shadow-[var(--shadow-card)]">
                 {/* Header */}
                 <div className="px-3 pt-3 pb-2 sm:px-4 sm:pt-4">
                     <div className="flex items-center gap-2 mb-1">
@@ -54,7 +54,7 @@ export default function RamadhanGuideCard() {
                         className="group relative overflow-hidden rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-[rgb(var(--color-primary-dark))]/5 p-4 text-left transition-all hover:scale-[1.02] hover:border-[rgb(var(--color-primary-light))]/40 hover:shadow-[var(--shadow-card)] active:scale-[0.98]"
                     >
                         <div className="relative z-10">
-                            <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-primary-light))]/20 to-[rgb(var(--color-primary-dark))]/20 backdrop-blur-sm">
+                            <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-primary-light))]/20 to-[rgb(var(--color-primary-dark))]/20">
                                 <BookOpen className="h-5 w-5 text-[rgb(var(--color-primary-strong))]" />
                             </div>
                             <h4 className="mb-1 font-semibold text-[rgb(var(--color-text-strong))] text-sm">
@@ -76,7 +76,7 @@ export default function RamadhanGuideCard() {
                         className="group relative overflow-hidden rounded-2xl border border-[rgb(var(--color-info))]/25 bg-gradient-to-br from-[rgb(var(--color-info))]/10 to-[rgb(var(--color-info))]/5 p-4 text-left transition-all hover:scale-[1.02] hover:border-[rgb(var(--color-info))]/40 hover:shadow-[var(--shadow-card)] active:scale-[0.98]"
                     >
                         <div className="relative z-10">
-                            <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-info))]/20 to-[rgb(var(--color-info))]/10 backdrop-blur-sm">
+                            <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-info))]/20 to-[rgb(var(--color-info))]/10">
                                 <HelpCircle className="h-5 w-5 text-[rgb(var(--color-info))]" />
                             </div>
                             <h4 className="mb-1 font-semibold text-[rgb(var(--color-text-strong))] text-sm">

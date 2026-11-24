@@ -51,7 +51,7 @@ export default function QuranSearchModal() {
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-xl p-0 overflow-hidden flex flex-col max-h-[85vh] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]">
-                <DialogHeader className="p-4 border-b border-[rgb(var(--color-border))] shrink-0 backdrop-blur-xl z-10 bg-[rgb(var(--color-surface))]">
+                <DialogHeader className="p-4 border-b border-[rgb(var(--color-border))] shrink-0 z-10 bg-[rgb(var(--color-surface))]">
                     <DialogTitle className="text-lg font-bold flex items-center gap-2 text-[rgb(var(--color-text-strong))]">
                         <Search className="h-5 w-5 text-[rgb(var(--color-primary-strong))]" />
                         {translations.quranSearchVerses}

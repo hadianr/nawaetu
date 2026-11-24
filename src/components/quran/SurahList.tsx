@@ -261,7 +261,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                     onMouseEnter={() => prefetchRoute("/bookmarks")}
                     onFocus={() => prefetchRoute("/bookmarks")}
                     className={cn(
-                        "col-span-2 md:col-span-1 group relative overflow-hidden rounded-2xl border backdrop-blur-sm p-5 md:p-6 flex md:flex-col items-center md:items-start justify-between md:justify-center gap-3 transition-all duration-500 hover:shadow-[var(--shadow-card)]",
+                        "col-span-2 md:col-span-1 group relative overflow-hidden rounded-2xl border p-5 md:p-6 flex md:flex-col items-center md:items-start justify-between md:justify-center gap-3 transition-all duration-500 hover:shadow-[var(--shadow-card)]",
                         bookmarkCount > 0
                             ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/35 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary))]/20"
                             : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))]"
@@ -357,7 +357,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                             key={chapter.id}
                             onMouseEnter={() => prefetchSurah(chapter.id)}
                             className={cn(
-                                "group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 gap-3 cursor-pointer",
+                                "group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 transition-all duration-500 hover:-translate-y-1 gap-3 cursor-pointer",
                                     isLastRead
                                     ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/15 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary))]/25"
                                     : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5 hover:shadow-[var(--shadow-card)]"
@@ -367,7 +367,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                             {isBookmarked && (
                                 <div className="absolute top-0 right-0 z-10 pointer-events-none">
                                     <div className={cn(
-                                        "flex h-6 w-6 items-center justify-center rounded-bl-xl border-b border-l backdrop-blur-sm",
+                                        "flex h-6 w-6 items-center justify-center rounded-bl-xl border-b border-l",
                                         "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/25"
                                     )}>
                                         <Bookmark className={cn(

@@ -97,7 +97,7 @@ export function DhikrHistory({
                     </div>
                 </button>
             </DialogTrigger>
-            <DialogContent className="dhikr-history-dialog w-[90%] max-w-sm rounded-2xl border backdrop-blur-3xl z-[100] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]">
+            <DialogContent className="dhikr-history-dialog w-[90%] max-w-sm rounded-2xl border z-[100] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]">
                 <DialogHeader>
                     <DialogTitle className="text-center text-sm font-bold uppercase tracking-wider opacity-60">Statistik Zikir</DialogTitle>
                 </DialogHeader>

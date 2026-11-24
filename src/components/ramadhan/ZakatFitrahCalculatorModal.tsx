@@ -83,16 +83,16 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
         <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
             <DialogPrimitive.Portal>
                 {/* Overlay with blur effect */}
-                <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[rgb(var(--color-text-strong))]/60 backdrop-blur-md transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:animate-in data-[state=open]:fade-in" />
+                <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[rgb(var(--color-text-strong))]/60 transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:animate-in data-[state=open]:fade-in" />
 
                 {/* Content wrapper */}
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-                    <DialogPrimitive.Content className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/95 shadow-[var(--shadow-floating)] backdrop-blur-xl transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 focus:outline-none">
+                    <DialogPrimitive.Content className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/95 shadow-[var(--shadow-floating)] transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 focus:outline-none">
                         
                         {/* Header (Sticky) */}
-                        <div className="flex items-center justify-between border-b border-[rgb(var(--color-border))] p-5 sm:p-6 bg-[rgb(var(--color-surface-subtle))] backdrop-blur-xl">
+                        <div className="flex items-center justify-between border-b border-[rgb(var(--color-border))] p-5 sm:p-6 bg-[rgb(var(--color-surface-subtle))]">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))] backdrop-blur-md">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))]">
                                     <Calculator className="h-5 w-5" />
                                 </div>
                                 <DialogPrimitive.Title className="text-lg font-bold text-[rgb(var(--color-text-strong))]">
@@ -121,7 +121,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                 
                                 <div className="space-y-2">
                                     {recipients.map((recipient) => (
-                                        <div key={recipient.id} className="flex flex-col gap-2 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3 backdrop-blur-sm transition-all focus-within:border-[rgb(var(--color-primary))]/50">
+                                        <div key={recipient.id} className="flex flex-col gap-2 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3 transition-all focus-within:border-[rgb(var(--color-primary))]/50">
                                             <div className="flex items-start gap-3">
                                                 {/* Checkbox */}
                                                 <button 
@@ -252,7 +252,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                         </div>
 
                         {/* Footer (Sticky Result) */}
-                        <div className="border-t border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5 sm:p-6 backdrop-blur-xl">
+                        <div className="border-t border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5 sm:p-6">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-xs text-[rgb(var(--color-text-muted))] mb-0.5">

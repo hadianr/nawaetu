@@ -95,7 +95,7 @@ export default function RamadhanScheduleCard() {
     ];
 
     return (
-        <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-lg shadow-[var(--shadow-card)]">
+        <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]">
             {/* Header */}
             <div className="flex items-center justify-between px-3 pt-3 pb-2 sm:px-4 sm:pt-4">
                 <div className="flex items-center gap-2">
@@ -107,14 +107,14 @@ export default function RamadhanScheduleCard() {
 
             {/* Countdown */}
             {countdownMs > 0 ? (
-                <div className="mx-3 mb-2 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-3 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
+                <div className="mx-3 mb-2 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-3 text-center shadow-[var(--shadow-card)]">
                     <p className="text-xs sm:text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] mb-1.5 sm:mb-2">{countdownLabel}</p>
                     <p className="text-2xl sm:text-3xl tabular-nums font-bold" style={countdownStyle}>
                         {formatCountdown(countdownMs)}
                     </p>
                 </div>
             ) : (
-                <div className="mx-3 mb-2 rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-2.5 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
+                <div className="mx-3 mb-2 rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-2.5 text-center shadow-[var(--shadow-card)]">
                     <p className="text-sm font-bold" style={{ color: "rgb(var(--color-primary-strong))" }}>{countdownLabel}</p>
                 </div>
             )}
@@ -124,7 +124,7 @@ export default function RamadhanScheduleCard() {
                 {scheduleItems.map((item) => (
                     <div
                         key={item.label}
-                        className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-2 py-1.5 sm:px-3 sm:py-2.5 flex items-center gap-1.5 sm:gap-2 backdrop-blur-sm shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-surface))] transition-all"
+                        className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-2 py-1.5 sm:px-3 sm:py-2.5 flex items-center gap-1.5 sm:gap-2 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-surface))] transition-all"
                     >
                         <AppIcon name={item.icon} size="sm" tone="primary" />
                         <div>

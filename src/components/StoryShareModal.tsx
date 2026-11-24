@@ -219,7 +219,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
     if (!mounted) return null;
 
     return createPortal(
-        <div className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[rgb(var(--color-text-strong))]/75 backdrop-blur-md animate-in fade-in duration-150">
+        <div className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[rgb(var(--color-text-strong))]/75 animate-in fade-in duration-150">
             {/* Backdrop click to close */}
             <div className="absolute inset-0" onClick={onClose} />
 
@@ -258,7 +258,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                 className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.01]"
                             />
                             {isExporting && (
-                                <div className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/60 backdrop-blur-sm flex items-center justify-center text-[rgb(var(--color-primary-foreground))] text-xs font-bold gap-1.5 animate-in fade-in">
+                                <div className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/60 flex items-center justify-center text-[rgb(var(--color-primary-foreground))] text-xs font-bold gap-1.5 animate-in fade-in">
                                     <Sparkles className="w-3.5 h-3.5 animate-spin text-[rgb(var(--color-primary-strong))]" />
                                     <span>{t.storyShareCompressing || "Mengompres..."}</span>
                                 </div>

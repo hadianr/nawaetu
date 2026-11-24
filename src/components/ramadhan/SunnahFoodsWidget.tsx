@@ -32,7 +32,7 @@ export default function SunnahFoodsWidget() {
     const currentFoods = activeTab === "iftar" ? SUNNAH_FOODS_IFTAR : SUNNAH_FOODS_SUHOOR;
 
     return (
-        <div className="w-full rounded-xl overflow-hidden border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)] backdrop-blur-md"
+        <div className="w-full rounded-xl overflow-hidden border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]"
             style={{
                 boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)"
             }}

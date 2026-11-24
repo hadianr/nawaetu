@@ -36,7 +36,7 @@ export default function TafsirModal({ open, onOpenChange, content }: TafsirModal
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent showCloseButton={false} className="w-[98vw] max-w-lg sm:max-w-xl max-h-[80vh] sm:max-h-[85vh] rounded-2xl sm:rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-3xl shadow-[var(--shadow-floating)] p-0 overflow-hidden text-[rgb(var(--color-text))]">
+            <DialogContent showCloseButton={false} className="w-[98vw] max-w-lg sm:max-w-xl max-h-[80vh] sm:max-h-[85vh] rounded-2xl sm:rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-floating)] p-0 overflow-hidden text-[rgb(var(--color-text))]">
                 {/* Hidden DialogTitle for accessibility */}
                 <DialogTitle className="sr-only">
                     {t.quranFullExplanation || 'Full Explanation'}
@@ -65,7 +65,7 @@ export default function TafsirModal({ open, onOpenChange, content }: TafsirModal
                                 <TooltipTrigger asChild>
                                     <button
                                         onClick={() => onOpenChange(false)}
-                                        className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgb(var(--color-surface-subtle))] backdrop-blur-md border border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors"
+                                        className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors"
                                     >
                                         <X className="w-4 h-4 text-[rgb(var(--color-text))]" />
                                     </button>

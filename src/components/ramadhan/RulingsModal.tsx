@@ -48,7 +48,7 @@ export default function RulingsModal({ open, onOpenChange }: RulingsModalProps) 
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-[95vw] sm:max-w-lg md:max-w-2xl bg-[rgb(var(--color-surface))]/95 backdrop-blur-xl border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)]">
+            <DialogContent className="max-w-[95vw] sm:max-w-lg md:max-w-2xl bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)]">
                 <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] relative">
                     <DialogTitle className="text-left flex items-center gap-2">
                         <AppIcon name="scroll" size="sm" tone="primary" />

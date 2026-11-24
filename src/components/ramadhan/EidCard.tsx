@@ -31,7 +31,7 @@ export default function EidCard() {
         <section className="w-full mb-2 animate-in slide-in-from-bottom-2 fade-in duration-500">
             <button 
                 onClick={() => setShowSunnah(true)}
-                className="w-full relative overflow-hidden group rounded-2xl border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-surface))]/90 backdrop-blur-sm shadow-[var(--shadow-card)] flex items-center justify-between p-4 transition-transform active:scale-95 text-left"
+                className="w-full relative overflow-hidden group rounded-2xl border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-surface))]/90 shadow-[var(--shadow-card)] flex items-center justify-between p-4 transition-transform active:scale-95 text-left"
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-surface))] via-[rgb(var(--color-primary))]/10 to-[rgb(var(--color-surface))] -z-10" />
                 <div className="flex flex-col items-start gap-1">
@@ -47,7 +47,7 @@ export default function EidCard() {
 
             {/* Sunnah Dialog */}
             <Dialog open={showSunnah} onOpenChange={setShowSunnah}>
-                <DialogContent className="bg-[rgb(var(--color-surface))] backdrop-blur-xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] w-[90%] max-w-md rounded-2xl">
+                <DialogContent className="bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] w-[90%] max-w-md rounded-2xl">
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold flex items-center gap-2 text-[rgb(var(--color-text-strong))]">
                             <AppIcon name="sparkles" size="sm" tone="primary" /> {t.eidSunnahTitle}

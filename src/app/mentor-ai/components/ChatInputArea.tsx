@@ -43,14 +43,14 @@ export function ChatInputArea({
 }: ChatInputAreaProps) {
     return (
         <div className={cn(
-            "fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t pb-6 md:pb-8 pt-4 z-30",
+            "fixed bottom-0 left-0 right-0 border-t pb-6 md:pb-8 pt-4 z-30",
             "bg-[rgb(var(--color-canvas))]/95 border-[rgb(var(--color-border))]"
         )}>
             <div className="w-full max-w-none mx-auto px-4 space-y-3 xl:max-w-md">
                 {/* Limit Reached Card */}
                 {(dailyCount >= DAILY_LIMIT) ? (
                     <div className={cn(
-                        "backdrop-blur-md rounded-2xl p-4 border flex flex-col sm:flex-row items-center gap-4 animate-in slide-in-from-bottom-2",
+                        " rounded-2xl p-4 border flex flex-col sm:flex-row items-center gap-4 animate-in slide-in-from-bottom-2",
                         "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-danger))]/20 shadow-[var(--shadow-card)]"
                     )}>
                         {/* Icon & Text */}

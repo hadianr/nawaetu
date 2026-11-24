@@ -158,7 +158,7 @@ export default function MissionListModal({
                             onClick={() => onMissionClick(mission)}
                             className={cn(
                                 "w-full flex items-center gap-3 p-3.5 rounded-2xl transition-all text-left group relative overflow-hidden",
-                                "border backdrop-blur-sm",
+                                "border",
                                 isCompleted
                                     ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-70"
                                     : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/5 hover:border-[rgb(var(--color-primary))]/30"
@@ -267,7 +267,7 @@ export default function MissionListModal({
             )}
             <DialogContent
                 showCloseButton={false}
-                className="mission-list-modal w-[95%] max-w-md h-auto max-h-[85vh] p-0 gap-0 overflow-hidden rounded-2xl flex flex-col bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-floating)] backdrop-blur-xl"
+                className="mission-list-modal w-[95%] max-w-md h-auto max-h-[85vh] p-0 gap-0 overflow-hidden rounded-2xl flex flex-col bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-floating)]"
                 onOpenAutoFocus={() => {
                     if (initialTab) setActiveTab(initialTab);
                 }}

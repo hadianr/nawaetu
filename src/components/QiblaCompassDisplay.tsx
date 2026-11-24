@@ -84,7 +84,7 @@ const CompassDisplay = memo(({
                 >
                     {/* Dial Background */}
                     <div className={cn(
-                        "w-full h-full rounded-full border-2 transition-all duration-500 backdrop-blur-sm",
+                        "w-full h-full rounded-full border-2 transition-all duration-500",
                         aligned
                             ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))] shadow-[var(--shadow-floating)]"
                             : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
@@ -204,7 +204,7 @@ const CompassDisplay = memo(({
                 {/* Alignment Success Badge */}
                 {aligned && (
                     <div className={cn(
-                        "inline-flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-sm transition-all shadow-sm",
+                        "inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all shadow-sm",
                         "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 shadow-[var(--shadow-card)]"
                     )}>
                         <div className={cn(
@@ -230,7 +230,7 @@ const CompassDisplay = memo(({
                 </div>
 
                 <div className={cn(
-                    "mt-3 max-w-xs md:max-w-md text-xs md:text-xs leading-relaxed border rounded-lg px-3 py-2 backdrop-blur-sm transition-all",
+                    "mt-3 max-w-xs md:max-w-md text-xs md:text-xs leading-relaxed border rounded-lg px-3 py-2 transition-all",
                     "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] shadow-[var(--shadow-card)]"
                 )}>
                     <div className="space-y-1">

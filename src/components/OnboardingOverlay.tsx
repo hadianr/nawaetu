@@ -495,7 +495,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             // Tap anywhere to continue; it also continues by itself, so no keyboard action is needed.
             <div
                 onClick={() => onComplete?.()}
-                className="fixed inset-0 z-[100] w-full max-w-[100dvw] h-dvh overflow-x-hidden overflow-y-auto bg-[rgb(var(--color-canvas))]/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 text-center"
+                className="fixed inset-0 z-[100] w-full max-w-[100dvw] h-dvh overflow-x-hidden overflow-y-auto bg-[rgb(var(--color-canvas))]/95 flex flex-col items-center justify-center p-4 text-center"
             >
                 <PatternOverlay />
                 <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-2">
@@ -519,7 +519,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     }
 
     return (
-        <div className="fixed inset-0 z-[100] w-full max-w-[100dvw] h-dvh overflow-x-hidden overflow-y-auto bg-[rgb(var(--color-canvas))]/95 backdrop-blur-xl flex items-center justify-center p-4 text-[rgb(var(--color-text))]">
+        <div className="fixed inset-0 z-[100] w-full max-w-[100dvw] h-dvh overflow-x-hidden overflow-y-auto bg-[rgb(var(--color-canvas))]/95 flex items-center justify-center p-4 text-[rgb(var(--color-text))]">
             <PatternOverlay />
             <div className="w-full max-w-sm relative z-10">
                 {/* One progress bar across every step; scaleX keeps it off the layout path. */}
