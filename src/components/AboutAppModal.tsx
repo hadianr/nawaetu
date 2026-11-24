@@ -51,7 +51,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
 
                     <div className="flex justify-center mt-1.5">
                         <span className={cn(
-                            "text-xs uppercase tracking-wider font-extrabold px-3 py-1 rounded-full border",
+                            "text-xs font-extrabold px-3 py-1 rounded-full border",
                             "text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                         )}>
                             {t.aboutTagline}

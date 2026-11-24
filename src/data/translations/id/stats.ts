@@ -84,7 +84,7 @@ export const statsID = {
         },
         quote: {
             text: '"Sesungguhnya Allah tidak menyia-nyiakan pahala orang yang berbuat kebaikan."',
-            source: "— QS. At-Taubah: 120"
+            source: "QS. At-Taubah: 120"
         },
         extra: {
             quran: "Al-Quran",

@@ -84,7 +84,7 @@ export const statsEN = {
         },
         quote: {
             text: '"Indeed, Allah does not allow to be lost the reward of the doers of good."',
-            source: "— Quran, At-Tawbah: 120"
+            source: "Quran, At-Tawbah: 120"
         },
         extra: {
             quran: "Quran",

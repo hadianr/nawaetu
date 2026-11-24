@@ -363,7 +363,7 @@ export default function RamadhanWrappedCard() {
                 <p className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5">{t.wrappedTriggerSubtitle || "Puasa, Tarawih, Tilawah & AI Insight"}</p>
             </div>
             <div className="shrink-0 flex items-center gap-1">
-                <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-full" style={{ background: "rgb(var(--color-primary) / 0.15)", color: "rgb(var(--color-primary-strong))" }}>
+                <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: "rgb(var(--color-primary) / 0.15)", color: "rgb(var(--color-primary-strong))" }}>
                     {t.wrappedTriggerCta || "Lihat"}
                 </span>
             </div>

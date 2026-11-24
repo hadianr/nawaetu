@@ -546,7 +546,7 @@ export default function SettingsPageContent() {
                         <div className="flex items-center justify-between text-[rgb(var(--color-text-muted))]">
                             <div className="flex items-center gap-2">
                                 <Settings2 className="w-3 h-3" />
-                                <span className="text-xs font-bold uppercase tracking-wider">Developer Tools</span>
+                                <span className="text-xs font-bold">Developer Tools</span>
                             </div>
                             <Link
                                 href="/notification-debug"

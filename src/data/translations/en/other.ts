@@ -359,7 +359,7 @@ export const otherEN = {
     homePrayerCheckInSheetSubtitle: "How did you perform your prayer?",
     homePrayerCheckInOptionSolo: "Pray Alone",
     homePrayerCheckInOptionJamaah: "Congregation (Mosque)",
-    homePrayerCheckInQuote: "\"Congregational prayer is 27 times more rewarding\" — HR. Bukhari & Muslim",
+    homePrayerCheckInQuote: "\"Congregational prayer is 27 times more rewarding\" (HR. Bukhari & Muslim)",
 
     // Mosque Finder Modal
     mosqueFinderTitle: "Where to Pray?",

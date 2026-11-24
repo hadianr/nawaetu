@@ -692,7 +692,7 @@ export default function PrayerCheckInWidget() {
                         <button
                             onClick={() => setSheet(null)}
                             className={cn(
-                                "w-full py-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border",
+                                "w-full py-4 rounded-xl text-xs font-bold transition-all border shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 hover:text-[rgb(var(--color-text))]"
                             )}
                         >
