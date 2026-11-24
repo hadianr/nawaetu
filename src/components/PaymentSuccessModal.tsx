@@ -18,7 +18,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { useLocale } from "@/context/LocaleContext";
 import { Button } from "@/components/ui/button";
 import { Check, Heart } from "@/components/ui/icons";
 import { useEffect } from "react";
@@ -99,6 +100,7 @@ function triggerNativeConfetti() {
 }
 
 export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessModalProps) {
+    const { t } = useLocale();
 
     useEffect(() => {
         if (isOpen) {
@@ -133,13 +135,13 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
                         </div>
                     </div>
 
-                    <h2 className="text-2xl font-bold mb-2 text-[rgb(var(--color-text-strong))]">Alhamdulillah!</h2>
-                    <p className="text-[rgb(var(--color-primary-strong))] font-bold mb-6">Pembayaran Berhasil</p>
+                    <DialogTitle className="text-2xl font-bold mb-2 text-[rgb(var(--color-text-strong))]">Alhamdulillah!</DialogTitle>
+                    <p className="text-[rgb(var(--color-primary-strong))] font-bold mb-6">{t.paymentSuccessTitle}</p>
 
                     <p className="text-sm leading-relaxed mb-8 text-[rgb(var(--color-text-muted))]">
-                        Terima kasih, Orang Baik. Infaq Anda telah kami terima dan akan digunakan untuk operasional serta pengembangan aplikasi Nawaetu.
+                        {t.paymentSuccessBody}
                         <br /><br />
-                        <span className="text-xs italic text-[rgb(var(--color-text-muted))]">&quot;Semoga menjadi amal jariyah yang tak terputus pahalanya.&quot;</span>
+                        <span className="text-xs italic text-[rgb(var(--color-text-muted))]">&quot;{t.paymentSuccessDua}&quot;</span>
                     </p>
 
                     <div className="w-full space-y-3">
@@ -150,7 +152,7 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
                                 "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                             )}
                         >
-                            Aamiin, Tutup
+                            {t.paymentSuccessClose}
                         </Button>
                     </div>
                 </div>

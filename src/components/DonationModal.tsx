@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { signInWithGoogle } from "@/lib/auth-client";
 import { AppIcon } from "@/components/ui/AppIcon";
+import { useLocale } from "@/context/LocaleContext";
 
 interface DonationModalProps {
     isOpen: boolean;
@@ -47,6 +48,7 @@ const DONATION_OPTIONS = [
 
 export default function DonationModal({ isOpen, onClose, headerTitle, headerDescription }: DonationModalProps) {
     useInfaq();
+    const { t } = useLocale();
     const { data: session } = useSession();
     const [selectedAmount, setSelectedAmount] = useState<number>(10000);
     const [isCustomMode, setIsCustomMode] = useState(false);
@@ -57,12 +59,12 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
         const finalAmount = isCustomMode ? parseInt(customValue) || 0 : selectedAmount;
 
         if (finalAmount < 5000) {
-            toast.error("Minimal infaq Rp 5.000 ya kak (batas payment gateway).");
+            toast.error(t.donationMinAmount);
             return;
         }
 
         if (!session) {
-            toast.error("Silakan login terlebih dahulu untuk mencatat infaq.");
+            toast.error(t.donationLoginToast);
             void signInWithGoogle();
             return;
         }
@@ -77,13 +79,13 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
 
             const data = await res.json();
 
-            if (!res.ok) throw new Error(data.error || "Gagal membuat link pembayaran");
+            if (!res.ok) throw new Error(data.error || t.donationCreateFailed);
 
             // Redirect to Mayar
             window.location.href = data.link;
 
         } catch (error: unknown) {
-            toast.error(error instanceof Error ? error.message : "Terjadi kesalahan. Coba lagi nanti.");
+            toast.error(error instanceof Error ? error.message : t.donationGenericError);
         } finally {
             setLoading(false);
         }
@@ -121,14 +123,14 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                         "text-center text-xl font-bold mb-2",
                         "text-[rgb(var(--color-text-strong))]"
                     )}>
-                        {headerTitle || "Dukung Nawaetu"}
+                        {headerTitle || t.supportTitle}
                     </DialogTitle>
 
                     <p className={cn(
                         "text-center text-xs mb-6 leading-relaxed",
                         "text-[rgb(var(--color-text-muted))]"
                     )}>
-                        {headerDescription || "Infaq Anda digunakan untuk biaya operasional server dan pengembangan aplikasi agar terus bermanfaat."}
+                        {headerDescription || t.donationDescription}
                     </p>
 
                     {!session ? (
@@ -144,12 +146,12 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                 <h3 className={cn(
                                     "text-base font-bold mb-1.5",
                                     "text-[rgb(var(--color-text-strong))]"
-                                )}>Login Diperlukan</h3>
+                                )}>{t.tanyaLoginTitle}</h3>
                                 <p className={cn(
                                     "text-xs mb-0 leading-relaxed font-medium px-2",
                                     "text-[rgb(var(--color-text))]"
                                 )}>
-                                    Agar status &quot;Muhsinin&quot; dan riwayat infaq Anda tersimpan permanen di database, mohon login terlebih dahulu.
+                                    {t.donationLoginBody}
                                 </p>
                             </div>
                             <Button
@@ -223,7 +225,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                                     ? "text-[rgb(var(--color-primary-strong))]"
                                                     : "text-[rgb(var(--color-text-strong))]"
                                             )}>
-                                                Nominal Lainnya
+                                                {t.donationOtherAmount}
                                             </span>
                                         </div>
                                         {isCustomMode && (
@@ -241,7 +243,8 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[rgb(var(--color-text-muted))] font-bold">Rp</span>
                                         <input
                                             type="number"
-                                            placeholder="Masukkan nominal..."
+                                            placeholder={t.donationAmountPlaceholder}
+                                            aria-label={t.donationAmountLabel}
                                             value={customValue}
                                             onChange={(e) => setCustomValue(e.target.value)}
                                             className={cn(
@@ -251,7 +254,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                             autoFocus
                                         />
                                     </div>
-                                    <p className="text-xs text-[rgb(var(--color-text-muted))] px-1 italic">Minimal Rp 5.000 (Ketentuan Payment Gateway)</p>
+                                    <p className="text-xs text-[rgb(var(--color-text-muted))] px-1 italic">{t.donationMinHint}</p>
                                 </div>
                             )}
 
@@ -264,17 +267,17 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                 )}
                             >
                                 {loading ? (
-                                    "Memproses..."
+                                    t.donationProcessing
                                 ) : (
                                     <>
-                                        Lanjut Pembayaran
+                                        {t.donationContinue}
                                         <ExternalLink className="w-4 h-4 opacity-70" />
                                     </>
                                 )}
                             </Button>
 
                             <p className="text-xs text-center text-[rgb(var(--color-text-muted))]">
-                                Powered by Mayar.id - Aman & Terverifikasi
+                                {t.donationPoweredBy}
                             </p>
                         </div>
                     )}
