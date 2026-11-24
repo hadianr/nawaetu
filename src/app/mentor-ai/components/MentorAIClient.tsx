@@ -481,7 +481,7 @@ export default function MentorAIClient() {
                                         : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"
                                 )}>
                                     <span className={cn("w-1.5 h-1.5 rounded-full", dailyCount >= DAILY_LIMIT ? "bg-[rgb(var(--color-danger))]" : "bg-[rgb(var(--color-primary))]")} />
-                                    {Math.max(0, DAILY_LIMIT - dailyCount)} Credit
+                                    {Math.max(0, DAILY_LIMIT - dailyCount)} {translations.tanyaCredits}
                                 </span>
                             </div>
                         </div>
@@ -535,13 +535,13 @@ export default function MentorAIClient() {
                             "text-xl font-bold mb-2",
                             "text-[rgb(var(--color-text-strong))]"
                         )}>
-                            Assalamu&apos;alaikum, {profile.name?.split(' ')[0] || "Teman"}!
+                            Assalamu&apos;alaikum, {profile.name?.split(' ')[0] || translations.tanyaFriend}!
                         </h2>
                         <p className={cn(
                             "text-sm max-w-[260px] leading-relaxed mb-8",
                             "text-[rgb(var(--color-text-muted))]"
                         )}>
-                            Saya asisten AI Nawaetu. Ada yang bisa saya bantu terkait ibadah atau agama hari ini?
+                            {translations.tanyaIntro}
                         </p>
 
                         {/* Quick Prompts */}

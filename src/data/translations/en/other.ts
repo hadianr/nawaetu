@@ -583,6 +583,9 @@ export const otherEN = {
     tanyaUntitled: "New conversation",
     tanyaDeleteChat: "Delete conversation",
     tanyaClose: "Close",
+    tanyaCredits: "credits",
+    tanyaFriend: "friend",
+    tanyaIntro: "I'm Nawaetu's AI assistant. How can I help you with worship or your faith today?",
 
     // Toast Messages
     toastMissionComplete: "Mission Complete!",
