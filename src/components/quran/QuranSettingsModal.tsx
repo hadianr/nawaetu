@@ -115,7 +115,7 @@ export default function QuranSettingsModal({
                                     </div>
                                     <span className="font-bold text-sm tracking-tight">{t.quranTransliteration}</span>
                                 </div>
-                                <Switch checked={showTransliteration} onCheckedChange={setShowTransliteration} className="quran-toggle" />
+                                <Switch checked={showTransliteration} onCheckedChange={setShowTransliteration} aria-label={String(t.quranTransliteration)} className="quran-toggle" />
                             </div>
                             <div className="flex items-center justify-between p-4 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]">
                                 <div className="flex items-center gap-3">
@@ -124,7 +124,7 @@ export default function QuranSettingsModal({
                                     </div>
                                     <span className="font-bold text-sm tracking-tight">{t.quranWordByWord || "Terjemahan Per Kata"}</span>
                                 </div>
-                                <Switch checked={showWordByWord} onCheckedChange={setShowWordByWord} className="quran-toggle" />
+                                <Switch checked={showWordByWord} onCheckedChange={setShowWordByWord} aria-label={String(t.quranWordByWord || "Terjemahan Per Kata")} className="quran-toggle" />
                             </div>
                         </div>
 

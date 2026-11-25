@@ -275,6 +275,7 @@ export default function MissionListModal({
                 <DialogHeader className="p-5 pb-3 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] relative">
                     <button
                         onClick={() => finalOnOpenChange?.(false)}
+                        aria-label={String(t.a11yClose)}
                         className="absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full transition-colors z-20 bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20"
                     >
                         <X className="w-4 h-4 text-[rgb(var(--color-text-muted))]" />
