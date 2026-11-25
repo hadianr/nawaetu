@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { countRecommendedDays, getFastingGuide } from "@/lib/fasting-guide";
+import { countRecommendedDays, getFastingCautions, getFastingGuide } from "@/lib/fasting-guide";
 
 const at = (date: string) => new Date(`${date}T10:00:00`);
 
@@ -65,5 +65,32 @@ describe("countRecommendedDays", () => {
 
     it("is zero during Ramadan", () => {
         expect(countRecommendedDays(at("2027-02-11"))).toBe(0);
+    });
+});
+
+describe("getFastingCautions", () => {
+    const cautions = (day: number, month: number, weekday: number, madzhab: "syafii" | "hanafi" | null = null, monthLength = 29) =>
+        getFastingCautions({ day, month, weekday, monthLength, madzhab });
+
+    it("warns on the last two days of Sha'ban, whatever the madhhab", () => {
+        expect(cautions(28, 8, 2, "hanafi")).toEqual(["preRamadan"]);
+        expect(cautions(29, 8, 3, "hanafi")).toEqual(["preRamadan"]);
+        expect(cautions(28, 8, 2, "hanafi", 30)).toEqual([]);
+    });
+
+    it("shows the after-mid-Sha'ban caution for Shafi'i and an unset madhhab only", () => {
+        expect(cautions(17, 8, 2, "syafii")).toEqual(["afterMidSyaban"]);
+        expect(cautions(17, 8, 2, null)).toEqual(["afterMidSyaban"]);
+        expect(cautions(17, 8, 2, "hanafi")).toEqual([]);
+    });
+
+    it("notes a Friday only when it is not itself a sunnah day", () => {
+        expect(cautions(5, 3, 5)).toEqual(["fridayAlone"]);
+        expect(cautions(14, 3, 5)).toEqual([]);
+    });
+
+    it("never adds cautions to obligatory or prohibited days", () => {
+        expect(cautions(5, 9, 5)).toEqual([]);
+        expect(cautions(1, 10, 5)).toEqual([]);
     });
 });
