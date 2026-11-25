@@ -201,7 +201,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
                   <span>{milestoneLabel(nextMilestone.days)}</span>
                   <span>{currentStreak}/{nextMilestone.days}</span>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-[rgb(var(--color-surface-subtle))]" role="progressbar" aria-valuenow={milestoneProgress} aria-valuemin={0} aria-valuemax={100}>
+                <div className="h-2 overflow-hidden rounded-full bg-[rgb(var(--color-surface-subtle))]" role="progressbar" aria-label={milestoneLabel(nextMilestone.days)} aria-valuenow={milestoneProgress} aria-valuemin={0} aria-valuemax={100}>
                   <div className="h-full rounded-full bg-[rgb(var(--color-primary))]" style={{ width: `${milestoneProgress}%` }} />
                 </div>
               </div>
