@@ -197,11 +197,16 @@ export function useHijriCalendar(initialView: HijriCalendarViewMode = "month") {
         const keys = [...new Set(allDays.map(monthKey))];
         const currentIndex = keys.indexOf(activeMonthKey);
         const nextKey = keys[currentIndex + direction];
-        if (nextKey) {
-            const nextMonth = allDays.find(day => monthKey(day) === nextKey);
-            if (nextMonth) referenceDate.current = new Date(`${nextMonth.gregorianIso}T12:00:00`);
+        const nextDays = nextKey ? allDays.filter(day => monthKey(day) === nextKey) : [];
+        // A Hijri month has 29 or 30 days; fewer means it runs past the loaded window, so load around it instead.
+        if (nextDays.length >= 29) {
+            referenceDate.current = new Date(`${nextDays[0].gregorianIso}T12:00:00`);
             showMonth(allDays, nextKey, "month");
             setViewMode("month");
+            return;
+        }
+        if (nextDays.length) {
+            await fetchCalendar("month", new Date(`${nextDays[0].gregorianIso}T12:00:00`));
             return;
         }
 

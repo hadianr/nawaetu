@@ -61,4 +61,37 @@ describe("useHijriCalendar", () => {
         expect(first.result.current.calendarData).toHaveLength(1);
         expect(second.result.current.calendarData).toHaveLength(1);
     });
+
+    it("loads the rest of a Hijri month that runs past the loaded window instead of showing part of it", async () => {
+        // Day `offset` from 14 Aug 2026, as Hijri `day` of `month`.
+        const day = (offset: number, hijriDay: number, month: number) => {
+            const date = new Date(2026, 7, 14 + offset, 12);
+            const dd = String(date.getDate()).padStart(2, "0");
+            const mm = String(date.getMonth() + 1).padStart(2, "0");
+            return {
+                ...apiDay,
+                date: {
+                    ...apiDay.date,
+                    gregorian: { ...apiDay.date.gregorian, date: `${dd}-${mm}-${date.getFullYear()}`, day: dd, month: { number: date.getMonth() + 1, en: "" }, year: String(date.getFullYear()) },
+                    hijri: { ...apiDay.date.hijri, day: String(hijriDay), month: { number: month, en: "", ar: "" } },
+                },
+            };
+        };
+        const rabiAwwal = Array.from({ length: 30 }, (_, i) => day(i, i + 1, 3));
+        const partialRabiAkhir = Array.from({ length: 5 }, (_, i) => day(30 + i, i + 1, 4));
+        const fullRabiAkhir = Array.from({ length: 29 }, (_, i) => day(30 + i, i + 1, 4));
+        let data = [...rabiAwwal, ...partialRabiAkhir];
+        mockFetchWithTimeout.mockImplementation(async () => ({ ok: true, json: async () => ({ code: 200, status: "OK", data }) }));
+        const { result } = renderHook(() => useHijriCalendar());
+
+        await act(async () => { await result.current.fetchCalendar("month", new Date(2026, 7, 20)); });
+        expect(result.current.activeHijriMonth).toBe(3);
+
+        data = [...rabiAwwal, ...fullRabiAkhir];
+        await act(async () => { await result.current.navigateMonth(1); });
+
+        expect(result.current.activeHijriMonth).toBe(4);
+        expect(result.current.calendarData).toHaveLength(29);
+    });
 });
+
