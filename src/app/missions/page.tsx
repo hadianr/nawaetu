@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import MissionDetailDialog from "@/components/MissionDetailDialog";
-import { checkMissionValidation, getRulingLabel } from "@/lib/habits/mission-utils";
+import { checkMissionValidation, getRulingLabel, localizeMissionReason } from "@/lib/habits/mission-utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -96,7 +96,7 @@ export default function MisiPage() {
 
     // --- Validation Logic ---
     const checkValidation = (mission: Mission) => {
-        return checkMissionValidation(mission, prayerData);
+        return localizeMissionReason(checkMissionValidation(mission, prayerData), t);
     };
 
     const handleMissionClick = (mission: Mission) => {
