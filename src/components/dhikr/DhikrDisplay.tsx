@@ -68,7 +68,7 @@ export function DhikrDisplay({
                 </div>
 
                 {activeDhikr ? (
-                    <div className="flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500 pb-0.5 xs:pb-2 mb-5 sm:mb-0 max-h-[27dvh] sm:max-h-[38dvh] overflow-y-auto overscroll-contain">
+                    <div className="flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500 pb-0.5 xs:pb-2 mb-5 sm:mb-0 max-h-[27dvh] sm:max-h-[38dvh] overflow-y-auto overscroll-contain pointer-events-auto touch-pan-y">
                         <div className="px-4 pt-4 xs:pt-10 sm:pt-20 pb-0.5 xs:pb-1 bg-transparent">
                             <h2 className={cn(
                                 "text-[clamp(1.35rem,5vw,2.75rem)] font-bold font-serif leading-[1.2] transition-colors",
@@ -85,7 +85,7 @@ export function DhikrDisplay({
                                 {activeDhikr.latin}
                             </p>
                             <p className={cn(
-                                "text-xs xs:text-xs italic line-clamp-2 max-w-[90%] mt-0.5 xs:mt-1.5",
+                                "text-xs xs:text-xs italic max-w-[90%] mt-0.5 xs:mt-1.5",
                                 "text-[rgb(var(--color-text-muted))]"
                             )}>
                                 {activeDhikr.tadabbur}
