@@ -436,16 +436,6 @@ export default function PrayerCheckInWidget() {
                                 </span>
 
                                 {/* Status hint below label */}
-                                {!done && !isLocked && (isActive || isLate) && (
-                                    <span className={cn(
-                                        "text-xs font-bold leading-none",
-                                        isLate
-                                            ? "text-[rgb(var(--color-warning))]"
-                                            : "text-[rgb(var(--color-primary-strong))]"
-                                    )}>
-                                        +{getHasanahReward(75)} Hasanah
-                                    </span>
-                                )}
                                 {!done && isUpcoming && !isLocked && (
                                     <span className="text-xs font-medium leading-none text-[rgb(var(--color-text-muted))]">
                                         {t.homePrayerCheckInUpcoming}
@@ -556,18 +546,6 @@ export default function PrayerCheckInWidget() {
                                             )}>
                                                 {getTranslation(prayer.i18n, prayer.i18n.split("_").pop())}
                                             </span>
-
-                                            {/* Sunnah Hasanah Preview */}
-                                            {!done && !isLocked && (isActive || isLate) && (
-                                                <span className={cn(
-                                                    "text-xs font-bold leading-none mt-0.5",
-                                                    isLate
-                                                        ? "text-[rgb(var(--color-warning))]"
-                                                        : "text-[rgb(var(--color-primary-strong))]"
-                                                )}>
-                                                    +{getHasanahReward("hasanah" in prayer ? prayer.hasanah : 25)} Hasanah
-                                                </span>
-                                            )}
                                         </button>
                                     );
                                 });
