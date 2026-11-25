@@ -20,7 +20,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions";
-import { checkMissionValidation } from "@/lib/habits/mission-utils";
+import { checkMissionValidation, localizeMissionReason } from "@/lib/habits/mission-utils";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
@@ -32,7 +32,7 @@ import { normalizeMissionId } from "@/lib/mission-resolver";
 
 export function useWidgetMissions(completedMissions: { id: string; completedAt: string }[]) {
     const { data: session } = useSession();
-    const { locale } = useLocale();
+    const { locale, t } = useLocale();
     const { data: prayerData } = usePrayerTimesContext();
 
     const [profileRevision, setProfileRevision] = useState(0);
@@ -170,6 +170,6 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
         widgetMissions,
         gender,
         isMissionCompleted,
-        checkValidation: (mission: Mission) => checkMissionValidation(mission, prayerData),
+        checkValidation: (mission: Mission) => localizeMissionReason(checkMissionValidation(mission, prayerData), t),
     };
 }

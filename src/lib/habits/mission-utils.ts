@@ -28,6 +28,9 @@ export interface ValidationResult {
     isLate?: boolean;
     isEarly?: boolean;
     reason?: string;
+    /** Translation key suffix for `reason`; see localizeMissionReason. */
+    code?: 'waiting' | 'notYet' | 'arrived' | 'availableAt' | 'windowPassed' | 'notToday';
+    params?: Record<string, string | number>;
 }
 
 /**
@@ -51,7 +54,7 @@ export function checkMissionValidation(
 
         const prayerTimeStr = prayerData.prayerTimes[prayerKey];
 
-        if (!prayerTimeStr) return { locked: true, reason: "Waiting for prayer times..." };
+        if (!prayerTimeStr) return { locked: true, reason: "Waiting for prayer times...", code: 'waiting' };
 
         const [pHours, pMinutes] = prayerTimeStr.split(':').map(Number);
         const prayerDate = new Date(currentTime);
@@ -61,7 +64,9 @@ export function checkMissionValidation(
         if (currentTime < prayerDate) {
             return {
                 locked: true,
-                reason: `Not yet time for ${prayerKey}`
+                reason: `Not yet time for ${prayerKey}`,
+                code: 'notYet',
+                params: { prayer: prayerKey }
             };
         }
 
@@ -96,7 +101,9 @@ export function checkMissionValidation(
                 locked: false,
                 isLate: mission.category === 'prayer', // Only flag as 'Late' for Prayer
                 isEarly: false,
-                reason: `${latestArrivedPrayer} has arrived`
+                reason: `${latestArrivedPrayer} has arrived`,
+                code: 'arrived',
+                params: { prayer: latestArrivedPrayer }
             };
         }
 
@@ -115,7 +122,9 @@ export function checkMissionValidation(
         if (nowHour < start) {
             return {
                 locked: true,
-                reason: `Available at ${start.toString().padStart(2, '0')}:00`
+                reason: `Available at ${start.toString().padStart(2, '0')}:00`,
+                code: 'availableAt',
+                params: { time: `${start.toString().padStart(2, '0')}:00` }
             };
         }
 
@@ -125,7 +134,9 @@ export function checkMissionValidation(
             return {
                 locked: false,
                 isLate: true,
-                reason: `Time window passed (${start}:00 - ${end}:00)`
+                reason: `Time window passed (${start}:00 - ${end}:00)`,
+                code: 'windowPassed',
+                params: { start: `${start}:00`, end: `${end}:00` }
             };
         }
     }
@@ -134,11 +145,25 @@ export function checkMissionValidation(
     if (mission.validationType === 'day' && mission.validationConfig?.allowedDays) {
         const currentDay = currentTime.getDay();
         if (!mission.validationConfig.allowedDays.includes(currentDay)) {
-            return { locked: true, reason: "Not available today" };
+            return { locked: true, reason: "Not available today", code: 'notToday' };
         }
     }
 
     return { locked: false };
+}
+
+/**
+ * Returns `v` with `reason` in the user's language; falls back to the English reason.
+ */
+export function localizeMissionReason(v: ValidationResult, t: TranslationTree): ValidationResult {
+    const template = v.code ? t[`mission_reason_${v.code}` as keyof TranslationTree] : undefined;
+    if (typeof template !== "string") return v;
+    const reason = template.replace(/\{(\w+)\}/g, (_, k: string) => {
+        const value = String(v.params?.[k] ?? "");
+        const prayer = k === "prayer" ? t[`prayer${value}` as keyof TranslationTree] : undefined;
+        return typeof prayer === "string" ? prayer : value;
+    });
+    return { ...v, reason };
 }
 
 /**

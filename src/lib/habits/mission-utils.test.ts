@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Mission } from "@/data/missions";
-import { checkMissionValidation, getRulingLabel } from "./mission-utils";
+import { checkMissionValidation, getRulingLabel, localizeMissionReason } from "./mission-utils";
+import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 
 const baseMission: Mission = {
   id: "test-mission",
@@ -35,10 +36,13 @@ describe("checkMissionValidation", () => {
     expect(checkMissionValidation(prayerMission, { prayerTimes: {} }, at(4, 30))).toEqual({
       locked: true,
       reason: "Waiting for prayer times...",
+      code: "waiting",
     });
     expect(checkMissionValidation(prayerMission, { prayerTimes: prayers }, at(4, 30))).toEqual({
       locked: true,
       reason: "Not yet time for Fajr",
+      code: "notYet",
+      params: { prayer: "Fajr" },
     });
     expect(checkMissionValidation(prayerMission, { prayerTimes: prayers }, at(4, 50))).toEqual({
       locked: false,
@@ -50,6 +54,8 @@ describe("checkMissionValidation", () => {
       isLate: true,
       isEarly: false,
       reason: "Dhuhr has arrived",
+      code: "arrived",
+      params: { prayer: "Dhuhr" },
     });
   });
 
@@ -62,11 +68,15 @@ describe("checkMissionValidation", () => {
     expect(checkMissionValidation(windowMission, null, at(3))).toEqual({
       locked: true,
       reason: "Available at 04:00",
+      code: "availableAt",
+      params: { time: "04:00" },
     });
     expect(checkMissionValidation(windowMission, null, at(10))).toEqual({
       locked: false,
       isLate: true,
       reason: "Time window passed (4:00 - 10:00)",
+      code: "windowPassed",
+      params: { start: "4:00", end: "10:00" },
     });
     expect(checkMissionValidation(windowMission, null, at(7))).toEqual({ locked: false });
 
@@ -74,6 +84,7 @@ describe("checkMissionValidation", () => {
     expect(checkMissionValidation(dayMission, null, new Date(2026, 0, 15))).toEqual({
       locked: true,
       reason: "Not available today",
+      code: "notToday",
     });
     expect(checkMissionValidation(dayMission, null, new Date(2026, 0, 12))).toEqual({ locked: false });
   });
@@ -96,5 +107,17 @@ describe("getRulingLabel", () => {
     expect(getRulingLabel("forbidden", translations)).toBe("Haram");
     expect(getRulingLabel("unknown", translations)).toBe("unknown");
     expect(getRulingLabel("sunnah", { rulingSunnah: ["invalid"] } as never)).toBe("sunnah");
+  });
+});
+
+describe("localizeMissionReason", () => {
+  const id = SETTINGS_TRANSLATIONS.id as never;
+  it("translates lock reasons and prayer names", () => {
+    expect(localizeMissionReason({ locked: true, reason: "Available at 15:00", code: "availableAt", params: { time: "15:00" } }, id).reason).toBe("Tersedia pukul 15:00");
+    expect(localizeMissionReason({ locked: true, reason: "Not yet time for Dhuhr", code: "notYet", params: { prayer: "Dhuhr" } }, id).reason).toBe("Belum masuk waktu Dzuhur");
+  });
+  it("keeps the English reason when there is no code or key", () => {
+    expect(localizeMissionReason({ locked: true, reason: "x" }, id).reason).toBe("x");
+    expect(localizeMissionReason({ locked: false }, {} as never)).toEqual({ locked: false });
   });
 });
