@@ -13,6 +13,27 @@ export interface FastingGuide {
     reason: "preRamadan" | "afterMidSyaban" | null;
 }
 
+export type FastingCaution = "preRamadan" | "afterMidSyaban" | "fridayAlone";
+
+/** Voluntary fasting after 15 Sha'ban is held back for Shafi'i, and for an unset madhhab as the cautious default. */
+export function isAfterMidSyaban(month: number, day: number, madzhab: Madzhab | null): boolean {
+    return month === 8 && day > 15 && (madzhab === null || madzhab === "syafii");
+}
+
+/**
+ * Cautions for a voluntary fast on one calendar day. They depend on context, so the calendar shows them as notes,
+ * never as grid markers. `monthLength` is the number of days in that Hijri month (29 or 30).
+ */
+export function getFastingCautions(input: { day: number; month: number; weekday: number; monthLength: number; madzhab: Madzhab | null }): FastingCaution[] {
+    const { day, month, weekday, monthLength, madzhab } = input;
+    const events = getHijriEvents({ hijriDay: day, hijriMonth: month, gregorianWeekday: weekday });
+    if (events.some(event => event.kind === "prohibited" || event.kind === "obligatory")) return [];
+    if (month === 8 && day > monthLength - 2) return ["preRamadan"];
+    if (isAfterMidSyaban(month, day, madzhab)) return ["afterMidSyaban"];
+    // Singling out Friday is discouraged (Bukhari 1985); a Friday that is itself a sunnah day is not singled out.
+    return weekday === 5 && events.length === 0 ? ["fridayAlone"] : [];
+}
+
 const NONE: FastingGuide = { today: "none", timing: [], reason: null };
 
 function timingOf(date: Date, adjustment: number): { timing: FastingTiming[]; day: number; month: number; blocked: boolean } {
@@ -39,7 +60,7 @@ export function getFastingGuide(input: { now: Date; adjustment?: number; pending
 
     const reason = journey.daysLeft <= 2
         ? "preRamadan"
-        : month === 8 && day > 15 && (madzhab === null || madzhab === "syafii") ? "afterMidSyaban" : null;
+        : isAfterMidSyaban(month, day, madzhab) ? "afterMidSyaban" : null;
 
     if (pendingQadha > 0) return { today: "qadha", timing, reason };
     return reason ? { today: "none", timing, reason } : { today: "sunnah", timing, reason };
