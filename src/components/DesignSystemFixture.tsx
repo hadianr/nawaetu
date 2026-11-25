@@ -29,7 +29,7 @@ export default function DesignSystemFixture() {
       <div className="mx-auto flex max-w-5xl flex-col gap-8">
         <header>
           <BrandIcon size={48} className="mb-3" />
-          <p className="text-sm font-medium text-primary">Nawaetu design system</p>
+          <p className="text-sm font-medium text-[rgb(var(--color-primary-strong))]">Nawaetu design system</p>
           <h1 className="mt-2 text-3xl font-bold">Foundation fixture</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">
             Development-only preview for every theme, semantic token, and shared primitive.
@@ -73,7 +73,7 @@ export default function DesignSystemFixture() {
                     <span className="size-6 shrink-0 rounded border border-border" style={{ backgroundColor: `rgb(${value})` }} aria-hidden="true" />
                   )}
                   <div className="min-w-0">
-                    <code className="text-xs text-primary">{name}</code>
+                    <code className="text-xs break-all text-[rgb(var(--color-primary-strong))]">{name}</code>
                     <div className="truncate text-muted-foreground" title={value}>{value}</div>
                   </div>
                 </div>
@@ -134,7 +134,7 @@ export default function DesignSystemFixture() {
             <CardContent className="grid gap-3 sm:grid-cols-3">
               {(["glassBlur", "glassSaturation", "glassBackgroundOpacity", "glassBorderOpacity", "glassRadius", "glassTint"] as const).map((token) => (
                 <div key={token} className="rounded-md border border-border p-2">
-                  <code className="text-xs text-primary">{token}</code>
+                  <code className="text-xs break-all text-[rgb(var(--color-primary-strong))]">{token}</code>
                   <div className="mt-1 truncate text-muted-foreground" title={theme.tokens[token]}>{theme.tokens[token]}</div>
                 </div>
               ))}

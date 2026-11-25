@@ -103,7 +103,7 @@ export function SurahNavigationCards({ chapter, t }: SurahNavigationCardsProps) 
                             </div>
                             <span className="text-xs font-bold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors truncate">{surahNames[chapter.id - 1]}</span>
                         </div>
-                        <span className="text-lg font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-[rgb(var(--color-text-strong))] flex-shrink-0">
+                        <span className="text-lg font-amiri text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))] transition-colors flex-shrink-0">
                             {chapter.id - 1}
                         </span>
                     </div>
@@ -120,7 +120,7 @@ export function SurahNavigationCards({ chapter, t }: SurahNavigationCardsProps) 
                             </div>
                             <span className="text-xs font-bold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors truncate">{surahNames[chapter.id + 1]}</span>
                         </div>
-                        <span className="text-lg font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-[rgb(var(--color-text-strong))] flex-shrink-0">
+                        <span className="text-lg font-amiri text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))] transition-colors flex-shrink-0">
                             {chapter.id + 1}
                         </span>
                     </div>

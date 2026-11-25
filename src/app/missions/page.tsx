@@ -165,7 +165,7 @@ export default function MisiPage() {
                     isCompleted
                         ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                         : isLocked
-                            ? "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))] opacity-60 cursor-not-allowed"
+                            ? "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))] cursor-not-allowed"
                             : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40"
                 )}
             >
