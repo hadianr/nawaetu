@@ -65,6 +65,7 @@ export default function TafsirModal({ open, onOpenChange, content }: TafsirModal
                                 <TooltipTrigger asChild>
                                     <button
                                         onClick={() => onOpenChange(false)}
+                                        aria-label={String(t.quranClose)}
                                         className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors"
                                     >
                                         <X className="w-4 h-4 text-[rgb(var(--color-text))]" />

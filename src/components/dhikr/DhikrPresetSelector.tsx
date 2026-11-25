@@ -69,7 +69,7 @@ export function DhikrPresetSelector({
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
             )}>
                 <DialogHeader>
-                    <DialogTitle className="text-center text-sm font-bold opacity-40">{t.tasbihListTitle}</DialogTitle>
+                    <DialogTitle className="text-center text-sm font-bold text-[rgb(var(--color-text-muted))]">{t.tasbihListTitle}</DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col py-2 max-h-[60vh] overflow-y-auto pr-1 overflow-x-hidden">
                     <div className="space-y-6 pb-4">
@@ -120,7 +120,7 @@ export function DhikrPresetSelector({
                                             onClick={() => handlePresetSelect(p)}
                                             className={cn(
                                                 "justify-between h-auto py-3 px-4 border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] rounded-2xl w-full text-left",
-                                                activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)]"
+                                                activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.1)] border-[rgb(var(--color-primary)/0.3)]"
                                             )}
                                         >
                                             <div className="flex flex-col items-start w-[80%] overflow-hidden">
@@ -159,7 +159,7 @@ export function DhikrPresetSelector({
                                                 onClick={() => handlePresetSelect(p)}
                                                 className={cn(
                                                 "justify-between h-auto py-3 px-4 border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] rounded-2xl w-full text-left",
-                                                    activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)]"
+                                                    activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.1)] border-[rgb(var(--color-primary)/0.3)]"
                                                 )}
                                             >
                                                 <div className="flex flex-col items-start w-[80%] overflow-hidden">

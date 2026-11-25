@@ -101,12 +101,13 @@ export default function MissionDetailDialog({
                     {/* Custom Close Button */}
                     <button
                         onClick={onClose}
+                        aria-label={String(t.a11yClose)}
                         className={cn(
                             "absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full transition-colors z-20",
                             "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10"
                         )}
                     >
-                        <X className={cn("w-4 h-4", muted)} />
+                        <X className={cn("w-4 h-4", muted)} aria-hidden="true" />
                     </button>
                     <div className="flex items-center gap-3">
                         <div className={cn(
