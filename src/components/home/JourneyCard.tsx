@@ -133,6 +133,7 @@ export default function JourneyCard() {
                     <div
                         className="relative size-12 shrink-0"
                         role="progressbar"
+                        aria-label={String(t.journeyTitle)}
                         aria-valuemin={0}
                         aria-valuemax={JOURNEY_DAYS}
                         aria-valuenow={journey.dayNumber}
