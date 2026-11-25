@@ -27,6 +27,7 @@ export interface DhikrHistoryProps {
     isMilestoneModalOpen: boolean;
     setIsMilestoneModalOpen: (open: boolean) => void;
     t: TranslationTree;
+    locale: string;
     dailyCount: number;
     streak: number;
     lifetimeCount: number;
@@ -39,6 +40,7 @@ export function DhikrHistory({
     isMilestoneModalOpen,
     setIsMilestoneModalOpen,
     t,
+    locale,
     dailyCount,
     streak,
     lifetimeCount,
@@ -89,9 +91,9 @@ export function DhikrHistory({
                     )}>
                         <Trophy className="h-3.5 w-3.5" />
                         <span>
-                            Total:{" "}
+                            {t.dhikrStatsTotal}:{" "}
                             <span className="text-[rgb(var(--color-text-strong))] font-bold">
-                                {hasHydrated ? (lifetimeCount || 0).toLocaleString('id-ID') : "--"}
+                                {hasHydrated ? (lifetimeCount || 0).toLocaleString(locale) : "--"}
                             </span>
                         </span>
                     </div>
@@ -99,13 +101,13 @@ export function DhikrHistory({
             </DialogTrigger>
             <DialogContent className=" w-[90%] max-w-sm rounded-2xl border z-[100] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]">
                 <DialogHeader>
-                    <DialogTitle className="text-center text-sm font-bold opacity-60">Statistik Zikir</DialogTitle>
+                    <DialogTitle className="text-center text-sm font-bold text-[rgb(var(--color-text-muted))]">{t.dhikrStatsTitle}</DialogTitle>
                 </DialogHeader>
-                <div className="flex flex-col py-2 max-h-[60vh] overflow-y-auto pr-1 space-y-6">
+                <div tabIndex={0} className="flex flex-col py-2 max-h-[60vh] overflow-y-auto pr-1 space-y-6 rounded-lg focus-visible:outline-2 focus-visible:outline-[rgb(var(--color-ring))]">
 
                     {/* Top Dhikr Stats */}
                     <div>
-                        <h3 className="text-xs font-bold opacity-50 mb-3">Zikir Terfavorit</h3>
+                        <h3 className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-3">{t.dhikrStatsFavorite}</h3>
                         <div className="space-y-2">
                             {Object.entries(dhikrHistory || {})
                                 .sort((a, b) => b[1] - a[1])
@@ -115,40 +117,40 @@ export function DhikrHistory({
                                     return (
                                         <div key={id} className="flex justify-between items-center px-4 py-3 rounded-2xl border bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                                             <div className="flex items-center gap-3">
-                                                <span className={cn("text-xs font-bold w-4", index === 0 ? "text-[rgb(var(--color-primary-strong))]" : "opacity-30")}>#{index + 1}</span>
+                                                <span className={cn("text-xs font-bold w-4", index === 0 ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-text-muted))]")}>#{index + 1}</span>
                                                 <div className="flex flex-col">
-                                                    <span className="font-bold text-sm w-full truncate max-w-[150px]">{preset?.label || "Zikir"}</span>
+                                                    <span className="font-bold text-sm w-full truncate max-w-[150px]">{preset?.label || t.dhikrStatsFallbackName}</span>
                                                 </div>
                                             </div>
-                                            <span className="text-xs tabular-nums font-bold">{total.toLocaleString('id-ID')}x</span>
+                                            <span className="text-xs tabular-nums font-bold">{total.toLocaleString(locale)}x</span>
                                         </div>
                                     );
                                 })}
                             {(!dhikrHistory || Object.keys(dhikrHistory).length === 0) && (
-                                <div className="text-center text-xs opacity-50 py-4">Belum ada riwayat zikir.</div>
+                                <div className="text-center text-xs text-[rgb(var(--color-text-muted))] py-4">{t.dhikrStatsEmpty}</div>
                             )}
                         </div>
                     </div>
 
                     {/* Milestones List */}
                     <div>
-                        <h3 className="text-xs font-bold opacity-50 mb-3">Pencapaian</h3>
+                        <h3 className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-3">{t.dhikrStatsAchievements}</h3>
                         <div className="space-y-3">
                             {dhikrMilestones.map(ms => {
                                 const isCompleted = (lifetimeCount || 0) >= ms.target;
                                 const progress = Math.min(100, ((lifetimeCount || 0) / ms.target) * 100);
 
                                 return (
-                                    <div key={ms.id} className={cn("flex flex-col gap-2 p-4 rounded-2xl border shadow-[var(--shadow-card)]", isCompleted ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-60")}>
+                                    <div key={ms.id} className={cn("flex flex-col gap-2 p-4 rounded-2xl border shadow-[var(--shadow-card)]", isCompleted ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]")}>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
-                                                <Medal className={cn("h-4 w-4", isCompleted ? "text-[rgb(var(--color-primary-strong))]" : "opacity-30")} />
-                                                <h4 className="font-bold text-sm">{ms.title}</h4>
+                                                <Medal className={cn("h-4 w-4", isCompleted ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-text-muted))]")} />
+                                                <h4 className="font-bold text-sm">{String(t[`dhikrMilestone_${ms.id}` as keyof TranslationTree] ?? ms.title)}</h4>
                                             </div>
                                             {isCompleted ? (
                                                 <Check className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                                             ) : (
-                                                <span className="text-xs tabular-nums opacity-50">{ms.target.toLocaleString('id-ID')}x</span>
+                                                <span className="text-xs tabular-nums text-[rgb(var(--color-text-muted))]">{ms.target.toLocaleString(locale)}x</span>
                                             )}
                                         </div>
                                         {!isCompleted && (
