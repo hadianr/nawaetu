@@ -43,10 +43,12 @@ interface LottieMomentProps {
     onPlay?: () => void;
     /** Keep the box empty until the animation is ready, then fade it in. The fallback only shows if the animation cannot play. */
     quietLoad?: boolean;
+    /** Recolour the file's colour slots from theme variables, e.g. { primary: "--color-primary" }. */
+    colorSlots?: Record<string, string>;
 }
 
 /** Decorative animation: hidden from assistive tech, so pair it with real text. */
-export default function LottieMoment({ src, className, loop = false, hideOnComplete = false, fallback = null, onPlay, quietLoad = false }: LottieMomentProps) {
+export default function LottieMoment({ src, className, loop = false, hideOnComplete = false, fallback = null, onPlay, quietLoad = false, colorSlots }: LottieMomentProps) {
     const [armed, setArmed] = useState(false);
     const [playing, setPlaying] = useState(false);
     const [failed, setFailed] = useState(false);
@@ -96,6 +98,7 @@ export default function LottieMoment({ src, className, loop = false, hideOnCompl
                             <LottiePlayer
                                 src={src}
                                 loop={loop}
+                                colorSlots={colorSlots}
                                 onPlay={handlePlay}
                                 onError={() => setFailed(true)}
                                 onComplete={hideOnComplete ? () => setFinished(true) : undefined}
