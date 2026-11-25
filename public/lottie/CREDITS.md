@@ -1,6 +1,6 @@
 # Lottie animation credits
 
-All files are free animations from [LottieFiles](https://lottiefiles.com/), used under the Lottie Simple License
+All files except `hilal.json` are free animations from [LottieFiles](https://lottiefiles.com/), used under the Lottie Simple License
 (shown on each animation's page on the date checked). Re-check the license when replacing a file.
 
 | File | Title | Creator | Source | Checked |
@@ -13,3 +13,7 @@ All files are free animations from [LottieFiles](https://lottiefiles.com/), used
 | `pin.lottie` | Map Location Pin | Abhishek dewangan | https://lottiefiles.com/free-animation/map-location-pin-DwVGC7Rt6G | 2026-11-11 |
 | `wave.lottie` | Waving hand | Jitu | https://lottiefiles.com/free-animation/waving-hand-bSrNDbCydB | 2026-11-11 |
 | `blossom.lottie` | cherry blossom | Mishal Alnazawi | https://lottiefiles.com/free-animation/cherry-blossom-dZ3c1KjOBv | 2026-11-11 |
+
+`hilal.json` (crescent and star) was made for Nawaetu in LottieFiles Creator after no free LottieFiles animation fit
+(checked 2026-11-25: candidates had white fills, background layers or were over 15 KB). Rebuild it with
+`node scripts/lottie/hilal.mjs`. Its fills are slots that `LottiePlayer` recolours from the theme tokens.
