@@ -54,7 +54,7 @@ const playTick = (ctx: AudioContext) => {
 };
 
 export default function DhikrCounter() {
-    const { t } = useLocale();
+    const { t, locale } = useLocale();
 
     const dhikrPresets = useMemo<DhikrPreset[]>(
         () => [
@@ -273,6 +273,7 @@ export default function DhikrCounter() {
                     isMilestoneModalOpen={isMilestoneModalOpen}
                     setIsMilestoneModalOpen={setIsMilestoneModalOpen}
                     t={t}
+                    locale={locale}
                     dailyCount={dailyCount}
                     streak={streak}
                     lifetimeCount={lifetimeCount || 0}
