@@ -89,7 +89,7 @@ const BottomNav = memo(function BottomNav() {
             )}
             data-bottom-nav
         >
-            <div className="mx-auto flex h-16 w-full items-center px-2">
+            <div className="mx-auto flex h-16 w-full items-center px-1">
                 {mounted &&
                     navItems.map(({ href, label, icon: Icon, special }) => {
                         const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -126,7 +126,7 @@ const BottomNav = memo(function BottomNav() {
                                     </div>
                                     <span
                                         className={cn(
-                                            "text-xs font-extrabold tracking-tight transition-all duration-300",
+                                            "max-w-full truncate text-xs font-extrabold tracking-tight transition-all duration-300",
                                             isActive && "text-[rgb(var(--color-primary-strong))]"
                                         )}
                                         style={{ color: isActive ? "rgb(var(--color-primary-light))" : "rgb(var(--color-text-muted))" }}
@@ -143,7 +143,7 @@ const BottomNav = memo(function BottomNav() {
                                 href={href}
                                 aria-current={isActive ? "page" : undefined}
                                 className={cn(
-                                    "flex min-w-0 flex-1 flex-col items-center justify-center gap-1 p-2 transition-all duration-300",
+                                    "flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0.5 py-2 transition-all duration-300",
                                     isActive
                                         ? "text-[rgb(var(--color-primary-strong))]"
                                         : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
@@ -155,7 +155,7 @@ const BottomNav = memo(function BottomNav() {
                                     isActive && "fill-[rgb(var(--color-primary))]/10 scale-110"
                                 )} />
                                 <span className={cn(
-                                    "text-xs transition-all",
+                                    "max-w-full truncate text-xs transition-all",
                                     isActive ? "font-bold" : "font-medium"
                                 )}>{label}</span>
                             </Link>
