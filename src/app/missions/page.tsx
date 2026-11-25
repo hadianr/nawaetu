@@ -216,14 +216,7 @@ export default function MisiPage() {
                         <p className="text-xs text-[rgb(var(--color-text-muted))]">{mission.description}</p>
                     )}
                 </div>
-                <div className="flex flex-col items-end gap-1">
-                    <span className={cn(
-                        "text-xs font-bold px-2 py-0.5 rounded-full",
-                        "text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10"
-                    )}
-                    >
-                        +{mission.hasanahReward} Hasanah
-                    </span>
+                <div className="flex shrink-0 items-center">
                     {isCompleted ? (
                         <div className="w-5 h-5 rounded-full flex items-center justify-center bg-[rgb(var(--color-primary))]">
                             <Check className="w-3 h-3 text-[rgb(var(--color-primary-foreground))]" />
