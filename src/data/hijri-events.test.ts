@@ -22,4 +22,18 @@ describe("Hijri calendar events", () => {
         ]);
         expect(ids(13, 12, 4)).toEqual(["tashreeqProhibited"]);
     });
+
+    it("marks every day of Ramadan as the obligatory fast, with no sunnah fast on top", () => {
+        for (let day = 1; day <= 30; day++) {
+            const events = getHijriEvents({ hijriDay: day, hijriMonth: 9, gregorianWeekday: 1 });
+            expect(events[0]).toEqual({ id: "ramadan", kind: "obligatory" });
+            expect(events.map(event => event.id)).not.toContain("mondayThursday");
+            expect(events.map(event => event.id)).not.toContain("ayyamulBidh");
+        }
+    });
+
+    it("marks only the odd nights of Ramadan's last ten", () => {
+        const nights = Array.from({ length: 30 }, (_, i) => i + 1).filter(day => ids(day, 9).includes("lailatulQadr"));
+        expect(nights).toEqual([21, 23, 25, 27, 29]);
+    });
 });
