@@ -660,7 +660,7 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
     {
         id: "hadith_sholat_rawatib",
         collection: "Tirmidzi",
-        hadithNumber: "417 / 427",
+        hadithNumber: 415,
         narrator: "Ummu Habibah RA",
         authenticity: "Sahih",
         category: "spiritualCategoryWorship",
