@@ -181,3 +181,10 @@ export function getRulingLabel(ruling: string, t: TranslationTree): string {
     const label = t[key];
     return typeof label === "string" ? label : ruling;
 }
+
+/** Theme-token colours for a ruling badge, shared so every mission surface matches. */
+export function getRulingBadgeClass(ruling: string): string {
+    return ruling === 'obligatory'
+        ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border border-[rgb(var(--color-accent))]/30"
+        : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30";
+}

@@ -34,7 +34,7 @@ import { Mission } from "@/data/missions";
 import { getLocalizedMissionContent } from "@/data/missions";
 import { cn } from "@/lib/utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
-import { getRulingLabel } from "@/lib/habits/mission-utils";
+import { getRulingLabel, getRulingBadgeClass } from "@/lib/habits/mission-utils";
 import { parseQuranReference } from "@/lib/quran/reference-parser";
 import { resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
 import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";
@@ -120,8 +120,8 @@ export default function MissionDetailDialog({
                             <div className="flex items-center gap-2">
                                 <DialogTitle className="text-xl font-bold font-sans">{mission.title}</DialogTitle>
                                 <span className={cn(
-                                    "text-xs px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0 border",
-                                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/30"
+                                    "text-xs px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
+                                    getRulingBadgeClass(mission.ruling)
                                 )}>
                                     {getRulingLabel(mission.ruling, t)}
                                 </span>
