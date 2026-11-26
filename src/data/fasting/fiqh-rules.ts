@@ -65,7 +65,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         color: "rose",
         requiresMadzhab: false,
         femaleOnly: true,
-        dalil: "HR. Bukhari no. 304, Muslim no. 334",
+        dalil: "HR. Bukhari no. 304",
         dalilTranslation: "Is it not the case that a woman, when she is menstruating, does not pray and does not fast? That is the deficiency in her religion. (Prophet Muhammad SAW said this explaining it as a dispensation, not a deficiency in her person.)",
     },
     postpartum: {
