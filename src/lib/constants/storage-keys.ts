@@ -121,6 +121,9 @@ export const STORAGE_KEYS = {
   RAMADHAN_FASTING_LOG: 'nawaetu_ramadhan_fasting_log',       // AllFastingLogs: { "1447": { "1447-01": { ... } } }
   RAMADHAN_FASTING_PENDING: 'nawaetu_ramadhan_fasting_pending', // string[]: edits not yet accepted by the server, "year-day" or "qadha:year-day"
   RAMADHAN_FASTING_MADZHAB: 'nawaetu_ramadhan_fasting_madzhab', // "syafii" | "hanafi" | "maliki" | "hanbali"
+  // Udzur (haid/nifas) mode. Health data: kept on the device; only the excused dates reach the server.
+  UDZUR_PERIODS: 'nawaetu_udzur_periods',        // UdzurPeriod[] (src/lib/udzur.ts)
+  UDZUR_SYNCED: 'nawaetu_udzur_synced',          // { userId, dates }: excused dates already queued for this account
   RAMADHAN_DAILY_LOG: 'nawaetu_ramadhan_daily_log',            // { "1447": { "1447-01": { fajrAtMasjid, dhuha, ... } } }
   RAMADHAN_INSIGHT_CACHE: 'nawaetu_ramadhan_insight_cache',    // { "1447": "insight text..." }
 
