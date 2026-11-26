@@ -41,7 +41,7 @@ interface DonationModalProps {
 const DONATION_OPTIONS = [
     { value: 5000, label: "Rp 5.000", icon: "droplets" as const },
     { value: 10000, label: "Rp 10.000", icon: "utensils" as const },
-    { value: 25000, label: "Rp 25.000", icon: "hands" as const },
+    { value: 25000, label: "Rp 25.000", icon: "hand-heart" as const },
     { value: 50000, label: "Rp 50.000", icon: "heart-handshake" as const },
     { value: 75000, label: "Rp 75.000", icon: "sparkles" as const },
     { value: 100000, label: "Rp 100.000", icon: "star" as const },

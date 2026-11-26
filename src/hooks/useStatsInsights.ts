@@ -45,11 +45,11 @@ export function useStatsInsights({
 }: UseStatsInsightsProps) {
     const categoryStats = useMemo(() => {
         const stats: Record<string, { count: number; label: string; icon: AppIconName; color: string }> = {
-            prayer: { count: 0, label: t.stats.missions.categories.prayer, icon: "landmark", color: "rgb(var(--color-primary))" },
+            prayer: { count: 0, label: t.stats.missions.categories.prayer, icon: "mosque", color: "rgb(var(--color-primary))" },
             sunnah: { count: 0, label: t.stats.missions.categories.sunnah, icon: "sparkles", color: "#fbbf24" },
-            worship: { count: 0, label: t.stats.missions.categories.worship, icon: "hands", color: "#f59e0b" },
+            worship: { count: 0, label: t.stats.missions.categories.worship, icon: "dua", color: "#f59e0b" },
             quran: { count: 0, label: t.stats.missions.categories.quran, icon: "book", color: "#3b82f6" },
-            dhikr: { count: 0, label: t.stats.missions.categories.dhikr, icon: "hands", color: "#8b5cf6" },
+            dhikr: { count: 0, label: t.stats.missions.categories.dhikr, icon: "tasbih", color: "#8b5cf6" },
             fasting: { count: 0, label: t.stats.missions.categories.fasting, icon: "moon", color: "#06b6d4" },
         };
 

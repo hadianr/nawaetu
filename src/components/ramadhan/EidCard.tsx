@@ -64,7 +64,7 @@ export default function EidCard() {
                                     <span>{t.eidSunnah1}</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <AppIcon name="hands" size="sm" tone="primary" className="mt-0.5" />
+                                    <AppIcon name="dua" size="sm" tone="primary" className="mt-0.5" />
                                     <span>{t.eidSunnah2}</span>
                                 </li>
                                 <li className="flex items-start gap-2">

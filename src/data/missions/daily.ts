@@ -31,10 +31,10 @@ export const PRAYER_NAMES: Record<string, string> = {
  * Core obligatory prayer ritual list (DRY base definitions without gender splits).
  */
 const BASE_PRAYERS = [
-    { id: 'fajr_prayer', afterPrayer: 'fajr', title: 'Sholat Subuh', iconKey: 'moon' },
+    { id: 'fajr_prayer', afterPrayer: 'fajr', title: 'Sholat Subuh', iconKey: 'sunrise' },
     { id: 'dhuhr_prayer', afterPrayer: 'dhuhr', title: 'Sholat Dzuhur', iconKey: 'sun' },
-    { id: 'asr_prayer', afterPrayer: 'asr', title: 'Sholat Ashar', iconKey: 'cloud-sun' },
-    { id: 'maghrib_prayer', afterPrayer: 'maghrib', title: 'Sholat Maghrib', iconKey: 'sun' },
+    { id: 'asr_prayer', afterPrayer: 'asr', title: 'Sholat Ashar', iconKey: 'sun-dim' },
+    { id: 'maghrib_prayer', afterPrayer: 'maghrib', title: 'Sholat Maghrib', iconKey: 'sunset' },
     { id: 'isha_prayer', afterPrayer: 'isha', title: 'Sholat Isya', iconKey: 'moon' },
 ] as const;
 
@@ -60,7 +60,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         title: 'Luruskan Niat',
         description: 'Tetapkan niat kebaikan hari ini',
         hasanahReward: 50,
-        iconKey: 'target',
+        iconKey: 'compass',
         dalil: 'HR. Bukhari no. 1',
         hadithId: 'hadith_intention',
         type: 'daily',
@@ -148,7 +148,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         title: 'Dzikir Tasbih 33x',
         description: 'Membaca Subhanallah (33x), Alhamdulillah (33x), Allahu Akbar (33x)',
         hasanahReward: 30,
-        iconKey: 'hands',
+        iconKey: 'tasbih',
         dalil: 'HR. Bukhari no. 6329',
         hadithId: 'hadith_tasbih_99',
         type: 'daily',
@@ -162,7 +162,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         title: 'Dzikir Pagi',
         description: 'Baca dzikir pagi (jam 04:00-10:00)',
         hasanahReward: 20,
-        iconKey: 'sun',
+        iconKey: 'sunrise',
         dalil: 'HR. Abu Dawud no. 5074',
         type: 'daily',
         category: 'dhikr',
@@ -175,7 +175,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         title: 'Dzikir Sore',
         description: 'Baca dzikir sore (jam 15:00-18:00)',
         hasanahReward: 20,
-        iconKey: 'sun',
+        iconKey: 'sunset',
         dalil: 'HR. Tirmidzi no. 3388',
         duaId: 'dua_perlindungan',
         type: 'daily',
@@ -189,7 +189,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         title: 'Doakan Pemimpin & Negeri',
         description: 'Doakan kebaikan untuk pemimpin dan negeri dengan doa yang kamu mampu',
         hasanahReward: 20,
-        iconKey: 'hands',
+        iconKey: 'dua',
         dalil: 'HR. Muslim no. 1855',
         hadithId: 'hadith_civic_pemimpin_terbaik',
         type: 'daily',
@@ -202,7 +202,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         title: 'Muhasabah Harian',
         description: 'Refleksi ibadah di penghujung hari',
         hasanahReward: 50,
-        iconKey: 'scroll',
+        iconKey: 'notebook-pen',
         dalil: 'QS. Al-Hasyr: 18',
         duaId: 'dua_ketetapan_hati',
         type: 'daily',
@@ -215,7 +215,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         title: 'Puasa Senin/Kamis',
         description: 'Puasa sunnah (hanya Senin/Kamis)',
         hasanahReward: 150,
-        iconKey: 'moon',
+        iconKey: 'utensils-crossed',
         dalil: 'HR. Muslim no. 1162',
         hadithId: 'hadith_puasa_senin_kamis',
         type: 'weekly',
@@ -232,7 +232,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         title: 'Qadha Puasa',
         description: 'Catat dan tunaikan hutang puasa Ramadhan',
         hasanahReward: 100,
-        iconKey: 'calendar',
+        iconKey: 'calendar-clock',
         gender: 'female',
         dalil: 'QS. Al-Baqarah: 184',
         type: 'daily',
@@ -245,7 +245,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         title: 'Dzikir Saat Haid',
         description: 'Rutin berdzikir dan berdoa meski sedang berhalangan',
         hasanahReward: 30,
-        iconKey: 'sparkles',
+        iconKey: 'tasbih',
         gender: 'female',
         dalil: 'HR. Bukhari no. 305',
         hadithId: 'hadith_haid_dzikir',
@@ -259,7 +259,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         title: 'Shalawat 100x',
         description: 'Membaca shalawat 100 kali',
         hasanahReward: 40,
-        iconKey: 'heart-handshake',
+        iconKey: 'message-heart',
         gender: 'female',
         dalil: 'QS. Al-Ahzab: 56 | HR. Muslim no. 408',
         hadithId: 'hadith_shalawat',
@@ -276,7 +276,7 @@ export const MALE_MISSIONS: Mission[] = [
         title: 'Sholat Jumat',
         description: 'Tunaikan sholat Jumat (hanya Jumat)',
         hasanahReward: 200,
-        iconKey: 'landmark',
+        iconKey: 'mosque',
         gender: 'male',
         dalil: 'QS. Al-Jumu\'ah:9',
         type: 'weekly',
@@ -311,7 +311,7 @@ export function resolveRitualForGender(baseMission: Mission, gender: Gender): Mi
         ...(isMale && {
             completionOptions: [
                 { label: 'Pray Alone', hasanahReward: 25 },
-                { label: 'Congregation', hasanahReward: 75, iconKey: 'landmark' }
+                { label: 'Congregation', hasanahReward: 75, iconKey: 'mosque' }
             ]
         })
     };

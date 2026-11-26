@@ -24,11 +24,11 @@ const FARDHU_PRAYERS: { key: PrayerKey; labelKey: "prayerFajr" | "prayerDhuhr" |
 
 const SUNNAH_PRAYERS = [
     { key: "dhuha",       labelKey: "dailySunnahDhuha",          icon: "sun" },
-    { key: "rawatibQabl", labelKey: "dailySunnahQabliyah",        icon: "landmark" },
-    { key: "rawatibBad",  labelKey: "dailySunnahBadiyah",        icon: "landmark" },
+    { key: "rawatibQabl", labelKey: "dailySunnahQabliyah",        icon: "mosque" },
+    { key: "rawatibBad",  labelKey: "dailySunnahBadiyah",        icon: "mosque" },
     { key: "witir",       labelKey: "dailySunnahWitir",           icon: "moon" },
-    { key: "istikharah",  labelKey: "dailySunnahIstikharah",      icon: "hands" },
-    { key: "hajat",       labelKey: "dailySunnahHajat",           icon: "hands" },
+    { key: "istikharah",  labelKey: "dailySunnahIstikharah",      icon: "signpost" },
+    { key: "hajat",       labelKey: "dailySunnahHajat",           icon: "dua" },
     { key: "taubat",      labelKey: "dailySunnahTaubat",          icon: "droplets" },
 ] as const;
 
@@ -89,7 +89,7 @@ export default function DailyPrayerTracker() {
             {/* Header */}
             <div className="flex items-center justify-between px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
                 <div className="flex items-center gap-2">
-                    <AppIcon name="landmark" size="sm" tone="primary" />
+                    <AppIcon name="mosque" size="sm" tone="primary" />
                     <div>
                         <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm leading-tight">{t.dailyPrayerTitle}</h3>
                         <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.dailyPrayerSubtitle}</p>

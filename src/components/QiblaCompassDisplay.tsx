@@ -19,7 +19,7 @@
  */
 
 import { memo } from "react";
-import { KaabaIcon } from "@/components/icons/KaabaIcon";
+import { KaabaIcon } from "@/components/icons/NawaetuIcons";
 import { cn } from "@/lib/utils";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { AppIcon } from "@/components/ui/AppIcon";

@@ -261,13 +261,13 @@ export default function RamadhanWrappedCard() {
                 <div className="grid grid-cols-3 gap-1.5">
                     {/* Qiyamul Lail */}
                     <div className="rounded-xl p-2 border flex flex-col items-center justify-center shadow-[var(--shadow-card)]" style={{ background: "rgb(var(--color-info) / 0.08)", borderColor: "rgb(var(--color-info) / 0.2)" }}>
-                    <AppIcon name="hands" size="sm" tone="primary" className="mb-0.5" />
+                    <AppIcon name="dua" size="sm" tone="primary" className="mb-0.5" />
                         <div className="text-[rgb(var(--color-text-strong))] font-bold text-sm leading-none">{stats.qiyamulLailCount}</div>
                         <div className="text-xs text-[rgb(var(--color-info))] mt-0.5 text-center">Qiyamul Lail</div>
                     </div>
                     {/* Dzikir */}
                     <div className="rounded-xl p-2 border flex flex-col items-center justify-center shadow-[var(--shadow-card)]" style={{ background: "rgb(var(--color-primary-light) / 0.08)", borderColor: "rgb(var(--color-primary-light) / 0.2)" }}>
-                    <AppIcon name="hands" size="sm" tone="primary" className="mb-0.5" />
+                    <AppIcon name="dua" size="sm" tone="primary" className="mb-0.5" />
                         <div className="text-[rgb(var(--color-text-strong))] font-bold text-sm leading-none">
                             {stats.totalTasbih > 999
                                 ? `${Math.floor(stats.totalTasbih / 1000)}k`
@@ -287,7 +287,7 @@ export default function RamadhanWrappedCard() {
                 {(stats.fardhuMasjidDays + stats.fardhuRumahDays + stats.fardhuKeduanyaDays) > 0 && (
                     <div className="rounded-xl p-3 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]">
                         <div className="flex items-center gap-1.5 mb-2">
-                            <AppIcon name="landmark" size="xs" tone="primary" />
+                            <AppIcon name="mosque" size="xs" tone="primary" />
                             <span className="text-xs font-bold text-[rgb(var(--color-text-muted))]">Lokasi Sholat Wajib</span>
                         </div>
                         <MiniBar
@@ -305,7 +305,7 @@ export default function RamadhanWrappedCard() {
                 {(stats.masjidCount + stats.rumahCount) > 0 && (
                     <div className="rounded-xl p-3 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]">
                         <div className="flex items-center gap-1.5 mb-2">
-                            <AppIcon name="landmark" size="xs" tone="primary" />
+                            <AppIcon name="mosque" size="xs" tone="primary" />
                             <span className="text-xs font-bold text-[rgb(var(--color-text-muted))]">Lokasi Sholat Tarawih</span>
                         </div>
                         <MiniBar

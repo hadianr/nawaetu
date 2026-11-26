@@ -232,7 +232,7 @@ export default function MissionsWidget() {
                         "w-8 h-8 rounded-full flex items-center justify-center text-sm ring-1 ring-inset",
                         "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] ring-[rgb(var(--color-primary))]/20"
                     )}>
-                        <AppIcon name="target" size="sm" tone="primary" />
+                        <AppIcon name="goal" size="sm" tone="primary" />
                     </div>
                     <div>
                         <h2 className="text-sm font-bold leading-none text-[rgb(var(--color-text-strong))]">{t.home_mission_focus_title}</h2>

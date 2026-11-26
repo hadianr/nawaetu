@@ -195,7 +195,7 @@ export const statsID = {
                 source: "QS. Al-Isra: 78"
             },
             abid: {
-                icon: "landmark",
+                icon: "mosque",
                 title: "Abid",
                 desc: "Hamba yang mulai merasakan manisnya ibadah melebihi kewajiban.",
                 milestone: "Mulai tambahkan amalan sunnah rawatib secara perlahan.",

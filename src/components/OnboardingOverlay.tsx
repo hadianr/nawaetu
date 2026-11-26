@@ -347,7 +347,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             className="mx-auto h-20 w-20"
                             fallback={
                                 <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/30 rounded-2xl flex items-center justify-center shadow-[var(--shadow-card)]">
-                                    <AppIcon name="hands" size="xl" tone="primary" />
+                                    <AppIcon name="dua" size="xl" tone="primary" />
                                 </div>
                             }
                         />
@@ -380,7 +380,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
 
         if (step === 'setup-gender') {
             const options = [
-                { value: 'male', label: translations.onboardingMaleLabel, sub: translations.onboardingMaleSub, icon: "hands", tone: "primary", selected: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-strong))]" },
+                { value: 'male', label: translations.onboardingMaleLabel, sub: translations.onboardingMaleSub, icon: "dua", tone: "primary", selected: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-strong))]" },
                 { value: 'female', label: translations.onboardingFemaleLabel, sub: translations.onboardingFemaleSub, icon: "heart-handshake", tone: "primary", selected: "bg-[rgb(var(--color-primary-light))]/20 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-strong))]" },
             ] as const;
             const chooseGender = (value: "male" | "female") => {

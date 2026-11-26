@@ -66,11 +66,11 @@ export function InsightModal({
                         <div className="flex items-center gap-3 mb-2">
                             <div className="p-2.5 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
                                 {activeInsight === 'streak' && <Flame className="w-5 h-5 text-[rgb(var(--color-accent-strong))]" />}
-                                {activeInsight === 'prayers' && <AppIcon name="landmark" size="lg" tone="primary" label={t.stats.insights.prayers.title} />}
+                                {activeInsight === 'prayers' && <AppIcon name="mosque" size="lg" tone="primary" label={t.stats.insights.prayers.title} />}
                                 {activeInsight === 'hasanah' && <Sparkles className="w-5 h-5 text-[rgb(var(--color-warning))]" />}
                                 {activeInsight === 'consistency' && <Target className="w-5 h-5 text-[rgb(var(--color-info))]" />}
                                 {activeInsight === 'quran' && <BookOpen className="w-5 h-5 text-[rgb(var(--color-info))]" />}
-                                {activeInsight === 'dhikr' && <AppIcon name="hands" size="lg" tone="primary" label={t.stats.insights.dhikr.title} />}
+                                {activeInsight === 'dhikr' && <AppIcon name="tasbih" size="lg" tone="primary" label={t.stats.insights.dhikr.title} />}
                             </div>
                             <div>
                                 <DialogTitle className="text-xl font-bold text-[rgb(var(--color-text-strong))]">
@@ -105,7 +105,7 @@ export function InsightModal({
 
                         {activeInsight === 'prayers' && (
                             <>
-                                <InsightRow label={t.stats.insights.prayers.fardu} value={data.recentPrayerCount.toString()} icon={<AppIcon name="landmark" size="sm" tone="primary" />} />
+                                <InsightRow label={t.stats.insights.prayers.fardu} value={data.recentPrayerCount.toString()} icon={<AppIcon name="mosque" size="sm" tone="primary" />} />
                                 <InsightRow label={t.stats.insights.prayers.sunnah} value={data.sunnahTotal.toString()} icon={<AppIcon name="sparkles" size="sm" tone="primary" />} />
                                 <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl shadow-[var(--shadow-card)]">
                                     <div className="flex items-center gap-2 mb-2">
@@ -200,7 +200,7 @@ export function InsightModal({
 
                         {activeInsight === 'dhikr' && (
                             <>
-                                <InsightRow label={t.stats.insights.dhikr.total} value={data.history.reduce((s, d) => s + (d.tasbihCount || 0), 0).toLocaleString()} icon={<AppIcon name="hands" size="sm" tone="primary" />} />
+                                <InsightRow label={t.stats.insights.dhikr.total} value={data.history.reduce((s, d) => s + (d.tasbihCount || 0), 0).toLocaleString()} icon={<AppIcon name="tasbih" size="sm" tone="primary" />} />
                                 <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl shadow-[var(--shadow-card)]">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />

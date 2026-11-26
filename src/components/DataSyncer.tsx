@@ -48,7 +48,7 @@ export default function DataSyncer() {
             const welcomeKey = `nawaetu_login_welcome_${session.user.id || session.user.email}`;
             if (!storage.getOptional(welcomeKey)) {
                 toast.success(`Ahlan wa Sahlan, ${session.user.name?.split(' ')[0] || 'Sobat'}!`, {
-                    icon: <AppIcon name="hands" size="sm" tone="primary" />,
+                    icon: <AppIcon name="dua" size="sm" tone="primary" />,
                     description: (t as unknown as Record<string, string>).syncWelcomeDesc,
                     duration: 4000
                 });

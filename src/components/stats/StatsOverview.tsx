@@ -130,7 +130,7 @@ export function StatsOverview({
                     },
                     {
                         id: 'prayers' as const,
-                        icon: <AppIcon name="landmark" size="sm" tone="primary" label={t.stats.quick.weeklyPrayers} />,
+                        icon: <AppIcon name="mosque" size="sm" tone="primary" label={t.stats.quick.weeklyPrayers} />,
                         label: t.stats.quick.weeklyPrayers,
                         value: `${recentPrayerCount}`,
                         sub: t.stats.quick.outOf35,

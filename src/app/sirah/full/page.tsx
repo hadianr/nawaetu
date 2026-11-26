@@ -20,7 +20,7 @@ import { fullIndexJsonLd } from "@/data/sirah/seo";
 const ERA_TABS: { id: SirahEra | "all"; labelKey: "sirahEraAll" | "sirahEraMakkah" | "sirahEraMadinah" | "sirahEraGhazwah" | "sirahEraDiplomacy" | "sirahEraLegacy"; icon: AppIconName }[] = [
     { id: "all", labelKey: "sirahEraAll", icon: "library" },
     { id: "makkah", labelKey: "sirahEraMakkah", icon: "kaaba" },
-    { id: "madinah", labelKey: "sirahEraMadinah", icon: "landmark" },
+    { id: "madinah", labelKey: "sirahEraMadinah", icon: "mosque" },
     { id: "ghazwah", labelKey: "sirahEraGhazwah", icon: "shield-check" },
     { id: "diplomacy", labelKey: "sirahEraDiplomacy", icon: "scroll" },
     { id: "legacy", labelKey: "sirahEraLegacy", icon: "library" },

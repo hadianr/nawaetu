@@ -34,7 +34,7 @@ export default function RamadhanPracticesList() {
             {/* Header */}
             <div className="px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
                 <div className="flex items-center gap-2">
-                    <AppIcon name="hands" size="sm" tone="primary" />
+                    <AppIcon name="dua" size="sm" tone="primary" />
                     <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-base">
                         {t.practicesTitle}
                     </h3>

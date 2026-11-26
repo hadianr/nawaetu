@@ -161,7 +161,7 @@ export default function LailatulQadrCard() {
                                 toast.success(t.gamificationQiyamulLailSuccess || "Qiyamul Lail Tercatat", {
                                     description: t.gamificationQiyamulLailDesc || `Masya Allah! +50 ${t.gamificationXpName || "Hasanah"}`,
                                     duration: 3500,
-                                    icon: <AppIcon name="hands" size="sm" tone="primary" />
+                                    icon: <AppIcon name="dua" size="sm" tone="primary" />
                                 });
                             }
                         };
@@ -215,7 +215,7 @@ export default function LailatulQadrCard() {
 
                                 {/* Icon */}
                                 <AppIcon
-                                    name={isDone ? "hands" : isActive && isOdd ? "star" : isPast ? "shield-check" : isOdd ? "sparkles" : "moon"}
+                                    name={isDone ? "dua" : isActive && isOdd ? "star" : isPast ? "shield-check" : isOdd ? "sparkles" : "moon"}
                                     size={isOdd ? "sm" : "xs"}
                                     tone={isDone ? "success" : isActive ? "primary" : "muted"}
                                 />
