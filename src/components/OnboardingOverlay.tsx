@@ -380,8 +380,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
 
         if (step === 'setup-gender') {
             const options = [
-                { value: 'male', label: translations.onboardingMaleLabel, sub: translations.onboardingMaleSub, icon: "dua", tone: "primary", selected: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-strong))]" },
-                { value: 'female', label: translations.onboardingFemaleLabel, sub: translations.onboardingFemaleSub, icon: "heart-handshake", tone: "primary", selected: "bg-[rgb(var(--color-primary-light))]/20 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-strong))]" },
+                { value: 'male', label: translations.onboardingMaleLabel, sub: translations.onboardingMaleSub, icon: "muslim", tone: "primary", selected: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-strong))]" },
+                { value: 'female', label: translations.onboardingFemaleLabel, sub: translations.onboardingFemaleSub, icon: "hijab", tone: "primary", selected: "bg-[rgb(var(--color-primary-light))]/20 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-strong))]" },
             ] as const;
             const chooseGender = (value: "male" | "female") => {
                 setGender(value);
