@@ -35,7 +35,7 @@ Attribution is not required under CC0. Keep future third-party SVG pattern asset
 
 ## `src/components/icons/NawaetuIcons.tsx`
 
-- **Assets:** Mosque, tasbih, du'a, ketupat, Kaaba, prayer rug, goal, Muslim and hijab icons
+- **Assets:** Mosque, tasbih, du'a, ketupat, Kaaba, prayer rug, goal, Muslim, hijab, flower, shower head, calendar heart and headphones icons
 - **Source:** [Hugeicons Free](https://www.npmjs.com/package/@hugeicons/core-free-icons) (`@hugeicons/core-free-icons` 4.4.0), paths copied, package not installed
 - **License:** MIT, Copyright (c) 2025 Hugeicons
 - **Modification:** Drawn at a 2px stroke instead of 1.5px to match Lucide.

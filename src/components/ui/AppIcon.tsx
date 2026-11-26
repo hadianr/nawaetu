@@ -57,7 +57,7 @@ import {
     Volume2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { DuaIcon, GoalIcon, HijabIcon, KaabaIcon, KetupatIcon, MosqueIcon, MuslimIcon, PrayerRugIcon, TasbihIcon } from "@/components/icons/NawaetuIcons";
+import { CalendarHeartIcon, DuaIcon, FlowerIcon, GoalIcon, HeadphonesIcon, HijabIcon, KaabaIcon, KetupatIcon, MosqueIcon, MuslimIcon, PrayerRugIcon, ShowerHeadIcon, TasbihIcon } from "@/components/icons/NawaetuIcons";
 import { resolveAppIconName, type AppIconName } from "@/lib/icon-names";
 export { resolveAppIconName } from "@/lib/icon-names";
 
@@ -76,6 +76,7 @@ const ICONS: Record<AppIconName, IconComponent> = {
     "book-marked": BookMarked,
     "calendar": CalendarDays,
     "calendar-clock": CalendarClock,
+    "calendar-heart": CalendarHeartIcon,
     "clock": Clock,
     "cloud-rain": CloudRain,
     "cloud-sun": CloudSun,
@@ -86,6 +87,8 @@ const ICONS: Record<AppIconName, IconComponent> = {
     "goal": GoalIcon,
     "hijab": HijabIcon,
     "eclipse": Eclipse,
+    "flower": FlowerIcon,
+    "headphones": HeadphonesIcon,
     "fingerprint": Fingerprint,
     "gift": Gift,
     "hand-coins": HandCoins,
@@ -112,6 +115,7 @@ const ICONS: Record<AppIconName, IconComponent> = {
     "scale": Scale,
     "scroll": ScrollText,
     "settings": Settings,
+    "shower-head": ShowerHeadIcon,
     "shield-check": ShieldCheck,
     "signpost": Signpost,
     "sliders": SlidersHorizontal,

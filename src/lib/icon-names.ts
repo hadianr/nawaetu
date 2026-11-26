@@ -7,7 +7,8 @@ const APP_ICON_NAME_LIST = [
     "shield-check", "signpost", "sliders", "soup", "sparkles", "star", "sun", "sun-dim", "sun-medium", "sunrise",
     "sunset", "target", "trophy", "undo", "users", "utensils", "utensils-crossed", "volume", "warning",
     // Nawaetu's own glyphs (src/components/icons/NawaetuIcons.tsx)
-    "dua", "goal", "hijab", "kaaba", "ketupat", "mosque", "muslim", "prayer-rug", "tasbih",
+    "calendar-heart", "dua", "flower", "goal", "headphones", "hijab", "kaaba", "ketupat", "mosque", "muslim", "prayer-rug",
+    "shower-head", "tasbih",
 ] as const;
 
 export type AppIconName = typeof APP_ICON_NAME_LIST[number];
