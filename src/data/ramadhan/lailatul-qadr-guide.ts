@@ -185,6 +185,35 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         }
     },
     {
+        id: "lailatul_qadar_saat_haid",
+        title: "Saat Haid atau Nifas di Sepuluh Malam Terakhir",
+        title_en: "During Haid or Nifas in the Last Ten Nights",
+        description: "Malam-malam ini tetap terbuka untukmu. Yang ditinggalkan hanya sholat, puasa, dan berdiam di masjid.",
+        description_en: "These nights are still open to you. Only prayer, fasting and staying in the mosque are set aside.",
+        iconKey: "flower",
+        steps: [
+            "Perbanyak doa Allahumma innaka 'afuwwun tuhibbul 'afwa fa'fu 'anni.",
+            "Dzikir, istighfar, dan shalawat sepanjang malam.",
+            "Dengarkan murottal dan baca terjemahan atau tafsir Al-Quran.",
+            "Bersedekah dan memberi makan orang yang berbuka.",
+            "Soal membaca Al-Quran langsung dan menyentuh mushaf saat haid, ulama berbeda pendapat."
+        ],
+        steps_en: [
+            "Repeat the du'a Allahumma innaka 'afuwwun tuhibbul 'afwa fa'fu 'anni.",
+            "Dhikr, istighfar and salawat through the night.",
+            "Listen to Quran recitation and read its translation or tafsir.",
+            "Give charity and feed those breaking their fast.",
+            "On reciting the Quran yourself and touching the mushaf during a period, scholars differ."
+        ],
+        dalil: {
+            id: "dalil_lailatul_qadar_haid",
+            shortRef: "HR. Bukhari no. 305",
+            translation: "Lakukanlah apa yang dilakukan orang yang berhaji, kecuali thawaf di Ka'bah hingga engkau suci.",
+            translation_en: "Do everything the pilgrim does, except circling the House until you are pure.",
+            source: "HR. Bukhari no. 305 (Shahih)"
+        }
+    },
+    {
         id: "sayyidul_istighfar",
         title: "Sayyidul Istighfar",
         title_en: "The Chief of Prayers for Forgiveness",
