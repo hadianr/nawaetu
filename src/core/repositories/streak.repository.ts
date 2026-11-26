@@ -21,7 +21,8 @@ import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
 import { DateUtils } from '@/lib/utils/date';
 import { addHasanah } from '@/lib/habits/leveling';
 import { queueHasanahEvent } from '@/lib/sync/award';
-import { advanceStreak } from '@/lib/habits/progression';
+import { advanceStreak, missedDaysBetween } from '@/lib/habits/progression';
+import { getExcusedDateSet } from '@/lib/udzur';
 import type { StreakMilestone } from '@/data/streak-milestones';
 export type { StreakMilestone };
 
@@ -42,12 +43,12 @@ export interface StreakAchievementEventDetail {
 
 export const STREAK_ACHIEVEMENT_EVENT = 'streak_achievement';
 
-export function getDisplayStreakForData(data: StreakData): { streak: number; isActiveToday: boolean; isLost: boolean } {
+/** Excused days (haid/nifas) between the last active day and today keep the streak alive. */
+export function getDisplayStreakForData(data: StreakData, excused: ReadonlySet<string> = new Set()): { streak: number; isActiveToday: boolean; isLost: boolean } {
   const today = DateUtils.today();
-  const yesterday = DateUtils.yesterday();
   const isActiveToday = data.lastActiveDate === today;
 
-  if (data.lastActiveDate === yesterday || isActiveToday) {
+  if (isActiveToday || (data.lastActiveDate && missedDaysBetween(data.lastActiveDate, today, excused) === 0)) {
     return { streak: data.currentStreak, isActiveToday, isLost: false };
   }
 
@@ -117,7 +118,7 @@ export class LocalStreakRepository implements StreakRepository {
       longestDays: current.longestStreak,
       lastStreakDate: current.lastActiveDate || null,
       freezesAvailable: current.freezesAvailable,
-    }, today);
+    }, today, getExcusedDateSet());
     const newStreak = advance.state.currentDays;
 
     let newMilestone: StreakMilestone | null = null;
@@ -158,7 +159,7 @@ export class LocalStreakRepository implements StreakRepository {
   }
 
   getDisplayStreak(): { streak: number; isActiveToday: boolean; isLost: boolean } {
-    return getDisplayStreakForData(this.getStreak());
+    return getDisplayStreakForData(this.getStreak(), getExcusedDateSet());
   }
 
   resetStreak(): void {

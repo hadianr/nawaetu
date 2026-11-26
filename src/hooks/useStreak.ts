@@ -28,6 +28,7 @@ import {
 import { getStorageService } from '@/core/infrastructure/storage';
 import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
 import { rebuildStreakState } from '@/lib/habits/progression';
+import { getExcusedDateSet, UDZUR_EVENT } from '@/lib/udzur';
 
 interface CanonicalProgression {
   userId?: string;
@@ -53,8 +54,9 @@ export function useStreak() {
       const canonicalDays = (canonical.streak.days ?? [])
         .filter((day: { status?: string }) => day.status !== 'frozen')
         .map((day: { localDate: string }) => day.localDate);
+      const excused = getExcusedDateSet(userId);
       const rebuilt = canonicalDays.length
-        ? rebuildStreakState(canonicalDays, canonical.streak.freezesAvailable ?? 0)
+        ? rebuildStreakState(canonicalDays, canonical.streak.freezesAvailable ?? 0, excused)
         : null;
       // The server sends only the last 30 days, so a rebuild can never exceed 30: trust its own count.
       // A local streak that is ahead of the cached server state is activity made since the last sync.
@@ -80,7 +82,7 @@ export function useStreak() {
             ...local,
             currentStreak,
             lastActiveDate,
-          }),
+          }, excused),
         },
       };
     }
@@ -101,8 +103,10 @@ export function useStreak() {
 
     const handleUpdate = () => refresh();
     window.addEventListener('streak_updated', handleUpdate);
+    window.addEventListener(UDZUR_EVENT, handleUpdate);
     return () => {
       window.removeEventListener('streak_updated', handleUpdate);
+      window.removeEventListener(UDZUR_EVENT, handleUpdate);
     };
   }, [getProjection]);
 

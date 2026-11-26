@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LEVEL_RULES_VERSION, advanceStreak, calculatePlayerStats, rebuildStreakDetailed, rebuildStreakFromHistory, rebuildStreakState } from "./progression";
+import { LEVEL_RULES_VERSION, advanceStreak, calculatePlayerStats, missedDaysBetween, rebuildStreakDetailed, rebuildStreakFromHistory, rebuildStreakState } from "./progression";
 
 describe("calculatePlayerStats", () => {
   it("handles level boundaries and progress", () => {
@@ -122,5 +122,48 @@ describe("rebuildStreakDetailed", () => {
   it("does not report a day that later turned out to have evidence", () => {
     const withLateDay = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(day);
     expect(rebuildStreakDetailed(withLateDay).frozenDates).toEqual([]);
+  });
+});
+
+describe("excused days (udzur)", () => {
+  const day = (n: number) => `2026-03-${String(n).padStart(2, "0")}`;
+  const excused = (...days: number[]) => new Set(days.map(day));
+  const streakOf = (currentDays: number, last: number, freezesAvailable = 0) =>
+    ({ currentDays, longestDays: currentDays, lastStreakDate: day(last), freezesAvailable });
+
+  it("bridges a gap of excused days without growing the streak or using a freeze", () => {
+    const step = advanceStreak(streakOf(20, 1, 1), day(8), excused(2, 3, 4, 5, 6, 7));
+    expect(step).toMatchObject({ state: { currentDays: 21, freezesAvailable: 1 }, frozenDate: null });
+  });
+
+  it("still grows on activity during the period", () => {
+    const wednesday = advanceStreak(streakOf(20, 1), day(4), excused(2, 3, 4, 5, 6, 7));
+    expect(wednesday.state.currentDays).toBe(21);
+    expect(advanceStreak(wednesday.state, day(8), excused(2, 3, 4, 5, 6, 7)).state.currentDays).toBe(22);
+  });
+
+  it("uses the freeze for the one day that was not excused, and reports that day", () => {
+    const step = advanceStreak(streakOf(10, 1, 1), day(6), excused(2, 3, 4));
+    expect(step).toMatchObject({ state: { currentDays: 11, freezesAvailable: 0 }, frozenDate: day(5) });
+  });
+
+  it("resets when two days outside the period were missed", () => {
+    expect(advanceStreak(streakOf(10, 1, 1), day(7), excused(2, 3, 4)).state.currentDays).toBe(1);
+  });
+
+  it("rebuilds the same way, whatever order the days arrive in", () => {
+    const set = excused(5, 6, 7, 8, 9, 10);
+    const dates = [1, 2, 3, 4, 11, 12].map(day);
+    expect(rebuildStreakDetailed([...dates].reverse(), set)).toEqual({
+      state: { currentDays: 6, longestDays: 6, lastStreakDate: day(12), freezesAvailable: 0 },
+      frozenDates: [],
+    });
+    expect(rebuildStreakFromHistory(dates)).toMatchObject({ currentDays: 2 });
+  });
+
+  it("counts only the missed days that are not excused", () => {
+    expect(missedDaysBetween(day(1), day(2))).toBe(0);
+    expect(missedDaysBetween(day(1), day(10), excused(2, 3, 9, 15))).toBe(5);
+    expect(missedDaysBetween(day(5), day(1))).toBeLessThan(0);
   });
 });
