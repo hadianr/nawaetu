@@ -40,7 +40,7 @@ export default function QadhaTracker({ pendingItems, onMarkDone }: QadhaTrackerP
 
     const handleMarkDone = (hijriYear: number, hijriDay: number) => {
         onMarkDone(hijriYear, hijriDay);
-        toast.success(t.fastingQadhaMarkDoneToast, { icon: <AppIcon name="hands" size="sm" tone="primary" />, duration: 3000 });
+        toast.success(t.fastingQadhaMarkDoneToast, { icon: <AppIcon name="dua" size="sm" tone="primary" />, duration: 3000 });
     };
 
     if (pendingItems.length === 0) {

@@ -373,7 +373,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         title_en: 'Tarawih Prayer',
         description: 'Sholat sunnah malam Ramadhan, 8 atau 20 rakaat',
         description_en: 'Sunnah night prayer during Ramadhan, 8 or 20 units (rak\'ahs)',
-        iconKey: 'landmark',
+        iconKey: 'mosque',
         intention: TARAWEH_INTENTION,
         dalil: TARAWEH_EVIDENCE,
         tips: [
@@ -432,7 +432,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         title_en: "I'tikaf in the Mosque",
         description: "Berdiam diri di masjid untuk beribadah, terutama di 10 malam terakhir",
         description_en: "Staying in the mosque for worship, especially in the last 10 nights",
-        iconKey: 'landmark',
+        iconKey: 'mosque',
         intention: ITIKAF_INTENTION,
         dalil: ITIKAF_10_NIGHTS_EVIDENCE,
         tips: [

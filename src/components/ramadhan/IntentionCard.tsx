@@ -59,7 +59,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
                     {variant === "inline" ? (
                         <BookOpen className="w-4 h-4 text-[rgb(var(--color-text-muted))] shrink-0" />
                     ) : (
-                        <AppIcon name="hands" size="md" tone="primary" className="group-hover/niat:scale-110 transition-transform" />
+                        <AppIcon name="dua" size="md" tone="primary" className="group-hover/niat:scale-110 transition-transform" />
                     )}
                     <div className="flex-1 text-left min-w-0 pr-2">
                         <p className="text-xs sm:text-sm font-bold text-[rgb(var(--color-text-strong))] group-hover/niat:text-[rgb(var(--color-primary-strong))] transition-colors truncate">

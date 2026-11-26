@@ -34,7 +34,7 @@ export function PrayerConsistency({
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 flex items-center justify-center text-lg shadow-inner">
-                            <AppIcon name="landmark" size="sm" tone="primary" label={t.stats.heatmap.title} />
+                            <AppIcon name="mosque" size="sm" tone="primary" label={t.stats.heatmap.title} />
                         </div>
                         <div>
                             <h2 className="font-bold text-sm text-[rgb(var(--color-text-strong))] tracking-tight leading-none mb-1">{t.stats.heatmap.title.split('(')[0].trim()}</h2>

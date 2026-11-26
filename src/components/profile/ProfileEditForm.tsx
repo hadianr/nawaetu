@@ -75,7 +75,7 @@ export function ProfileEditForm({
                                 : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))]"
                         )}
                     >
-                        <AppIcon name="hands" size="sm" tone="info" /> {translations.onboardingMaleLabel}
+                        <AppIcon name="dua" size="sm" tone="info" /> {translations.onboardingMaleLabel}
                     </button>
                     <button
                         type="button"

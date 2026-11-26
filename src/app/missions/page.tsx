@@ -193,7 +193,7 @@ export default function MisiPage() {
                         </div>
                         {isGenderSpecific && (
                             <span className="text-xs bg-[rgb(var(--color-surface))] px-1.5 py-0.5 rounded text-[rgb(var(--color-text-muted))]">
-                                <AppIcon name={mission.gender === 'female' ? "heart-handshake" : "hands"} size="xs" tone="muted" />
+                                <AppIcon name={mission.gender === 'female' ? "heart-handshake" : "dua"} size="xs" tone="muted" />
                             </span>
                         )}
                     </div>

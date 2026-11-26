@@ -77,7 +77,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "Scholars are unanimous that a woman in postpartum bleeding (nifas) is treated the same as a menstruating woman: she does not fast during that period and must make up the days she missed.",
     },
     pregnant: {
-        iconKey: "hands",
+        iconKey: "dua",
         color: "purple",
         requiresMadzhab: true,
         femaleOnly: true,
@@ -85,7 +85,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "Allah has lifted from the traveller half the prayer, and from the pregnant woman and the nursing mother the fast. (This hadith provides the basis for the dispensation; scholars differ on whether qadha, fidyah, or both are required.)",
     },
     breastfeeding: {
-        iconKey: "hands",
+        iconKey: "dua",
         color: "violet",
         requiresMadzhab: true,
         femaleOnly: true,

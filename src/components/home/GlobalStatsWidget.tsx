@@ -55,7 +55,7 @@ export default function GlobalStatsWidget() {
                 </div>
 
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
-                    <AppIcon name="landmark" size="md" tone="primary" className="mb-1" />
+                    <AppIcon name="mosque" size="md" tone="primary" className="mb-1" />
                     <span className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{stats.activeWorshipDays.toLocaleString()}</span>
                     <span className="text-xs text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactStreakDays}</span>
                 </div>

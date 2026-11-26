@@ -64,7 +64,7 @@ export default function TarawehTracker() {
             toast.success(t.tarawehTitle || "Taraweh", {
                 description: t.toastRamadhanTarawehReward || `Alhamdulillah! +15 ${t.gamificationXpName || "Hasanah"}`,
                 duration: 3000,
-                icon: <AppIcon name="landmark" size="sm" tone="primary" />
+                icon: <AppIcon name="mosque" size="sm" tone="primary" />
             });
         }
         updateDay(viewDay, { choice });
@@ -80,7 +80,7 @@ export default function TarawehTracker() {
             {/* Header */}
             <div className="flex items-center justify-between px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
                 <div className="flex items-center gap-2">
-                    <AppIcon name="landmark" size="sm" tone="primary" />
+                    <AppIcon name="mosque" size="sm" tone="primary" />
                     <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-base">{t.tarawehTitle}</h3>
                 </div>
                 <DalilBadge dalil={TARAWEH_EVIDENCE} variant="pill" />

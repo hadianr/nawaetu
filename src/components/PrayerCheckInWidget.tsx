@@ -19,7 +19,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef, useSyncExternalStore } from "react";
-import { Check, Sparkles, AlertCircle, Calendar } from "@/components/ui/icons";
+import { Check, ChevronDown, AlertCircle, Calendar } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useMissions } from "@/hooks/useMissions";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
@@ -34,39 +34,43 @@ import { useSession } from "next-auth/react";
 import { APP_EVENTS } from "@/lib/constants/events";
 import { getPrayerMissionId, normalizeMissionId } from "@/lib/mission-resolver";
 import { DateUtils } from "@/lib/utils/date";
-import type { Gender } from "@/data/missions";
+import { findMissionDefinition, type Gender } from "@/data/missions";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { AppIcon } from "@/components/ui/AppIcon";
 import type { AppIconName } from "@/lib/icon-names";
 
-// Prayer config: suffix for mission ID, icon, and the prayerTimes keys for time-awareness
-const PRAYERS: { suffix: string; icon: AppIconName; prayerKey: string; endKey: string | null; i18n: string }[] = [
-    { suffix: "subuh", icon: "moon", prayerKey: "Fajr", endKey: "Sunrise", i18n: "prayerFajr" },
-    { suffix: "dzuhur", icon: "sun", prayerKey: "Dhuhr", endKey: "Asr", i18n: "prayerDhuhr" },
-    { suffix: "ashar", icon: "cloud-sun", prayerKey: "Asr", endKey: "Maghrib", i18n: "prayerAsr" },
-    { suffix: "maghrib", icon: "sun", prayerKey: "Maghrib", endKey: "Isha", i18n: "prayerMaghrib" },
-    { suffix: "isya", icon: "moon", prayerKey: "Isha", endKey: null, i18n: "prayerIsha" },
+// Prayer config: suffix for mission ID and the prayerTimes keys for time-awareness
+const PRAYERS: { suffix: string; prayerKey: string; endKey: string | null; i18n: string }[] = [
+    { suffix: "subuh", prayerKey: "Fajr", endKey: "Sunrise", i18n: "prayerFajr" },
+    { suffix: "dzuhur", prayerKey: "Dhuhr", endKey: "Asr", i18n: "prayerDhuhr" },
+    { suffix: "ashar", prayerKey: "Asr", endKey: "Maghrib", i18n: "prayerAsr" },
+    { suffix: "maghrib", prayerKey: "Maghrib", endKey: "Isha", i18n: "prayerMaghrib" },
+    { suffix: "isya", prayerKey: "Isha", endKey: null, i18n: "prayerIsha" },
 ] as const;
 
 const SUNNAH_PRAYERS = [
-    { id: "sunnah_qobliyah_fajr", icon: "sparkles", prayerKey: "Fajr", endKey: "Fajr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_fajr_title", hasanah: 30 },
-    { id: "sunnah_dhuha", icon: "sun", prayerKey: "Sunrise", endKey: "Dhuhr", i18n: "mission_sunnah_dhuha_title", hasanah: 50 },
-    { id: "sunnah_qobliyah_dhuhr", icon: "sun", prayerKey: "Dhuhr", endKey: "Dhuhr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_dhuhr_title", hasanah: 25 },
-    { id: "sunnah_ba_diyah_dhuhr", icon: "sun", prayerKey: "Dhuhr", endKey: "Asr", i18n: "mission_sunnah_ba_diyah_dhuhr_title", hasanah: 25 },
-    { id: "sunnah_ba_diyah_maghrib", icon: "sun", prayerKey: "Maghrib", endKey: "Isha", i18n: "mission_sunnah_ba_diyah_maghrib_title", hasanah: 25 },
-    { id: "sunnah_ba_diyah_isha", icon: "moon", prayerKey: "Isha", endKey: null, i18n: "mission_sunnah_ba_diyah_isha_title", hasanah: 25 },
-    { id: "sunnah_witir", icon: "moon", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_witir_title", hasanah: 40 },
-    { id: "sunnah_tahajjud", icon: "moon", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tahajjud_title", hasanah: 50 },
-    { id: "sunnah_istikharah", icon: "help", prayerKey: null, endKey: null, i18n: "mission_sunnah_istikharah_title", hasanah: 30 },
-    { id: "sunnah_hajat", icon: "hands", prayerKey: null, endKey: null, i18n: "mission_sunnah_hajat_title", hasanah: 30 },
-    { id: "sunnah_taubat", icon: "hands", prayerKey: null, endKey: null, i18n: "mission_sunnah_taubat_title", hasanah: 30 },
+    { id: "sunnah_qobliyah_fajr", prayerKey: "Fajr", endKey: "Fajr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_fajr_title", hasanah: 30 },
+    { id: "sunnah_dhuha", prayerKey: "Sunrise", endKey: "Dhuhr", i18n: "mission_sunnah_dhuha_title", hasanah: 50 },
+    { id: "sunnah_qobliyah_dhuhr", prayerKey: "Dhuhr", endKey: "Dhuhr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_dhuhr_title", hasanah: 25 },
+    { id: "sunnah_ba_diyah_dhuhr", prayerKey: "Dhuhr", endKey: "Asr", i18n: "mission_sunnah_ba_diyah_dhuhr_title", hasanah: 25 },
+    { id: "sunnah_ba_diyah_maghrib", prayerKey: "Maghrib", endKey: "Isha", i18n: "mission_sunnah_ba_diyah_maghrib_title", hasanah: 25 },
+    { id: "sunnah_ba_diyah_isha", prayerKey: "Isha", endKey: null, i18n: "mission_sunnah_ba_diyah_isha_title", hasanah: 25 },
+    { id: "sunnah_witir", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_witir_title", hasanah: 40 },
+    { id: "sunnah_tahajjud", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tahajjud_title", hasanah: 50 },
+    { id: "sunnah_istikharah", prayerKey: null, endKey: null, i18n: "mission_sunnah_istikharah_title", hasanah: 30 },
+    { id: "sunnah_hajat", prayerKey: null, endKey: null, i18n: "mission_sunnah_hajat_title", hasanah: 30 },
+    { id: "sunnah_taubat", prayerKey: null, endKey: null, i18n: "mission_sunnah_taubat_title", hasanah: 30 },
     // Seasonal
-    { id: "sunnah_tarawih", icon: "landmark", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tarawih_title", hasanah: 50, visibility: { hijriMonth: 'Ramadan' } },
-    { id: "sunnah_eid_fitri", icon: "moon", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_fitri_title", hasanah: 100, visibility: { hijriMonth: 'Shawwal', hijriDay: 1 } },
-    { id: "sunnah_eid_adha", icon: "kaaba", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_adha_title", hasanah: 100, visibility: { hijriMonth: 'Dhu al-Hijjah', hijriDay: 10 } },
-    { id: "sunnah_gerhana", icon: "moon", prayerKey: null, endKey: null, i18n: "mission_sunnah_gerhana_title", hasanah: 50 },
-    { id: "sunnah_istisqa", icon: "cloud-sun", prayerKey: null, endKey: null, i18n: "mission_sunnah_istisqa_title", hasanah: 50 },
+    { id: "sunnah_tarawih", icon: "mosque", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tarawih_title", hasanah: 50, visibility: { hijriMonth: 'Ramadan' } },
+    { id: "sunnah_eid_fitri", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_fitri_title", hasanah: 100, visibility: { hijriMonth: 'Shawwal', hijriDay: 1 } },
+    { id: "sunnah_eid_adha", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_adha_title", hasanah: 100, visibility: { hijriMonth: 'Dhu al-Hijjah', hijriDay: 10 } },
+    { id: "sunnah_gerhana", icon: "eclipse", prayerKey: null, endKey: null, i18n: "mission_sunnah_gerhana_title", hasanah: 50 },
+    { id: "sunnah_istisqa", icon: "cloud-rain", prayerKey: null, endKey: null, i18n: "mission_sunnah_istisqa_title", hasanah: 50 },
 ] as const;
+
+/** Icons come from the mission catalog; only prayers missing from it carry their own. */
+const missionIcon = (missionId: string, fallback?: AppIconName): AppIconName =>
+    findMissionDefinition(normalizeMissionId(missionId))?.iconKey ?? fallback ?? "help";
 
 // Bottom-sheet state for male jamaah option
 type SheetState = {
@@ -309,7 +313,7 @@ export default function PrayerCheckInWidget() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-2 relative z-10 gap-1">
                     <div className="flex min-w-0 items-center gap-1.5">
-                        <AppIcon name="landmark" size="sm" tone="primary" />
+                        <AppIcon name="mosque" size="sm" tone="primary" />
                         <p className="truncate text-xs font-bold tracking-tight">
                             {isBackdated ? t.homePrayerCheckInHistoryTitle : t.homePrayerCheckInSectionTitle}
                         </p>
@@ -415,7 +419,7 @@ export default function PrayerCheckInWidget() {
                                 ) : isLate ? (
                                     <AlertCircle className="w-4 h-4 text-[rgb(var(--color-warning))]" />
                                 ) : (
-                                    <AppIcon name={prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? "landmark" : prayer.icon} size="sm" tone="primary" />
+                                    <AppIcon name={missionIcon(getMissionId(prayer.suffix))} size="sm" tone="primary" />
                                 )}
 
                                 <span className={cn(
@@ -468,13 +472,14 @@ export default function PrayerCheckInWidget() {
                 <div className="mt-4 pt-3 border-t border-dashed border-[rgb(var(--color-border))] relative z-10">
                     <button
                         onClick={() => setShowSunnah(!showSunnah)}
+                        aria-expanded={showSunnah}
                         className={cn(
                             "w-full flex items-center justify-between py-1 transition-colors group",
                             "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))]"
                         )}
                     >
                         <div className="flex items-center gap-1.5">
-                            <Sparkles className="w-3 h-3" />
+                            <AppIcon name="prayer-rug" size="xs" className="text-current" />
                             <span className="text-xs font-bold">
                                 {t.sunnah_prayer_section_title || "Sunnah Prayers"}
                             </span>
@@ -483,7 +488,7 @@ export default function PrayerCheckInWidget() {
                             "text-xs font-bold px-2 py-0.5 rounded-full transition-colors",
                             "bg-[rgb(var(--color-surface-subtle))] group-hover:bg-[rgb(var(--color-primary))]/10"
                         )}>
-                            <span className="inline-flex items-center gap-1"><AppIcon name={showSunnah ? "target" : "sparkles"} size="xs" tone="muted" /> {showSunnah ? "Hide" : "Show"}</span>
+                            <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", showSunnah && "rotate-180")} />
                         </div>
                     </button>
 
@@ -534,7 +539,7 @@ export default function PrayerCheckInWidget() {
                                                         ? "bg-[rgb(var(--color-warning))]/15 text-[rgb(var(--color-warning))]"
                                                         : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))]"
                                             )}>
-                                                {done ? <Check className="w-3 h-3" /> : (isLate && !isLocked ? <AlertCircle className="w-3 h-3" /> : <AppIcon name={prayer.icon} size="sm" tone="primary" />)}
+                                                {done ? <Check className="w-3 h-3" /> : (isLate && !isLocked ? <AlertCircle className="w-3 h-3" /> : <AppIcon name={missionIcon(prayer.id, "icon" in prayer ? prayer.icon : undefined)} size="sm" tone="primary" />)}
                                             </div>
                                             <span className={cn(
                                                 "text-[6.5px] font-bold uppercase text-center px-1 leading-[1.1] min-h-[16px] flex items-center justify-center",
@@ -579,7 +584,7 @@ export default function PrayerCheckInWidget() {
                                 "w-10 h-10 rounded-xl border flex items-center justify-center text-xl transition-colors shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                             )}>
-                                <AppIcon name={sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? "landmark" : sheet.prayer.icon} size="lg" tone="primary" />
+                                <AppIcon name={missionIcon(getMissionId(sheet.prayer.suffix))} size="lg" tone="primary" />
                             </div>
                             <div>
                                 <p className="text-sm font-bold">
@@ -609,7 +614,7 @@ export default function PrayerCheckInWidget() {
                                     )}
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
-                                    <AppIcon name="landmark" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
+                                    <AppIcon name="mosque" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
                                     <span className="text-xs font-bold text-[rgb(var(--color-primary-foreground))] relative">
                                         {locale === "id" ? "Berjamaah di Masjid" : "Congregation (Mosque)"}
                                     </span>
@@ -647,7 +652,7 @@ export default function PrayerCheckInWidget() {
                                         )}
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
-                                        <AppIcon name="landmark" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
+                                        <AppIcon name="mosque" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
                                         <span className="text-xs font-bold text-[rgb(var(--color-primary-foreground))] relative">{t.homePrayerCheckInOptionJamaah}</span>
                                         <span className="text-xs font-bold text-[rgb(var(--color-primary-foreground))] relative">+{getHasanahReward(75)} Hasanah</span>
                                     </button>

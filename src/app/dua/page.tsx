@@ -306,7 +306,7 @@ function DuaContent() {
             social: "duaTabSocial",
         };
         const ICONS = {
-            morning: "sun", evening: "moon", after_prayer: "hands", sleeping: "moon",
+            morning: "sun", evening: "moon", after_prayer: "dua", sleeping: "moon",
             protection: "shield-check", gratitude: "heart-handshake", general: "book", social: "heart-handshake",
         } as const;
 

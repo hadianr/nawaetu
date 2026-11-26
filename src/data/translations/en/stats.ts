@@ -195,7 +195,7 @@ export const statsEN = {
                 source: "Quran, Al-Isra: 78"
             },
             abid: {
-                icon: "landmark",
+                icon: "mosque",
                 title: "Abid",
                 desc: "A servant who begins to taste the sweetness of worship.",
                 milestone: "Gradually incorporate Sunnah Rawatib prayers.",

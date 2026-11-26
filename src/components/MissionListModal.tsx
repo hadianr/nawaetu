@@ -80,9 +80,9 @@ export default function MissionListModal({
     const tabs: TabDefinition[] = useMemo(() => [
         { id: 'all', label: t.missionTabAll || "All", icon: "target", activeColorClass: "" },
         { id: 'obligatory', label: t.missionTabObligatory || "Obligatory", icon: "star", activeColorClass: "" },
-        { id: 'sunnah_prayer', label: t.missionTabSunnahPrayer || "Sunnah Prayer", icon: "landmark", activeColorClass: "" },
-        { id: 'dhikr', label: t.missionTabDhikr || "Dhikr", icon: "hands", activeColorClass: "" },
-        { id: 'fasting', label: t.missionTabFasting || "Fasting", icon: "moon", activeColorClass: "" },
+        { id: 'sunnah_prayer', label: t.missionTabSunnahPrayer || "Sunnah Prayer", icon: "mosque", activeColorClass: "" },
+        { id: 'dhikr', label: t.missionTabDhikr || "Dhikr", icon: "tasbih", activeColorClass: "" },
+        { id: 'fasting', label: t.missionTabFasting || "Fasting", icon: "utensils-crossed", activeColorClass: "" },
         { id: 'quran', label: t.missionTabQuran || "Quran", icon: "book", activeColorClass: "" },
         { id: 'recommended', label: t.missionTabRecommended || "Recommended", icon: "sparkles", activeColorClass: "" }
     ], [t]);
@@ -297,10 +297,10 @@ export default function MissionListModal({
                                     value={tab.id}
                                     className={cn(
                                         "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none",
-                                        "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 data-[state=active]:bg-[rgb(var(--color-primary))] data-[state=active]:text-[rgb(var(--color-primary-foreground))] data-[state=active]:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
+                                        "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 data-[state=active]:bg-[rgb(var(--color-primary))] data-[state=active]:text-[rgb(var(--color-primary-foreground))] dark:data-[state=active]:text-[rgb(var(--color-primary-foreground))] data-[state=active]:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                                     )}
                                 >
-                                    <AppIcon name={tab.icon} size="xs" tone={activeTab === tab.id ? "default" : "muted"} />
+                                    <AppIcon name={tab.icon} size="xs" className="text-current" />
                                     {tab.label}
                                 </TabsTrigger>
                             ))}

@@ -66,7 +66,7 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
                 ruling: 'obligatory',
                 type: 'daily',
                 hasanahReward: 200,
-                iconKey: 'landmark',
+                iconKey: 'mosque',
                 gender: 'male',
                 validationType: 'day',
                 validationConfig: { allowedDays: [5] }
