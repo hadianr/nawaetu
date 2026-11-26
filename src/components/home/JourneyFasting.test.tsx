@@ -23,6 +23,7 @@ vi.mock("@/lib/features", () => ({ get RAMADHAN_PAGE_ENABLED() { return features
 vi.mock("@/components/ui/LottieMoment", () => ({
     default: ({ src, fallback }: { src: string; fallback?: React.ReactNode }) => <span data-testid="lottie" data-src={src}>{fallback}</span>,
 }));
+vi.mock("@/hooks/useUdzur", () => ({ useUdzur: () => ({ excusedToday: false }) }));
 vi.mock("@/hooks/useFastingTracker", () => ({
     useFastingTracker: () => ({
         allLogs: mockLogs,

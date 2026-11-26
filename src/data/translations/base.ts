@@ -10,6 +10,7 @@ import { fastingTrackerEN } from "./en/fasting-tracker";
 import { hijriCalendarEN } from "./en/hijri-calendar";
 import { rewardsEN } from "./en/rewards";
 import { journeyEN } from "./en/journey";
+import { udzurEN } from "./en/udzur";
 import { uiID } from "./id/ui";
 import { settingsID } from "./id/settings";
 import { otherID } from "./id/other";
@@ -22,6 +23,7 @@ import { fastingTrackerID } from "./id/fasting-tracker";
 import { hijriCalendarID } from "./id/hijri-calendar";
 import { rewardsID } from "./id/rewards";
 import { journeyID } from "./id/journey";
+import { udzurID } from "./id/udzur";
 
 export const BASE_SETTINGS_EN = {
   ...uiEN,
@@ -36,6 +38,7 @@ export const BASE_SETTINGS_EN = {
   ...hijriCalendarEN,
   ...rewardsEN,
   ...journeyEN,
+  ...udzurEN,
 };
 
 export const BASE_SETTINGS_ID = {
@@ -51,4 +54,5 @@ export const BASE_SETTINGS_ID = {
   ...hijriCalendarID,
   ...rewardsID,
   ...journeyID,
+  ...udzurID,
 };

@@ -6,10 +6,12 @@ import { useLocale } from "@/context/LocaleContext";
 import { useStreakDates } from "@/hooks/useStreakDates";
 import { cn } from "@/lib/utils";
 
+const NO_DATES: ReadonlySet<string> = new Set();
+
 /** The last seven days of the streak: counted, frozen (Hari Jeda), today and empty. One source for the dialog and the Home card. */
 export default function StreakWeek({ compact = false }: { compact?: boolean }) {
     const { locale, t } = useLocale();
-    const { activeDates, protectedDates } = useStreakDates();
+    const { activeDates, protectedDates, excusedDates = NO_DATES } = useStreakDates();
     const week = useMemo(() => {
         const today = new Date();
         return Array.from({ length: 7 }, (_, index) => {
@@ -21,10 +23,12 @@ export default function StreakWeek({ compact = false }: { compact?: boolean }) {
                 label: new Intl.DateTimeFormat(locale, { weekday: compact ? "long" : "narrow" }).format(date),
                 active: activeDates.has(key),
                 protected: protectedDates.has(key),
+                // Udzur: neither counted nor missed.
+                excused: !activeDates.has(key) && excusedDates.has(key),
                 today: index === 6,
             };
         });
-    }, [activeDates, compact, locale, protectedDates]);
+    }, [activeDates, compact, locale, protectedDates, excusedDates]);
 
     if (compact) {
         // One Lottie flame per card is enough (the done row has it), so the dots stay light.
@@ -34,7 +38,7 @@ export default function StreakWeek({ compact = false }: { compact?: boolean }) {
                     <li key={day.key} className="flex size-4 items-center justify-center">
                         <span className="sr-only">
                             {day.label}
-                            {day.protected ? `: ${String(t.streakProtectedDay)}` : day.active ? `: ${String(t.streakCompleted)}` : ""}
+                            {day.protected ? `: ${String(t.streakProtectedDay)}` : day.active ? `: ${String(t.streakCompleted)}` : day.excused ? `: ${t.udzurStatsLegend}` : ""}
                         </span>
                         <span
                             aria-hidden="true"
@@ -44,7 +48,9 @@ export default function StreakWeek({ compact = false }: { compact?: boolean }) {
                                     ? "border-[rgb(var(--color-info))]/60 bg-[rgb(var(--color-info))]/15 text-[rgb(var(--color-info))]"
                                     : day.active
                                         ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
-                                        : "border-[rgb(var(--color-text-muted))]/60",
+                                        : day.excused
+                                            ? "border-dashed border-[rgb(var(--color-text-muted))]/60"
+                                            : "border-[rgb(var(--color-text-muted))]/60",
                                 day.today && "outline outline-2 outline-offset-2 outline-[rgb(var(--color-text-muted))]",
                             )}
                         >
@@ -69,6 +75,8 @@ export default function StreakWeek({ compact = false }: { compact?: boolean }) {
                             ? "border-[rgb(var(--color-info))]/60 bg-[rgb(var(--color-info))]/15 text-[rgb(var(--color-info))]"
                             : day.active
                                 ? "border-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
+                                : day.excused
+                                    ? "border-dashed border-[rgb(var(--color-text-muted))]/60"
                                 : day.today
                                     ? "border-[rgb(var(--color-accent))]"
                                     : "border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))]",
@@ -77,7 +85,9 @@ export default function StreakWeek({ compact = false }: { compact?: boolean }) {
                             ? <Snowflake className="h-3.5 w-3.5" aria-label={String(t.streakProtectedDay)} />
                             : day.active
                                 ? <StreakFlame className="size-8" fallbackClassName="h-3.5 w-3.5 text-[rgb(var(--color-primary-foreground))]" label={String(t.streakCompleted)} />
-                                : <AppIcon name="target" size="xs" tone="muted" />}
+                                : day.excused
+                                    ? <AppIcon name="flower" size="xs" tone="muted" label={t.udzurStatsLegend} />
+                                    : <AppIcon name="target" size="xs" tone="muted" />}
                     </span>
                 </div>
             ))}

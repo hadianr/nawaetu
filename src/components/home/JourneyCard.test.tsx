@@ -27,6 +27,7 @@ vi.mock("@/hooks/useStreak", () => ({
 vi.mock("@/hooks/useFastingTracker", () => ({
     useFastingTracker: () => ({ allLogs: {}, defaultMadzhab: null, markQadhaDone: vi.fn(), getPendingQadha: () => [] }),
 }));
+vi.mock("@/hooks/useUdzur", () => ({ useUdzur: () => ({ excusedToday: false, excusedDates: new Set() }) }));
 vi.mock("@/components/StreakBadge", () => ({ default: () => <div role="dialog">streak details</div> }));
 vi.mock("@/core/repositories/streak.repository", () => ({
     getStreakRepository: () => ({ updateStreak: mockUpdateStreak }),

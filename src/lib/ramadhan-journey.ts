@@ -29,6 +29,15 @@ function hijriDayAndMonth(utcMs: number): { day: number; month: number } {
     return { day: get("day"), month: get("month") };
 }
 
+const hijriYearFormat = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn", { year: "numeric", timeZone: "UTC" });
+
+/** Hijri day, month and year of a local date, with the user's offset. */
+export function getHijriDate(now: Date, adjustment = 0): { day: number; month: number; year: number } {
+    const utcMs = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 12) + adjustment * DAY_MS;
+    const year = Number.parseInt(hijriYearFormat.formatToParts(new Date(utcMs)).find(part => part.type === "year")?.value ?? "", 10);
+    return { ...hijriDayAndMonth(utcMs), year };
+}
+
 /** The user's Hijri day and month today, with the same offset as the countdown. */
 export function getHijriToday(now: Date, adjustment = 0): { day: number; month: number } {
     return hijriDayAndMonth(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 12) + adjustment * DAY_MS);

@@ -52,7 +52,7 @@ export default function MissionsWidget() {
     const { completedMissions, completeMission, undoCompleteMission } = useMissions();
 
     // Extracted Custom Hook for Missions Logic
-    const { missions, widgetMissions, gender, isMissionCompleted, checkValidation } = useWidgetMissions(completedMissions);
+    const { missions, widgetMissions, gender, excusedPrayerCount, isMissionCompleted, checkValidation } = useWidgetMissions(completedMissions);
 
     const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
     const [userToken, setUserToken] = useState<string | null>(null);
@@ -249,6 +249,13 @@ export default function MissionsWidget() {
                     {completedCount}/{missions.length} {t.home_mission_completed}
                 </div>
             </div>
+
+            {excusedPrayerCount > 0 && (
+                <p className="relative z-10 -mt-2 mb-3 flex items-center gap-1.5 text-xs text-[rgb(var(--color-text-muted))]">
+                    <AppIcon name="flower" size="xs" tone="muted" />
+                    {t.udzurMissionsExcused.replace("{count}", String(excusedPrayerCount))}
+                </p>
+            )}
 
             <div className="space-y-2 relative z-10">
                 {displayMissions.map((mission) => {

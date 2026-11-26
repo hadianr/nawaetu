@@ -7,6 +7,7 @@ import { CalendarDays, Flame, LockKeyhole, Share2, Snowflake, Target, Trophy } f
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { useStreak } from "@/hooks/useStreak";
+import { useUdzur } from "@/hooks/useUdzur";
 import { useStreakCelebration } from "@/hooks/useStreakCelebration";
 import { useStreakDates } from "@/hooks/useStreakDates";
 import { usePlayerStats } from "@/lib/habits/leveling";
@@ -75,6 +76,8 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
   const currentStreak = mounted ? display.streak : 0;
   const isActiveToday = mounted && display.isActiveToday;
   const isLost = mounted && display.isLost;
+  // Udzur today: the streak waits, it is not at risk.
+  const { excusedToday } = useUdzur();
   const nextMilestone = milestones.find((milestone) => milestone.days > currentStreak);
   const milestoneProgress = nextMilestone
     ? Math.min(100, Math.round((currentStreak / nextMilestone.days) * 100))
@@ -99,7 +102,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
   const statusText = isActiveToday
     ? t.streakCompletedToday
     : currentStreak > 0
-      ? t.streakAtRisk
+      ? excusedToday ? t.udzurStreakPaused : t.streakAtRisk
       : isLost
         ? t.streakLostRestart
         : t.streakStart;

@@ -10,6 +10,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { getStreakRepository } from "@/core/repositories/streak.repository";
 import { useFastingTracker } from "@/hooks/useFastingTracker";
+import { useUdzur } from "@/hooks/useUdzur";
 import { countRecommendedDays, getFastingGuide } from "@/lib/fasting-guide";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { DateUtils } from "@/lib/utils/date";
@@ -26,6 +27,8 @@ export default function JourneyFasting({ adjustment, onVisible }: { adjustment: 
     const { t } = useLocale();
     const storage = getStorageService();
     const { allLogs, defaultMadzhab, getPendingQadha, markQadhaDone } = useFastingTracker();
+    // In haid or nifas she does not fast: no suggestion for today, the owed count still shows.
+    const { excusedToday } = useUdzur();
     const today = DateUtils.today();
     const [skipped, setSkipped] = useState(() => storage.getOptional<string>(STORAGE_KEYS.JOURNEY_FAST_SKIP) === today);
     // `burst` replays the stars on each made-up fast; `cleared` is the one-time moment when the last one is done.
@@ -45,8 +48,8 @@ export default function JourneyFasting({ adjustment, onVisible }: { adjustment: 
     const guide = getFastingGuide({ now: new Date(), adjustment, pendingQadha: owed, madzhab: defaultMadzhab });
     const slots = useMemo(() => (owed > 0 ? countRecommendedDays(new Date(), adjustment) : 0), [adjustment, owed]);
 
-    const showSuggestion = !skipped && guide.today !== "none";
-    const showReason = !skipped && guide.today === "none" && guide.reason !== null;
+    const showSuggestion = !skipped && !excusedToday && guide.today !== "none";
+    const showReason = !skipped && !excusedToday && guide.today === "none" && guide.reason !== null;
     const visible = cleared || owed > 0 || showSuggestion || showReason;
     useEffect(() => onVisible?.(visible), [onVisible, visible]);
 

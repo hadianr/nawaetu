@@ -29,6 +29,7 @@ import { fastingTrackerEN } from './fasting-tracker';
 import { hijriCalendarEN } from './hijri-calendar';
 import { rewardsEN } from './rewards';
 import { journeyEN } from './journey';
+import { udzurEN } from './udzur';
 
 export const SETTINGS_EN = {
   ...missionsEN,
@@ -44,4 +45,5 @@ export const SETTINGS_EN = {
   ...hijriCalendarEN,
   ...rewardsEN,
   ...journeyEN,
+  ...udzurEN,
 };

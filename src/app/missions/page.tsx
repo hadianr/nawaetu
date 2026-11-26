@@ -21,6 +21,8 @@
 import { useCallback, useState, useEffect } from "react";
 import { ArrowLeft, Check, Trophy, AlertCircle, Clock } from "@/components/ui/icons";
 import { getMissionsForGender, Mission, Gender, getLocalizedMission } from "@/data/missions";
+import { useUdzur } from "@/hooks/useUdzur";
+import { countPendingQadha } from "@/hooks/useFastingTracker";
 import { addHasanah } from "@/lib/habits/leveling";
 import { updateStreak } from "@/lib/habits/streak-utils";
 import { cn } from "@/lib/utils";
@@ -54,15 +56,19 @@ export default function MisiPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const { data: prayerData } = usePrayerTimesContext();
+    const { excusedToday: udzur } = useUdzur();
 
     const loadData = useCallback(() => {
         const savedGender = (storage.getOptional(STORAGE_KEYS.USER_GENDER) || session?.user?.gender) as Gender;
         setGender(savedGender);
 
-        const allMissions = getMissionsForGender(savedGender);
+        const allMissions = getMissionsForGender(savedGender, undefined, undefined, undefined, {
+            udzur,
+            qadhaOwed: savedGender === "female" ? countPendingQadha() > 0 : undefined,
+        });
         const localizedMissions = allMissions.map(mission => getLocalizedMission(mission, locale));
         setMissions(localizedMissions);
-    }, [locale, session]);
+    }, [locale, session, udzur]);
 
     useEffect(() => {
         // Initial load
