@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 // Fields copied unchanged from HadeethEnc/QuranEnc; their policy forbids altering the source text.
 const COPIED_FIELDS: Record<string, string[]> = {
     "src/data/hadiths/civic-life.ts": ["translation", "translationEn", "arabic"],
+    "src/data/hadiths/women-udzur.ts": ["translation", "translationEn", "arabic"],
     "src/data/history/content.ts": ["translation", "translationEn", "arabic"],
     "src/data/sirah/concise/notes.ts": ["translation", "translationEn", "textId", "textEn", "footnotesEn"],
 };

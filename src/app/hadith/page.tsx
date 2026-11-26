@@ -7,7 +7,7 @@
  * Dedicated Hadith Library Page (Narrator-Focused, High Performance, Auto-Highlight, Story Sharing)
  */
 
-import { useState, useMemo, useEffect, Suspense, memo } from "react";
+import { useState, useMemo, useEffect, useCallback, Suspense, memo } from "react";
 import TargetIdReader from "@/components/TargetIdReader";
 import dynamic from "next/dynamic";
 import { BookOpen, Quote, Copy, Check, ChevronDown, ChevronUp, ShieldCheck, User, Share2, ChevronDown as MoreIcon, Lightbulb } from "@/components/ui/icons";
@@ -320,6 +320,11 @@ function HadithContent() {
         locale,
     });
 
+    // ?topic=women opens the library on one topic, e.g. from udzur mode.
+    const openTopic = useCallback((topic: string) => {
+        if (HADITH_TOPIC_DEFINITIONS.some((definition) => definition.key === topic)) setSelectedTopic(topic);
+    }, [setSelectedTopic]);
+
     const activeShareData: ShareableCardData | null = useMemo(() => {
         if (!shareItem) return null;
         return mapHadithToShareData(shareItem, locale);
@@ -329,6 +334,7 @@ function HadithContent() {
         <>
             <Suspense fallback={null}>
                 <TargetIdReader onChange={setTargetId} />
+                <TargetIdReader param="topic" onChange={openTopic} />
             </Suspense>
             <div className={cn(
                 "hadith-page flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500 bg-[rgb(var(--color-background))]"
