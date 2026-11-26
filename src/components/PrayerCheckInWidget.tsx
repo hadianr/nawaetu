@@ -38,6 +38,24 @@ import { findMissionDefinition, type Gender } from "@/data/missions";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { AppIcon } from "@/components/ui/AppIcon";
 import type { AppIconName } from "@/lib/icon-names";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useUdzur } from "@/hooks/useUdzur";
+import { udzurLimitDays, type FardhuPrayerKey } from "@/lib/udzur";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { buttonVariants } from "@/components/ui/button";
+import LottieMoment from "@/components/ui/LottieMoment";
+import type { Madzhab } from "@/data/fasting/types";
+
+// Only opened on a tap, so it stays out of the home bundle.
+const UdzurSheet = dynamic(() => import("@/components/udzur/UdzurSheet"), { ssr: false });
+
+const MADZHAB_LABEL_KEYS: Record<Madzhab, string> = {
+    syafii: "fastingMadzhabSyafii",
+    hanafi: "fastingMadzhabHanafi",
+    maliki: "fastingMadzhabMaliki",
+    hanbali: "fastingMadzhabHanbali",
+};
 
 // Prayer config: suffix for mission ID and the prayerTimes keys for time-awareness
 const PRAYERS: { suffix: string; prayerKey: string; endKey: string | null; i18n: string }[] = [
@@ -96,6 +114,12 @@ export default function PrayerCheckInWidget() {
     const [justDone, setJustDone] = useState<string | null>(null);
     const dateInputRef = useRef<HTMLInputElement>(null);
     const [showSunnah, setShowSunnah] = useState(false);
+    const udzur = useUdzur();
+    const [udzurSheetOpen, setUdzurSheetOpen] = useState(false);
+    // The prayer whose "excused" explanation is open.
+    const [excusedPrayer, setExcusedPrayer] = useState<string | null>(null);
+    // Turning the mode on is the one moment that animates.
+    const [udzurJustStarted, setUdzurJustStarted] = useState(false);
     const todayStr = DateUtils.today();
     const isBackdated = selectedDate !== todayStr;
     const getHasanahReward = (baseHasanah: number) => calculateHasanahReward(baseHasanah, isBackdated);
@@ -143,7 +167,15 @@ export default function PrayerCheckInWidget() {
         [completedMissions, gender, selectedDate]
     );
 
+    const isExcused = (prayer: typeof PRAYERS[number]) =>
+        udzur.isPrayerExcused(selectedDate, prayer.prayerKey as FardhuPrayerKey, prayerData?.prayerTimes);
     const completedCount = PRAYERS.filter((p) => isPrayerDone(p.suffix)).length;
+    // A prayer already checked in stays counted; the rest that udzur excused leave the total.
+    const dueCount = PRAYERS.filter((p) => isPrayerDone(p.suffix) || !isExcused(p)).length;
+    const anyExcused = dueCount < PRAYERS.length;
+    const madzhab = udzur.active ? getStorageService().getOptional<Madzhab>(STORAGE_KEYS.RAMADHAN_FASTING_MADZHAB) : null;
+    const udzurLimit = udzur.active ? udzurLimitDays(udzur.active.kind, madzhab) : 0;
+    const showUdzurEntry = udzur.available && !udzur.active && !isBackdated;
 
     // Determine current/next active prayer window
     const getTimeStatus = (prayerKey: string | null, endKey: string | null, isQobliyah = false) => {
@@ -367,11 +399,11 @@ export default function PrayerCheckInWidget() {
 
                         <div className={cn(
                             "text-xs px-1.5 py-0.5 rounded-full font-bold border transition-colors whitespace-nowrap",
-                            completedCount === 5
+                            dueCount > 0 && completedCount === dueCount
                                 ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))]"
                                 : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))]"
                         )}>
-                            {completedCount}/5
+                            {dueCount === 0 ? t.udzurExcusedChip : `${completedCount}/${dueCount}`}
                         </div>
                     </div>
                 </div>
@@ -380,6 +412,22 @@ export default function PrayerCheckInWidget() {
                 <div className="flex items-center gap-2 relative z-10">
                     {PRAYERS.map((prayer) => {
                         const done = isPrayerDone(prayer.suffix);
+                        if (!done && isExcused(prayer)) {
+                            return (
+                                <button
+                                    key={prayer.suffix}
+                                    type="button"
+                                    onClick={() => setExcusedPrayer(getTranslation(prayer.i18n))}
+                                    aria-label={`${getTranslation(prayer.i18n)}: ${t.udzurExcusedChip}`}
+                                    className="flex-1 flex flex-col items-center gap-1 py-1.5 rounded-xl border border-dashed border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]/40 transition-colors active:scale-95"
+                                >
+                                    <AppIcon name="flower" size="sm" tone="muted" />
+                                    <span className="text-xs font-bold leading-none text-[rgb(var(--color-text-muted))]">
+                                        {getTranslation(prayer.i18n)}
+                                    </span>
+                                </button>
+                            );
+                        }
                         const { isActive, isUpcoming, isLate, isFuture } = getTimeStatus(
                             prayer.prayerKey,
                             prayer.endKey,
@@ -459,8 +507,47 @@ export default function PrayerCheckInWidget() {
                     })}
                 </div>
 
+                {/* Udzur: the active period (the way in sits in the sunnah row below) */}
+                {udzur.active && !isBackdated && (
+                    <div className="mt-2.5 relative z-10 flex items-start gap-2.5 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-2.5">
+                        {udzurJustStarted ? (
+                            <LottieMoment
+                                src="/lottie/blossom.lottie"
+                                quietLoad
+                                className="size-9 shrink-0"
+                                fallback={<AppIcon name="flower" size="md" tone="primary" />}
+                            />
+                        ) : (
+                            <span className="flex size-9 shrink-0 items-center justify-center"><AppIcon name="flower" size="md" tone="primary" /></span>
+                        )}
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs font-bold text-[rgb(var(--color-text-strong))]">
+                                {t.udzurActiveTitle.replace("{day}", String(udzur.day))}
+                            </p>
+                            <p className="mt-0.5 text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{t.udzurActiveDesc}</p>
+                            {udzur.day > udzurLimit && (
+                                <p className="mt-1.5 text-xs leading-relaxed text-[rgb(var(--color-warning))]">
+                                    {madzhab && madzhab in MADZHAB_LABEL_KEYS
+                                        ? t.udzurLongPeriodMadzhab
+                                            .replace("{days}", String(udzur.day))
+                                            .replace("{madzhab}", getTranslation(MADZHAB_LABEL_KEYS[madzhab], madzhab))
+                                            .replace("{limit}", String(udzurLimit))
+                                        : t.udzurLongPeriodUnset.replace("{days}", String(udzur.day))}
+                                </p>
+                            )}
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setUdzurSheetOpen(true)}
+                            className="min-h-11 shrink-0 rounded-lg border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/10 px-2.5 text-xs font-bold text-[rgb(var(--color-primary-strong))] transition-colors hover:bg-[rgb(var(--color-primary))]/15"
+                        >
+                            {t.udzurEndButton}
+                        </button>
+                    </div>
+                )}
+
                 {/* Completeness Banner */}
-                {completedCount === 5 && (
+                {dueCount > 0 && completedCount === dueCount && (
                     <div className={cn(
                         "mt-2.5 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border relative z-10 transition-colors",
                         "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
@@ -472,13 +559,17 @@ export default function PrayerCheckInWidget() {
                     </div>
                 )}
 
-                {/* Sunnah Toggle & Section */}
+                {/* Sunnah Toggle & Section (none while udzur: no prayer at all) */}
+                {!anyExcused && (
                 <div className="mt-4 pt-3 border-t border-dashed border-[rgb(var(--color-border))] relative z-10">
+                    <div className="flex items-center justify-between gap-2">
                     <button
                         onClick={() => setShowSunnah(!showSunnah)}
                         aria-expanded={showSunnah}
                         className={cn(
-                            "w-full flex items-center justify-between py-1 transition-colors group",
+                            "flex items-center py-1 transition-colors group",
+                            // With the udzur link beside it, the chevron sits by the label so the row has no gap.
+                            showUdzurEntry ? "gap-2" : "w-full justify-between",
                             "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))]"
                         )}
                     >
@@ -495,6 +586,17 @@ export default function PrayerCheckInWidget() {
                             <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", showSunnah && "rotate-180")} />
                         </div>
                     </button>
+                    {showUdzurEntry && (
+                        <button
+                            type="button"
+                            onClick={() => setUdzurSheetOpen(true)}
+                            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 px-1 text-xs font-semibold text-[rgb(var(--color-text-muted))] transition-colors hover:text-[rgb(var(--color-primary-strong))]"
+                        >
+                            <AppIcon name="flower" size="xs" className="text-current" />
+                            {t.udzurEntryLink}
+                        </button>
+                    )}
+                    </div>
 
                     {showSunnah && (
                         <div className="grid grid-cols-3 xs:grid-cols-3 sm:grid-cols-7 gap-2 mt-3 animate-in fade-in slide-in-from-top-2 duration-300">
@@ -563,7 +665,38 @@ export default function PrayerCheckInWidget() {
                         </div>
                     )}
                 </div>
+                )}
             </div>
+
+            {udzurSheetOpen && (
+                <UdzurSheet
+                    udzur={udzur}
+                    open={udzurSheetOpen}
+                    onOpenChange={setUdzurSheetOpen}
+                    onStarted={() => setUdzurJustStarted(true)}
+                />
+            )}
+
+            <Dialog open={excusedPrayer !== null} onOpenChange={(open) => !open && setExcusedPrayer(null)}>
+                <DialogContent
+                    closeLabel={t.udzurClose}
+                    className="border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text))]"
+                >
+                    <DialogHeader>
+                        <DialogTitle className="pr-12 text-left text-base font-bold text-[rgb(var(--color-text-strong))]">
+                            {t.udzurPrayerSheetTitle.replace("{prayer}", excusedPrayer ?? "")}
+                        </DialogTitle>
+                        <DialogDescription className="text-left text-sm leading-relaxed text-[rgb(var(--color-text))]">
+                            {t.udzurPrayerSheetDesc}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <p className="text-sm leading-relaxed text-[rgb(var(--color-text-muted))]">{t.udzurReassurance}</p>
+                    <Link href="/dhikr" onClick={() => setExcusedPrayer(null)} className={cn(buttonVariants(), "min-h-11 w-full")}>
+                        <AppIcon name="tasbih" size="sm" className="text-current" />
+                        {t.udzurDhikrAction}
+                    </Link>
+                </DialogContent>
+            </Dialog>
 
             {/* Bottom Sheet: Jamaah or Sendiri (for male/unknown) */}
             {sheet && (

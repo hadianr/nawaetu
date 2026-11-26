@@ -19,7 +19,9 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions";
+import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, isExcusedDuringUdzur, Mission, Gender, getLocalizedMission } from "@/data/missions";
+import { useUdzur } from "@/hooks/useUdzur";
+import { countPendingQadha } from "@/hooks/useFastingTracker";
 import { checkMissionValidation, localizeMissionReason } from "@/lib/habits/mission-utils";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useLocale } from "@/context/LocaleContext";
@@ -36,6 +38,7 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
     const { data: prayerData } = usePrayerTimesContext();
 
     const [profileRevision, setProfileRevision] = useState(0);
+    const { excusedToday: udzur } = useUdzur();
 
     const { gender, missions } = useMemo(() => {
         void profileRevision;
@@ -46,9 +49,10 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
         const hijriDay = prayerData?.hijriDay;
 
         const currentDay = new Date().getDay();
-        const daily = getDailyMissions(savedGender, hijriMonth, hijriDay, currentDay);
-        const weekly = getWeeklyMissions(savedGender, hijriMonth, hijriDay, currentDay);
-        const seasonal = getSeasonalMissions(prayerData?.hijriDate);
+        const context = { udzur, qadhaOwed: savedGender === "female" ? countPendingQadha() > 0 : undefined };
+        const daily = getDailyMissions(savedGender, hijriMonth, hijriDay, currentDay, context);
+        const weekly = getWeeklyMissions(savedGender, hijriMonth, hijriDay, currentDay, context);
+        const seasonal = getSeasonalMissions(prayerData?.hijriDate).filter(m => !(udzur && savedGender === "female" && isExcusedDuringUdzur(m)));
 
         const isRamadhan = hijriMonth?.includes('Ramadan');
 
@@ -87,16 +91,19 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
         const localizedMissions = allMissions.map(mission => getLocalizedMission(mission, locale));
         return { gender: savedGender, missions: localizedMissions };
-    }, [locale, prayerData?.hijriDate, prayerData?.hijriMonth, prayerData?.hijriDay, profileRevision, session]);
+    }, [locale, prayerData?.hijriDate, prayerData?.hijriMonth, prayerData?.hijriDay, profileRevision, session, udzur]);
 
     useEffect(() => {
         const handleUpdate = () => setProfileRevision((revision) => revision + 1);
         window.addEventListener(APP_EVENTS.PROFILE_UPDATED, handleUpdate);
         window.addEventListener(APP_EVENTS.STORAGE_UPDATED, handleUpdate);
+        // The qadha count decides whether the qadha mission shows.
+        window.addEventListener("fasting_updated", handleUpdate);
 
         return () => {
             window.removeEventListener(APP_EVENTS.PROFILE_UPDATED, handleUpdate);
             window.removeEventListener(APP_EVENTS.STORAGE_UPDATED, handleUpdate);
+            window.removeEventListener("fasting_updated", handleUpdate);
         };
     }, []);
 
@@ -169,6 +176,8 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
         missions,
         widgetMissions,
         gender,
+        /** Obligatory prayers set aside today by udzur, for the "excused" note. */
+        excusedPrayerCount: udzur && gender === "female" ? 5 : 0,
         isMissionCompleted,
         checkValidation: (mission: Mission) => localizeMissionReason(checkMissionValidation(mission, prayerData), t),
     };

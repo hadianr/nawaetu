@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { useStreak } from "@/hooks/useStreak";
+import { useUdzur } from "@/hooks/useUdzur";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 interface CanonicalProgression {
@@ -9,15 +10,17 @@ interface CanonicalProgression {
   streak?: { days?: Array<{ localDate: string; status?: string }> };
 }
 
-function consecutiveDates(lastDate: string, count: number): Set<string> {
+/** The last `count` streak days up to `lastDate`, skipping excused (udzur) days, which bridge without counting. */
+function consecutiveDates(lastDate: string, count: number, excused: ReadonlySet<string>): Set<string> {
   const result = new Set<string>();
-  const end = new Date(`${lastDate}T00:00:00Z`);
-  if (Number.isNaN(end.getTime())) return result;
+  const cursor = new Date(`${lastDate}T00:00:00Z`);
+  if (Number.isNaN(cursor.getTime())) return result;
 
-  for (let offset = 0; offset < count; offset++) {
-    const date = new Date(end);
-    date.setUTCDate(end.getUTCDate() - offset);
-    result.add(date.toISOString().slice(0, 10));
+  // Bounded: a streak day per step, plus at most the excused days in between.
+  for (let guard = 0; result.size < count && guard < count + excused.size + 1; guard++) {
+    const date = cursor.toISOString().slice(0, 10);
+    if (!excused.has(date) || guard === 0) result.add(date);
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
   }
   return result;
 }
@@ -26,6 +29,7 @@ function consecutiveDates(lastDate: string, count: number): Set<string> {
 export function useStreakDates() {
   const { data: session, status } = useSession();
   const { streak } = useStreak();
+  const { excusedDates } = useUdzur();
   const cached = status === "authenticated"
     ? getStorageService().getOptional<CanonicalProgression>(STORAGE_KEYS.CANONICAL_PROGRESSION)
     : null;
@@ -37,8 +41,8 @@ export function useStreakDates() {
     if (canonicalDays) {
       return new Set(canonicalDays.filter(day => day.status !== "frozen").map(day => day.localDate.slice(0, 10)));
     }
-    return consecutiveDates(streak.lastActiveDate, streak.currentStreak);
-  }, [canonicalDays, streak.currentStreak, streak.lastActiveDate]);
+    return consecutiveDates(streak.lastActiveDate, streak.currentStreak, excusedDates);
+  }, [canonicalDays, streak.currentStreak, streak.lastActiveDate, excusedDates]);
 
   const protectedDates = useMemo(() => {
     if (canonicalDays) {
@@ -47,5 +51,5 @@ export function useStreakDates() {
     return new Set(streak.protectedDates);
   }, [canonicalDays, streak.protectedDates]);
 
-  return { activeDates, protectedDates };
+  return { activeDates, protectedDates, excusedDates };
 }

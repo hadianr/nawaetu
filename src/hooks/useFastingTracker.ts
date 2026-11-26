@@ -166,6 +166,38 @@ async function flushPending() {
     }
 }
 
+/** Ramadan fasts still owed on this device, across all years. */
+export function countPendingQadha(logs: AllFastingLogs = loadFromStorage()): number {
+    return Object.values(logs).reduce((sum, yearLog) => sum + computeStats(yearLog ?? {}).pendingQadha, 0);
+}
+
+/**
+ * Marks Ramadan days spent in haid or nifas (udzur mode) in the fasting log, so the qadha count follows
+ * without a second entry. A day she already logged is left as she wrote it. Sends them when signed in.
+ */
+export function logUdzurFastingDays(days: Array<{ hijriYear: number; hijriDay: number }>, status: "menstruation" | "postpartum", signedIn: boolean): void {
+    const stored = loadFromStorage();
+    const pending = loadPending();
+    const madzhab = loadMadzhabPref();
+    let changed = false;
+    for (const { hijriYear, hijriDay } of days) {
+        const yearKey = makeYearKey(hijriYear);
+        const dayKey = makeDayKey(hijriDay);
+        if (stored[yearKey]?.[dayKey]) continue;
+        stored[yearKey] = {
+            ...(stored[yearKey] ?? {}),
+            [dayKey]: { status, consequence: getConsequence(status, madzhab), madzhab: madzhab ?? undefined, qadhaDone: false },
+        };
+        pending.add(`${hijriYear}-${hijriDay}`);
+        changed = true;
+    }
+    if (!changed) return;
+    saveToStorage(stored);
+    savePending(pending);
+    if (typeof window !== "undefined") window.dispatchEvent(new Event("fasting_updated"));
+    if (signedIn) void flushPending();
+}
+
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useFastingTracker() {

@@ -60,6 +60,7 @@ import AudioCard from "./sections/AudioCard";
 import LanguageCard from "./sections/LanguageCard";
 import ShareAppCard from "./sections/ShareAppCard";
 import CommunityCard from "./sections/CommunityCard";
+import UdzurCard from "./sections/UdzurCard";
 import BrandIcon from "@/components/BrandIcon";
 
 const storage = getStorageService();
@@ -448,6 +449,9 @@ export default function SettingsPageContent() {
                     muadzin={muadzin}
                     onMuadzinChange={handleMuadzinChange}
                 />
+
+                {/* Udzur (haid/nifas) privacy and history */}
+                <UdzurCard t={t} />
 
                 {/* Language Settings Card */}
                 <LanguageCard

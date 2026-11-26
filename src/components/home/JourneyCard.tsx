@@ -19,6 +19,7 @@ import { dalilRef, getJourneyHabit } from "@/data/ramadhan-journey";
 import StreakWeek from "@/components/streak/StreakWeek";
 import { useStreak } from "@/hooks/useStreak";
 import { useStreakDates } from "@/hooks/useStreakDates";
+import { useUdzur } from "@/hooks/useUdzur";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { isAutoHabitDone } from "@/lib/journey-auto";
 import { parseHijriAdjustment } from "@/lib/hijri-date";
@@ -92,6 +93,7 @@ export default function JourneyCard() {
     // The streak is the only record of a counted day, so the card never disagrees with the streak badge.
     const { activeDates } = useStreakDates();
     const { streak, display } = useStreak();
+    const { excusedToday } = useUdzur();
 
     const today = DateUtils.today();
     const habit = journey.phase ? getJourneyHabit(journey.phase, journey.dayNumber) : null;
@@ -260,7 +262,7 @@ export default function JourneyCard() {
                             <span className="block text-xs text-[rgb(var(--color-text))]">
                                 {String(doneToday
                                     ? t.journeyDone
-                                    : display.streak > 0 ? t.streakAtRisk : display.isLost ? t.streakLostRestart : t.streakStart)}
+                                    : display.streak > 0 ? (excusedToday ? t.udzurStreakPaused : t.streakAtRisk) : display.isLost ? t.streakLostRestart : t.streakStart)}
                             </span>
                         </span>
                         <StreakWeek compact />

@@ -22,6 +22,7 @@ import { CategoryBreakdown } from '@/components/stats/CategoryBreakdown';
 import { HasanahTrendChart } from '@/components/stats/HasanahTrendChart';
 import { QuranStatsCard } from '@/components/stats/QuranStatsCard';
 import { useStreak } from '@/hooks/useStreak';
+import { useUdzur } from '@/hooks/useUdzur';
 import { DateUtils } from '@/lib/utils/date';
 import { AppIcon, resolveAppIconName } from '@/components/ui/AppIcon';
 import StreakBadge from '@/components/StreakBadge';
@@ -30,6 +31,7 @@ export default function StatsPage() {
     const { t, locale } = useLocale();
     const playerStats = usePlayerStats();
     const { streak, display: streakDisplay } = useStreak();
+    const { excusedDates } = useUdzur();
     const [history, setHistory] = useState<DailyActivity[]>([]);
     const [completedMissions, setCompletedMissions] = useState<CompletedMission[]>([]);
     const [activeInsight, setActiveInsight] = useState<InsightKey | null>(null);
@@ -124,7 +126,9 @@ export default function StatsPage() {
     const todayPrayerCount = prayerMap[todayStr]?.size || 0;
 
     const activeDaysLast30 = history.slice(-30).filter(d => (d.hasanahGained || 0) > 0).length;
-    const consistency = Math.round((activeDaysLast30 / Math.min(history.length || 1, 30)) * 100) || 0;
+    // A quiet udzur day is not a lapse: it leaves the denominator.
+    const excusedIdleDays = history.slice(-30).filter(d => excusedDates.has(d.date) && !((d.hasanahGained || 0) > 0)).length;
+    const consistency = Math.round((activeDaysLast30 / Math.max(1, Math.min(history.length || 1, 30) - excusedIdleDays)) * 100) || 0;
 
     const chartData = useMemo(() => {
         const hasanahByDate = new Map<string, number>();
@@ -268,6 +272,7 @@ export default function StatsPage() {
                         last14Days={last14Days}
                         prayerMap={prayerMap}
                         PRAYER_SUFFIXES={PRAYER_SUFFIXES}
+                        excusedDates={excusedDates}
                     />
 
                     <QuranStatsCard

@@ -29,6 +29,7 @@ import { fastingTrackerID } from './fasting-tracker';
 import { hijriCalendarID } from './hijri-calendar';
 import { rewardsID } from './rewards';
 import { journeyID } from './journey';
+import { udzurID } from './udzur';
 
 export const SETTINGS_ID = {
   ...missionsID,
@@ -44,4 +45,5 @@ export const SETTINGS_ID = {
   ...hijriCalendarID,
   ...rewardsID,
   ...journeyID,
+  ...udzurID,
 };

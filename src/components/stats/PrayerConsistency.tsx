@@ -11,14 +11,19 @@ interface PrayerConsistencyProps {
     last14Days: string[];
     prayerMap: Record<string, Set<string>>;
     PRAYER_SUFFIXES: typeof import('@/hooks/useStatsInsights').PRAYER_SUFFIXES;
+    /** Udzur (haid/nifas) days: their missing prayers were excused, not missed. */
+    excusedDates?: ReadonlySet<string>;
 }
+
+const NONE: ReadonlySet<string> = new Set();
 
 export function PrayerConsistency({
     t,
     todayPrayerCount,
     last14Days,
     prayerMap,
-    PRAYER_SUFFIXES
+    PRAYER_SUFFIXES,
+    excusedDates = NONE,
 }: PrayerConsistencyProps) {
     const { locale } = useLocale();
     const [viewDays, setViewDays] = React.useState(14);
@@ -26,7 +31,11 @@ export function PrayerConsistency({
     // Filter the days based on selection
     const displayedDays = last14Days.slice(0, viewDays);
     const totalCompleted = displayedDays.reduce((acc, date) => acc + (prayerMap[date]?.size || 0), 0);
-    const maxPossible = displayedDays.length * 5;
+    // An excused day only counts what was actually prayed on it.
+    const maxPossible = displayedDays.reduce((acc, date) => acc + (excusedDates.has(date) ? (prayerMap[date]?.size || 0) : 5), 0);
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const anyExcused = displayedDays.some((date) => excusedDates.has(date));
 
     return (
         <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] to-transparent p-5 shadow-[var(--shadow-card)]">
@@ -67,7 +76,7 @@ export function PrayerConsistency({
                 <div className="flex items-center justify-between px-1">
                     <span className="text-xs text-[rgb(var(--color-text-muted))] font-medium">{t.stats.heatmap.activityTrend}</span>
                     <span className="text-xs text-[rgb(var(--color-primary-strong))] font-bold bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/20 px-2.5 py-1 rounded-lg">
-                        {todayPrayerCount}/5 {t.stats.heatmap.today}
+                        {excusedDates.has(todayStr) ? t.udzurStatsToday : `${todayPrayerCount}/5 ${t.stats.heatmap.today}`}
                     </span>
                 </div>
             </div>
@@ -93,9 +102,8 @@ export function PrayerConsistency({
                         const dateNum = d.getDate();
                         const monthName = d.toLocaleDateString(locale === 'id' ? "id-ID" : "en-US", { month: 'short' });
 
-                        const now = new Date();
-                        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
                         const isToday = dateStr === todayStr;
+                        const isExcusedDay = excusedDates.has(dateStr);
 
                         return (
                             <div key={dateStr} className={`flex flex-col items-center flex-shrink-0 min-w-[36px] pt-2 pb-1 rounded-2xl transition-all ${isToday ? "bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 ring-1 ring-[rgb(var(--color-primary))]/10" : "bg-[rgb(var(--color-surface-subtle))] border border-transparent"} shadow-[var(--shadow-card)]`}>
@@ -114,14 +122,17 @@ export function PrayerConsistency({
                                 <div className="flex flex-col">
                                     {PRAYER_SUFFIXES.map((suffix) => {
                                         const isDone = completedSet.has(suffix);
+                                        // Dashed outline, not colour alone, marks an excused prayer.
                                         return (
                                             <div key={suffix} className="h-6 flex items-center justify-center">
                                                 <div
                                                     className={`w-4 h-4 rounded-full border transition-all duration-500 ${isDone
                                                         ? "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary-light))]/30"
-                                                        : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
+                                                        : isExcusedDay
+                                                            ? "border-dashed bg-transparent border-[rgb(var(--color-text-muted))]/60"
+                                                            : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                                                         }`}
-                                                    title={suffix}
+                                                    title={isExcusedDay && !isDone ? `${suffix} · ${t.udzurStatsLegend}` : suffix}
                                                 />
                                             </div>
                                         );
@@ -142,9 +153,17 @@ export function PrayerConsistency({
                         </div>
                     ))}
                 </div>
-                <div className="flex items-center gap-2 bg-[rgb(var(--color-surface-subtle))] px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-border))]">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))]" />
-                    <span className="font-bold tracking-tighter text-xs text-[rgb(var(--color-text))]">{t.stats.heatmap.completed}</span>
+                <div className="flex flex-col items-end gap-1.5">
+                    <div className="flex items-center gap-2 bg-[rgb(var(--color-surface-subtle))] px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-border))]">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))]" />
+                        <span className="font-bold tracking-tighter text-xs text-[rgb(var(--color-text))]">{t.stats.heatmap.completed}</span>
+                    </div>
+                    {anyExcused && (
+                        <div className="flex items-center gap-2 bg-[rgb(var(--color-surface-subtle))] px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-border))]">
+                            <div className="w-2 h-2 rounded-full border border-dashed border-[rgb(var(--color-text-muted))]" />
+                            <span className="font-bold tracking-tighter text-xs text-[rgb(var(--color-text))]">{t.udzurStatsLegend}</span>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
