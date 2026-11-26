@@ -29,6 +29,7 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { captureClientException } from "@/instrumentation-client";
+import { getAlertLocation, readPrayerPreferences, savePrayerPreferences } from "@/lib/notifications/prayer-preferences";
 
 export default function NotificationSettings() {
     const { locale, t } = useLocale();
@@ -57,7 +58,7 @@ export default function NotificationSettings() {
                 queueMicrotask(() => {
                     setFcmToken(token);
                     setIsEnabled(true);
-                    loadPreferences();
+                    setPreferences(readPrayerPreferences());
                 });
             }
         }
@@ -90,7 +91,7 @@ export default function NotificationSettings() {
                 body: JSON.stringify({
                     token,
                     prayerPreferences: preferences,
-                    userLocation: getCurrentLocation(),
+                    userLocation: getAlertLocation(),
                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 }),
             });
@@ -121,7 +122,7 @@ export default function NotificationSettings() {
                     body: JSON.stringify({
                         token: freshToken,
                         prayerPreferences: preferences,
-                        userLocation: getCurrentLocation(),
+                        userLocation: getAlertLocation(),
                         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                         locale,
                     }),
@@ -160,15 +161,6 @@ export default function NotificationSettings() {
         }
     }
 
-    function loadPreferences() {
-        const saved = localStorage.getItem(STORAGE_KEYS.ADHAN_PREFERENCES);
-        if (saved) {
-            try {
-                setPreferences(JSON.parse(saved));
-            } catch { }
-        }
-    }
-
     // Step 1: Explicit Permission Request
     async function requestPermission() {
         if (!("Notification" in window)) {
@@ -183,26 +175,6 @@ export default function NotificationSettings() {
                 alert(t.notificationDenied);
             }
         } catch { }
-    }
-
-    function getCurrentLocation() {
-        const locationStr = localStorage.getItem(STORAGE_KEYS.USER_LOCATION);
-        if (locationStr) {
-            try {
-                const loc = JSON.parse(locationStr);
-                return {
-                    lat: loc.lat ?? loc.latitude ?? -6.2088,
-                    lng: loc.lng ?? loc.longitude ?? 106.8456,
-                    name: loc.name || loc.city || loc.locality || "Unknown",
-                    // Pass city (kabupaten/kota level) and country for analytics
-                    city: loc.city || loc.name || "Unknown",
-                    country: loc.country || null,
-                    countryCode: loc.countryCode || null,
-                };
-            } catch { }
-        }
-        // No fallback: User must have location set from onboarding.
-        return null;
     }
 
     // Step 2: Toggle Notifications (Only when Permission is GRANTED)
@@ -236,7 +208,7 @@ export default function NotificationSettings() {
 
                     if (token) {
                         setFcmToken(token);
-                        const userLocation = getCurrentLocation();
+                        const userLocation = getAlertLocation();
                         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
                         const response = await fetch("/api/notifications/subscribe", {
@@ -303,30 +275,11 @@ export default function NotificationSettings() {
         }
     }
 
-    async function savePreferences(token: string, prefs: PrayerPreferences) {
-        try {
-            getStorageService().set(STORAGE_KEYS.ADHAN_PREFERENCES, prefs);
-            const userLocation = getCurrentLocation();
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-            await fetch("/api/notifications/preferences", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    token,
-                    prayerPreferences: prefs,
-                    userLocation,
-                    timezone,
-                }),
-            });
-        } catch { }
-    }
-
     async function togglePrayer(prayer: keyof PrayerPreferences) {
         const newPrefs = { ...preferences, [prayer]: !preferences[prayer] };
         setPreferences(newPrefs);
         if (fcmToken) {
-            await savePreferences(fcmToken, newPrefs);
+            await savePrayerPreferences(fcmToken, newPrefs);
         }
     }
 

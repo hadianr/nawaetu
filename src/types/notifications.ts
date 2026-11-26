@@ -25,6 +25,8 @@ export interface PrayerPreferences {
     asr: boolean;
     maghrib: boolean;
     isha: boolean;
+    /** ISO time until which prayer alerts are paused (udzur mode). The server is not told why. */
+    pausedUntil?: string | null;
 }
 
 export interface UserLocation {

@@ -13,6 +13,7 @@ vi.mock("@/db", () => ({
 vi.mock("drizzle-orm", () => ({
   and: vi.fn(),
   eq: vi.fn(),
+  gte: vi.fn(),
   isNotNull: vi.fn(),
 }));
 
@@ -26,6 +27,7 @@ vi.mock("@/db/schema", () => ({
     active: "active",
   },
   userStreakState: "userStreakState",
+  userExcusedDays: { userId: "userId", localDate: "localDate" },
   users: { settings: "settings", id: "id" },
 }));
 
@@ -35,6 +37,7 @@ vi.mock("@/lib/notifications/firebase-admin", () => ({
 
 describe("POST /api/notifications/streak-reminder", () => {
   const send = vi.fn();
+  let excusedRows: Array<{ userId: string; localDate: string }> = [];
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -57,7 +60,11 @@ describe("POST /api/notifications/streak-reminder", () => {
     const secondJoin = vi.fn().mockReturnValue({ where });
     const firstJoin = vi.fn().mockReturnValue({ innerJoin: secondJoin });
     const from = vi.fn().mockReturnValue({ innerJoin: firstJoin });
-    vi.mocked(db.select).mockReturnValue({ from } as never);
+    // First select: subscriptions; second: recent udzur days.
+    excusedRows = [];
+    vi.mocked(db.select)
+      .mockReturnValueOnce({ from } as never)
+      .mockReturnValueOnce({ from: () => ({ where: async () => excusedRows }) } as never);
     vi.mocked(db.update).mockReturnValue({
       set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }),
     } as never);
@@ -79,5 +86,16 @@ describe("POST /api/notifications/streak-reminder", () => {
     });
     expect(message.webpush.notification).toEqual(expect.objectContaining(message.notification));
     vi.restoreAllMocks();
+  });
+
+  it("skips a user whose today is excused (udzur), since the streak cannot break", async () => {
+    const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Jakarta" });
+    excusedRows = [{ userId: "user-1", localDate: today }];
+    const response = await POST(new Request("http://localhost/api/notifications/streak-reminder", {
+      method: "POST",
+      headers: { authorization: "Bearer test-secret" },
+    }));
+    expect(response.status).toBe(200);
+    expect(send).not.toHaveBeenCalled();
   });
 });
