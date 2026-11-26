@@ -8,7 +8,10 @@ const h = vi.hoisted(() => ({
     failBatches: false,
     mockSession: vi.fn(),
     mockCheck: vi.fn(),
+    applyExcusedDays: vi.fn(),
 }));
+
+vi.mock("@/core/repositories/progression.repository", () => ({ applyExcusedDays: h.applyExcusedDays }));
 
 vi.mock("@/db", () => ({ checkConnection: h.mockCheck }));
 vi.mock("@/lib/auth", () => ({ getServerSession: h.mockSession }));
@@ -24,6 +27,7 @@ vi.mock("@/core/repositories/db-sync.repository", () => {
     };
     return {
         DbSyncRepository: class {
+            rejected = 0;
             async syncSirahBookmark(data: { name: string }) {
                 h.tracker.started.push(data.name);
                 h.tracker.inFlight += 1;
@@ -75,6 +79,29 @@ describe("POST /api/user/sync", () => {
         h.failBatches = false;
         h.mockSession.mockResolvedValue({ user: { id: "user-1" } });
         h.mockCheck.mockResolvedValue({ success: true });
+        h.applyExcusedDays.mockReset();
+        h.applyExcusedDays.mockResolvedValue({ streak: null });
+    });
+
+    describe("excused days (udzur)", () => {
+        const today = new Date().toLocaleDateString("sv-SE", { timeZone: "UTC" });
+        const excused = (id: string, localDate: string, action = "create") =>
+            ({ id, type: "excused_day", action, data: { localDate, timezone: "UTC" } });
+
+        it("applies every excused day in one change", async () => {
+            const { body } = await result({ entries: [excused("a", today), excused("b", "2020-01-01"), excused("c", today, "delete")] });
+            expect(h.applyExcusedDays).toHaveBeenCalledTimes(1);
+            expect(h.applyExcusedDays).toHaveBeenCalledWith("user-1", { add: [today], remove: [today], timezone: "UTC" });
+            expect(body.synced.map(item => item.id)).toEqual(["a", "b", "c"]);
+            expect((body as Body & { rejected?: number }).rejected).toBe(1);
+        });
+
+        it("fails the batch for a malformed date or a refused account, so nothing is half-applied", async () => {
+            expect((await result({ entries: [excused("bad", "26-11-2026")] })).body.failed).toEqual([{ id: "bad", error: "Invalid excused day" }]);
+            h.applyExcusedDays.mockRejectedValue(new Error("Excused days are only for accounts set to female"));
+            const { body } = await result({ entries: [excused("a", today)] });
+            expect(body.failed).toEqual([{ id: "a", error: "Excused days are only for accounts set to female" }]);
+        });
     });
 
     describe("one query at a time", () => {

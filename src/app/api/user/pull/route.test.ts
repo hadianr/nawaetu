@@ -13,7 +13,7 @@ vi.mock("@/lib/logger", () => ({ logger: { error: vi.fn() } }));
 vi.mock("@/lib/db-sequential", () => ({ inSequence: async (queries: unknown[]) => Promise.all(queries) }));
 vi.mock("drizzle-orm", () => ({ and: vi.fn(), desc: vi.fn(), eq: vi.fn(), gte: vi.fn(), sql: vi.fn() }));
 vi.mock("@/db/schema", () => ({
-    bookmarks: {}, dailyActivities: {}, userCompletedMissions: {}, userProgressState: {}, userStreakDays: {}, userStreakState: {}, users: {}, ramadhanFastingLog: {},
+    bookmarks: {}, dailyActivities: {}, userCompletedMissions: {}, userProgressState: {}, userStreakDays: {}, userStreakState: {}, users: {}, ramadhanFastingLog: {}, userExcusedDays: {},
 }));
 vi.mock("@/db", () => {
     const read = (name: string, value: unknown) => ({ findFirst: async () => { h.reads.push(name); return value; }, findMany: async () => { h.reads.push(name); return value; } });
@@ -23,6 +23,7 @@ vi.mock("@/db", () => {
                 userProgressState: read("progress", { hasanahTotal: 120, level: 2 }),
                 userStreakState: read("streak", { currentDays: 4, longestDays: 9, lastStreakDate: "2026-11-11", freezesAvailable: 1, timezone: "Asia/Jakarta" }),
                 userStreakDays: read("days", [{ localDate: "2026-11-11", status: "qualified" }]),
+                userExcusedDays: read("excused", [{ localDate: "2026-11-09" }, { localDate: "2026-11-10" }]),
                 userCompletedMissions: read("missions", [{ missionId: "fajr_prayer", completedDate: "2026-11-11", hasanahEarned: 75 }]),
                 dailyActivities: read("activity", []),
                 bookmarks: read("bookmarks", [{ key: "2:255" }]),
@@ -57,7 +58,7 @@ describe("GET /api/user/pull", () => {
     it("reads only the parts that were asked for", async () => {
         const { body } = await call("?parts=progress");
 
-        expect(h.reads.sort()).toEqual(["days", "progress", "streak"]);
+        expect(h.reads.sort()).toEqual(["days", "excused", "progress", "streak"]);
         expect(body).toHaveProperty("progression");
         expect(body).not.toHaveProperty("missions");
         expect(body).not.toHaveProperty("bookmarks");
@@ -66,6 +67,8 @@ describe("GET /api/user/pull", () => {
     it("returns progression with the server's own streak count", async () => {
         const { body } = await call("?parts=progress");
         expect(body.progression).toMatchObject({ hasanah: 120, streak: { currentDays: 4, longestDays: 9, freezesAvailable: 1 } });
+        // Udzur days: dates only, so another device keeps the streak and marks the same prayers excused.
+        expect(body.progression).toMatchObject({ streak: { excusedDays: ["2026-11-09", "2026-11-10"] } });
     });
 
     it("answers a bookmark check with a fingerprint instead of the verse text", async () => {

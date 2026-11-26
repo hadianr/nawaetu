@@ -14,6 +14,9 @@ const state = vi.hoisted(() => ({
     frozenExisting: [] as Array<{ localDate: string }>,
     findManyCalls: 0,
     deletes: [] as string[],
+    excused: [] as Array<{ localDate: string }>,
+    excusedInserted: [] as Array<Record<string, unknown>>,
+    gender: "female" as string | null,
 }));
 
 vi.mock("@/db/schema", () => ({
@@ -21,8 +24,10 @@ vi.mock("@/db/schema", () => ({
     userProgressState: { table: "progress" },
     userStreakDays: { table: "days" },
     userStreakState: { table: "state" },
+    userExcusedDays: { table: "excused" },
+    users: { table: "users" },
 }));
-vi.mock("drizzle-orm", () => ({ and: vi.fn(), asc: vi.fn(), eq: vi.fn(() => ({ op: "eq" })), inArray: vi.fn(), sql: vi.fn() }));
+vi.mock("drizzle-orm", () => ({ and: vi.fn(), asc: vi.fn(), eq: vi.fn(() => ({ op: "eq" })), gt: vi.fn(), inArray: vi.fn(), sql: vi.fn() }));
 
 vi.mock("@/db", () => {
     const tx = {
@@ -33,6 +38,10 @@ vi.mock("@/db", () => {
                 if (table === hasanahLedger) state.ledgerValues.push(rows);
                 if (table === userStreakState) state.streakUpserts.push(rows as Record<string, unknown>);
                 if (table === userStreakDays) state.dayValues.push(...(rows as Array<Record<string, unknown>>));
+                if (table === userExcusedDays) {
+                    state.excusedInserted.push(...(rows as Array<Record<string, unknown>>));
+                    state.excused.push(...(rows as Array<{ localDate: string }>));
+                }
                 return chain;
             };
             chain.onConflictDoNothing = () => chain;
@@ -49,11 +58,13 @@ vi.mock("@/db", () => {
             return chain;
         },
         delete: (table: unknown) => ({
-            where: async () => { state.deletes.push(table === userStreakDays ? "days" : "other"); },
+            where: async () => { state.deletes.push(table === userStreakDays ? "days" : table === userExcusedDays ? "excused" : "other"); },
         }),
         query: {
             userProgressState: { findFirst: vi.fn(async () => state.progress) },
             userStreakState: { findFirst: vi.fn(async () => state.streak) },
+            userExcusedDays: { findMany: vi.fn(async () => { state.calls.push("excused"); return state.excused; }) },
+            users: { findFirst: vi.fn(async () => ({ gender: state.gender })) },
             // First read is the qualified history, a second one (if any) is the frozen days being reconciled.
             userStreakDays: { findMany: vi.fn(async () => {
                 state.findManyCalls++;
@@ -65,8 +76,8 @@ vi.mock("@/db", () => {
     return { transactionDb: { transaction: async (fn: (t: typeof tx) => unknown) => fn(tx) } };
 });
 
-import { hasanahLedger, userProgressState, userStreakDays, userStreakState } from "@/db/schema";
-import { processProgressionEvidenceBatch } from "./progression.repository";
+import { hasanahLedger, userExcusedDays, userProgressState, userStreakDays, userStreakState } from "@/db/schema";
+import { applyExcusedDays, processProgressionEvidenceBatch } from "./progression.repository";
 
 const evidence = (sourceId: string, localDate: string, hasanah = 10) => ({
     source: "mission" as const, sourceId, hasanah, localDate, occurredAt: new Date(`${localDate}T05:00:00Z`), timezone: "UTC",
@@ -79,7 +90,18 @@ describe("processProgressionEvidenceBatch", () => {
             streak: { currentDays: 3, longestDays: 3, lastStreakDate: "2026-11-10", freezesAvailable: 0 },
             qualifiedDays: [], calls: [], ledgerValues: [], streakUpserts: [],
             dayValues: [], dayConflicts: [], frozenExisting: [], findManyCalls: 0, deletes: [],
+            excused: [], excusedInserted: [], gender: "female",
         });
+    });
+
+    it("bridges excused days when the streak continues in order", async () => {
+        state.ledgerInserted = [{ amount: 10 }];
+        state.daysInserted = [{ localDate: "2026-11-16" }];
+        state.excused = ["2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15"].map((localDate) => ({ localDate }));
+
+        await processProgressionEvidenceBatch("u1", [evidence("a:2026-11-16", "2026-11-16")]);
+
+        expect(state.streakUpserts[0]).toMatchObject({ currentDays: 4, lastStreakDate: "2026-11-16" });
     });
 
     it("writes any number of items with one ledger insert and one lock", async () => {
@@ -192,5 +214,49 @@ describe("processProgressionEvidenceBatch", () => {
             expect(state.deletes).toContain("days");
             expect(state.dayValues.filter((row) => row.status === "frozen").map((row) => row.localDate)).toEqual(["2026-01-08"]);
         });
+    });
+});
+
+describe("applyExcusedDays", () => {
+    beforeEach(() => {
+        Object.assign(state, {
+            ledgerInserted: [], daysInserted: [], progress: null,
+            streak: null, qualifiedDays: [], calls: [], ledgerValues: [], streakUpserts: [],
+            dayValues: [], dayConflicts: [], frozenExisting: [], findManyCalls: 0, deletes: [],
+            excused: [], excusedInserted: [], gender: "female",
+        });
+    });
+
+    it("stores the dates and rebuilds the streak across them", async () => {
+        state.qualifiedDays = ["2026-11-01", "2026-11-02", "2026-11-03", "2026-11-10"].map((localDate) => ({ localDate }));
+        const days = ["2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08", "2026-11-09"];
+
+        await applyExcusedDays("u1", { add: days, remove: [], timezone: "Asia/Jakarta" });
+
+        expect(state.excusedInserted.map((row) => row.localDate)).toEqual(days);
+        expect(state.excusedInserted[0]).not.toHaveProperty("kind");
+        expect(state.streakUpserts[0]).toMatchObject({ currentDays: 4, lastStreakDate: "2026-11-10" });
+    });
+
+    it("removes dates for a shortened period", async () => {
+        await applyExcusedDays("u1", { add: [], remove: ["2026-11-09"], timezone: "UTC" });
+        expect(state.deletes).toContain("excused");
+    });
+
+    it("refuses accounts that are not set to female", async () => {
+        state.gender = "male";
+        await expect(applyExcusedDays("u1", { add: ["2026-11-04"], remove: [], timezone: "UTC" })).rejects.toThrow("only for accounts set to female");
+        expect(state.excusedInserted).toHaveLength(0);
+    });
+
+    it("refuses a run longer than 60 days", async () => {
+        const start = Date.UTC(2026, 0, 1);
+        const days = Array.from({ length: 61 }, (_, i) => new Date(start + i * 86_400_000).toISOString().slice(0, 10));
+        await expect(applyExcusedDays("u1", { add: days, remove: [], timezone: "UTC" })).rejects.toThrow("too long");
+    });
+
+    it("does nothing for an empty change", async () => {
+        await applyExcusedDays("u1", { add: [], remove: [], timezone: "UTC" });
+        expect(state.calls).toHaveLength(0);
     });
 });

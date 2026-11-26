@@ -24,6 +24,8 @@ import { type SyncQueueEntry } from "@/lib/sync-queue";
 import { DbSyncRepository, type MissionSyncPayload } from "@/core/repositories/db-sync.repository";
 import { SyncEntrySchema } from "@/lib/validations/sync";
 import { syncRateLimiter } from "@/lib/rate-limit";
+import { applyExcusedDays } from "@/core/repositories/progression.repository";
+import { isInSyncWindow, localDateIn, validTimezone } from "@/lib/utils/timezone";
 
 interface SyncResponse {
     success: boolean;
@@ -62,6 +64,29 @@ async function processSyncEntry(repo: DbSyncRepository, entry: SyncQueueEntry) {
         case "sirah_bookmark": return { id: entry.id, cloudId: await repo.syncSirahBookmark(data, action) };
         default: throw new Error(`Unknown type: ${type}`);
     }
+}
+
+const LOCAL_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Udzur (haid/nifas) days, all in one change so the streak is rebuilt once. A date outside the sync window
+ * is acknowledged but not stored: the device keeps it, as with other old records.
+ */
+async function syncExcusedDays(userId: string, entries: SyncQueueEntry[]): Promise<number> {
+    const add: string[] = [];
+    const remove: string[] = [];
+    let timezone = "UTC";
+    let outside = 0;
+    for (const entry of entries) {
+        const data = asRecord(entry.data) ?? {};
+        const localDate = typeof data.localDate === "string" ? data.localDate : "";
+        if (!LOCAL_DATE.test(localDate) || Number.isNaN(Date.parse(localDate))) throw new Error("Invalid excused day");
+        timezone = validTimezone(data.timezone);
+        if (!isInSyncWindow(localDate, localDateIn(new Date(), timezone))) { outside++; continue; }
+        (entry.action === "delete" ? remove : add).push(localDate);
+    }
+    await applyExcusedDays(userId, { add, remove, timezone });
+    return outside;
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -154,13 +179,26 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             // a locked transaction per mission. Undo and everything else stay one at a time.
             const missionCompletions: SyncQueueEntry[] = [];
             const bookmarkSaves: SyncQueueEntry[] = [];
+            const excusedDays: SyncQueueEntry[] = [];
             const others: SyncQueueEntry[] = [];
             for (const entry of accepted) {
                 const isMission = entry.type === "mission" || entry.type === "mission_progress";
                 const valid = SyncEntrySchema.safeParse(entry).success;
                 if (isMission && entry.action !== "delete" && valid) missionCompletions.push(entry);
                 else if (entry.type === "bookmark" && entry.action !== "delete" && valid) bookmarkSaves.push(entry);
+                else if (entry.type === "excused_day" && valid) excusedDays.push(entry);
                 else others.push(entry);
+            }
+
+            let excusedOutside = 0;
+            if (excusedDays.length > 0) {
+                try {
+                    excusedOutside = await syncExcusedDays(userId, excusedDays);
+                    excusedDays.forEach((entry) => synced.push({ id: entry.id }));
+                } catch (error) {
+                    const message = error instanceof Error && error.message ? error.message : "Sync failed";
+                    excusedDays.forEach((entry) => failed.push({ id: entry.id, error: message }));
+                }
             }
 
             if (bookmarkSaves.length > 0) {
@@ -194,7 +232,8 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                 failed.push({ id: entry.id, error: "Too many entries in one request; retry the rest" });
             }
 
-            return NextResponse.json({ success: true, synced, failed, message: "Sync complete", ...(repo.rejected > 0 ? { rejected: repo.rejected } : {}) });
+            const rejected = repo.rejected + excusedOutside;
+            return NextResponse.json({ success: true, synced, failed, message: "Sync complete", ...(rejected > 0 ? { rejected } : {}) });
         }
 
         return NextResponse.json({
