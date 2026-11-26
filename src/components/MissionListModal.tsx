@@ -295,7 +295,7 @@ export default function MissionListModal({
                                     value={tab.id}
                                     className={cn(
                                         "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none",
-                                        "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 data-[state=active]:bg-[rgb(var(--color-primary))] data-[state=active]:text-[rgb(var(--color-primary-foreground))] dark:data-[state=active]:text-[rgb(var(--color-primary-foreground))] data-[state=active]:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
+                                        "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 data-[state=active]:bg-[rgb(var(--color-primary))] data-[state=active]:text-[rgb(var(--color-primary-foreground))] data-[state=active]:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                                     )}
                                 >
                                     <AppIcon name={tab.icon} size="xs" className="text-current" />
