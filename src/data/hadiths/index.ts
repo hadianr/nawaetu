@@ -7,6 +7,7 @@
 
 import { HadithItem, HadithTopic } from "./types";
 import { CIVIC_LIFE_HADITHS } from "./civic-life";
+import { UDZUR_HADITHS } from "./women-udzur";
 
 export * from "./types";
 
@@ -730,7 +731,9 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         translation: "Lakukanlah segala amalan ibadah (dzikir, doa, kebaikan) sebagaimana orang berhaji, kecuali thawaf di Ka'bah hingga engkau suci.",
         translationEn: "Do everything that the pilgrim does, except that you do not circumambulate the House until you become pure.",
         explanation: "Wanita yang berhalangan tetap dapat meraih pahala melimpah lewat dzikir, sholawat, dan doa.",
-        explanationEn: "Women during menstruation can continuously earn great rewards through remembrance, salawat, and prayers."
+        explanationEn: "Women during menstruation can continuously earn great rewards through remembrance, salawat, and prayers.",
+        searchTerms: ["haid", "menstruasi", "datang bulan", "period", "berhalangan", "udzur", "dzikir saat haid"],
+        topics: ["women", "worship"]
     },
     {
         id: "hadith_shalawat",
@@ -1686,7 +1689,8 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         explanation: "Menutup hari dengan melepaskan kelelahan mental, memasrahkan urusan kepada Allah, dan istirahat yang berkualitas.",
         explanationEn: "Concludes the day by releasing mental fatigue, surrendering outcomes to Allah, and resting peacefully."
     },
-    ...CIVIC_LIFE_HADITHS
+    ...CIVIC_LIFE_HADITHS,
+    ...UDZUR_HADITHS
 ];
 
 const HADITH_CATEGORY_TOPIC_FALLBACKS: Record<string, HadithTopic[]> = {

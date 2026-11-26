@@ -37,7 +37,8 @@ export type HadithTopic =
     | "worship"
     | "gratitude"
     | "environment"
-    | "civic-life";
+    | "civic-life"
+    | "women";
 
 export const HADITH_TOPIC_DEFINITIONS: { key: HadithTopic; labelId: string; labelEn: string }[] = [
     { key: "emotional-wellbeing", labelId: "Ketenangan Diri", labelEn: "Emotional Wellbeing" },
@@ -50,6 +51,7 @@ export const HADITH_TOPIC_DEFINITIONS: { key: HadithTopic; labelId: string; labe
     { key: "gratitude", labelId: "Syukur", labelEn: "Gratitude" },
     { key: "environment", labelId: "Lingkungan", labelEn: "Environment" },
     { key: "civic-life", labelId: "Amanah & Kepemimpinan", labelEn: "Civic Life & Leadership" },
+    { key: "women", labelId: "Muslimah & Haid", labelEn: "Women & Menstruation" },
 ];
 
 export interface HadithItem {
