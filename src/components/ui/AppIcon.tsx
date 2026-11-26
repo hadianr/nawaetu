@@ -57,7 +57,7 @@ import {
     Volume2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { DuaIcon, GoalIcon, KaabaIcon, KetupatIcon, MosqueIcon, PrayerRugIcon, TasbihIcon } from "@/components/icons/NawaetuIcons";
+import { DuaIcon, GoalIcon, HijabIcon, KaabaIcon, KetupatIcon, MosqueIcon, MuslimIcon, PrayerRugIcon, TasbihIcon } from "@/components/icons/NawaetuIcons";
 import { resolveAppIconName, type AppIconName } from "@/lib/icon-names";
 export { resolveAppIconName } from "@/lib/icon-names";
 
@@ -84,6 +84,7 @@ const ICONS: Record<AppIconName, IconComponent> = {
     "droplets": Droplets,
     "dua": DuaIcon,
     "goal": GoalIcon,
+    "hijab": HijabIcon,
     "eclipse": Eclipse,
     "fingerprint": Fingerprint,
     "gift": Gift,
@@ -104,6 +105,7 @@ const ICONS: Record<AppIconName, IconComponent> = {
     "moon": Moon,
     "moon-star": MoonStar,
     "mosque": MosqueIcon,
+    "muslim": MuslimIcon,
     "prayer-rug": PrayerRugIcon,
     "notebook-pen": NotebookPen,
     "refresh": RotateCcw,
