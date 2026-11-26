@@ -137,7 +137,7 @@ Add a new reusable component only when the behavior or structure is repeated. Ke
 
 ## Icon policy
 
-UI must use the existing Lucide-based `AppIcon` registry, or a glyph from `@/components/ui/icons` when no registry name fits. Never import `lucide-react` directly. Use a named icon from `AppIconName`; use `resolveAppIconName` only at compatibility boundaries for persisted or remote legacy values. The registry provides consistent size, tone, and accessible labeling.
+UI must use the existing `AppIcon` registry (Lucide plus Nawaetu's Islamic glyphs in `src/components/icons/NawaetuIcons.tsx`), or a glyph from `@/components/ui/icons` when no registry name fits. Never import `lucide-react` directly. Use a named icon from `AppIconName`; use `resolveAppIconName` only at compatibility boundaries for persisted or remote legacy values. The registry provides consistent size, tone, and accessible labeling.
 
 - No emoji, Unicode symbol, or text glyph as a functional UI icon.
 - No inline one-off SVG when an existing registry icon fits.
@@ -145,6 +145,16 @@ UI must use the existing Lucide-based `AppIcon` registry, or a glyph from `@/com
 - Icons support the label; they do not replace clear text for important actions.
 - Keep icon stroke weight, size, and tone consistent with the surrounding control.
 - `sparkles` means virtue or extra reward: sunnah, fadhilah, hasanah, Lailatul Qadr, Eid. Never use it for AI, loading, updates, ratings, health states, or decoration. No lightning, wand, or gem icons.
+
+### Icon and animation sources
+
+The repository is public, so every bundled asset is redistributed with the source. Only add assets whose license allows that:
+
+- **Allowed:** MIT, ISC, Apache-2.0, CC0, and the Lottie Simple License (free LottieFiles animations only, not Premium or Lottie AI showcase items). Vetted sources: Lucide (ISC), Hugeicons Free, Tabler, Phosphor (MIT), Material Symbols (Apache-2.0), Generative Icons (MIT), free LottieFiles animations, or Nawaetu's own work in LottieFiles Creator.
+- **Not allowed:** licenses that forbid redistributing files on their own or with source code, such as the IconScout Simple License (this includes Unicons), Flaticon, Freepik, Envato, Creative Market and Adobe Stock. Use them only for marketing material kept outside this repository.
+- Copy SVG paths into `NawaetuIcons.tsx` instead of adding an icon package. Redraw them on the 24px grid with a 2px stroke, round caps and `currentColor`, and no fixed colours.
+- Record each third-party source in `THIRD_PARTY_NOTICES.md`, and each Lottie file in `public/lottie/CREDITS.md`.
+- Animate state changes only, such as completing a mission or reaching a streak, in line with Motion 1. Prefer CSS on an existing icon over a new Lottie file. Lottie files need theme colour slots and must stay small.
 
 Content may contain Arabic or quoted religious text as content. That does not make a symbol a UI icon. Do not use emoji as the sole status, action, or navigation signal.
 
