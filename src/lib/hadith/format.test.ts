@@ -19,8 +19,8 @@ describe("formatHadithSource", () => {
         expect(formatHadithSource({ collection: "Tirmidzi", hadithNumber: "417 / 427", authenticity: "Sahih" })).toBe("HR. Tirmidzi No. 417 / 427");
     });
 
-    it("leaves no slash behind in the library except where the second book is unknown", () => {
+    it("leaves no slash behind in the library", () => {
         const ambiguous = HADITH_LIBRARY.filter((item) => formatHadithSource(item).includes("/")).map((item) => item.id);
-        expect(ambiguous).toEqual(["hadith_sholat_rawatib"]);
+        expect(ambiguous).toEqual([]);
     });
 });
