@@ -26,7 +26,7 @@ import type { Mission } from "@/data/missions";
 import { cn } from "@/lib/utils";
 import { Check, AlertCircle, X, ExternalLink, Clock } from "@/components/ui/icons";
 import { useLocale } from "@/context/LocaleContext";
-import { getRulingLabel, type ValidationResult } from "@/lib/habits/mission-utils";
+import { getRulingLabel, getRulingBadgeClass, type ValidationResult } from "@/lib/habits/mission-utils";
 import { resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
 import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";
 import type { AppIconName } from "@/lib/icon-names";
@@ -185,10 +185,8 @@ export default function MissionListModal({
                                     </p>
                                     <div className="flex gap-1">
                                         <span className={cn(
-                                            "text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border",
-                                            mission.ruling === 'obligatory'
-                                                ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary-light))]"
-                                                : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary-light))]"
+                                            "text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider",
+                                            getRulingBadgeClass(mission.ruling)
                                         )}>
                                             {getRulingLabel(mission.ruling, t)}
                                         </span>

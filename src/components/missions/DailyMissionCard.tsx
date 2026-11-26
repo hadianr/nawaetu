@@ -22,6 +22,7 @@ import { Mission } from "@/data/missions";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { formatHasanahRange } from "@/lib/utils/hasanah";
 import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";
+import { getRulingBadgeClass } from "@/lib/habits/mission-utils";
 
 interface DailyMissionCardProps {
     mission: Mission;
@@ -155,9 +156,7 @@ export default function DailyMissionCard({
                     <div className="flex items-center gap-2">
                         <span className={cn(
                             "text-xs px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
-                            mission.ruling === 'obligatory'
-                                ? "bg-[rgb(var(--color-info))]/15 text-[rgb(var(--color-info))] border-[rgb(var(--color-info))]/30"
-                                : "bg-[rgb(var(--color-success))]/10 text-[rgb(var(--color-success))] border-[rgb(var(--color-success))]/20"
+                            getRulingBadgeClass(mission.ruling)
                         )}>
                             {getRulingLabel(mission.ruling, t)}
                         </span>

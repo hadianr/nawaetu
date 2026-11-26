@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import MissionDetailDialog from "@/components/MissionDetailDialog";
-import { checkMissionValidation, getRulingLabel, localizeMissionReason } from "@/lib/habits/mission-utils";
+import { checkMissionValidation, getRulingLabel, getRulingBadgeClass, localizeMissionReason } from "@/lib/habits/mission-utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -184,9 +184,7 @@ export default function MisiPage() {
                             </p>
                             <span className={cn(
                                 "text-xs px-1.5 py-0.5 rounded font-bold uppercase tracking-wider",
-                                mission.ruling === 'obligatory'
-                                    ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border border-[rgb(var(--color-accent))]/30"
-                                    : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30"
+                                getRulingBadgeClass(mission.ruling)
                             )}>
                                 {getRulingLabel(mission.ruling, t)}
                             </span>
