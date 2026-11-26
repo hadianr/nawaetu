@@ -551,6 +551,38 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         source: 'QS. Al-Baqarah: 184'
     },
 
+    'udzur_murottal': {
+        id: 'udzur_murottal',
+        intro: 'Nabi Muhammad SAW membaca Al-Quran sambil bersandar di pangkuan Aisyah RA yang sedang haid. Haid tidak menjauhkanmu dari Al-Quran.',
+        fadhilah: [
+            'Hati tetap hidup dengan Al-Quran selama udzur',
+            'Mendengarkan Al-Quran dengan saksama mendatangkan rahmat (QS. Al-A\'raf: 204)',
+            'Menjaga hafalan dan kedekatan dengan kalam Allah'
+        ],
+        guides: [
+            'Buka halaman Quran dan putar audio murottal',
+            'Simak sambil membaca terjemahan atau tafsirnya',
+            'Soal membaca langsung dan menyentuh mushaf saat haid, ulama berbeda pendapat'
+        ],
+        source: 'HR. Bukhari no. 297, Muslim no. 301'
+    },
+
+    'udzur_learn': {
+        id: 'udzur_learn',
+        intro: 'Para sahabiyah bertanya langsung tentang haid kepada Nabi Muhammad SAW dan Aisyah RA. Memahami hukumnya membuat ibadahmu tenang dan yakin.',
+        fadhilah: [
+            'Tahu mana yang gugur dan mana yang wajib diqadha',
+            'Bisa membedakan haid dan istihadah',
+            'Menuntut ilmu adalah jalan menuju surga (HR. Muslim no. 2699)'
+        ],
+        guides: [
+            'Buka topik Muslimah & Haid di halaman Hadits',
+            'Baca satu hadits beserta penjelasannya',
+            'Catat hal yang ingin kamu tanyakan kepada ustadzah'
+        ],
+        source: 'HR. Bukhari no. 321, Muslim no. 335'
+    },
+
     'menstruation_dhikr': {
         id: 'menstruation_dhikr',
         intro: 'Wanita yang sedang haid (udzur syar\'i) tidak boleh sholat/puasa, namun tetap bisa panen pahala dengan dzikir dan doa.',

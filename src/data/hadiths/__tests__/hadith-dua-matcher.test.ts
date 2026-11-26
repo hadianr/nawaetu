@@ -3,7 +3,7 @@ import { HADITH_LIBRARY, HADITH_TOPIC_DEFINITIONS, getHadithById, getHadithsByCa
 import { DUA_LIBRARY, DUA_OCCASIONS, getDuasByOccasion } from "../../duas/index";
 import { resolveReferenceForMission, resolveReferenceByText } from "@/lib/hadith/reference-matcher";
 import { createMission } from "../../missions/types";
-import { UNIVERSAL_MISSIONS, FEMALE_MISSIONS, MALE_MISSIONS, SUNNAH_PRAYER_MISSIONS, RAMADHAN_MISSIONS, SYABAN_MISSIONS } from "../../missions/index";
+import { UNIVERSAL_MISSIONS, FEMALE_MISSIONS, MALE_MISSIONS, SUNNAH_PRAYER_MISSIONS, RAMADHAN_MISSIONS, SYABAN_MISSIONS, UDZUR_MISSIONS } from "../../missions/index";
 
 describe("Hadith & Dua Modular Data Library Tests", () => {
     it("should have complete and authentic data for all Hadiths", () => {
@@ -136,6 +136,7 @@ describe("Hadith & Dua Modular Data Library Tests", () => {
             ...UNIVERSAL_MISSIONS,
             ...SUNNAH_PRAYER_MISSIONS,
             ...FEMALE_MISSIONS,
+            ...UDZUR_MISSIONS,
             ...MALE_MISSIONS,
             ...RAMADHAN_MISSIONS,
             ...SYABAN_MISSIONS

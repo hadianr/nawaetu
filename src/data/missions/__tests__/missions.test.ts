@@ -325,3 +325,47 @@ describe("civic mission", () => {
         expect(getLocalizedMission(mission, "id").title).toBe("Doakan Pemimpin & Negeri");
     });
 });
+
+describe("Udzur (haid/nifas) missions", () => {
+    const ids = (context: Parameters<typeof getMissionsForGender>[4], gender: "male" | "female" | null = "female") =>
+        getMissionsForGender(gender, undefined, undefined, 1, context).map(m => m.id);
+
+    it("sets aside prayers and fasts and shows what she can do instead", () => {
+        const during = ids({ udzur: true });
+        expect(during).not.toContain("fajr_prayer");
+        expect(during).not.toContain("sunnah_dhuha");
+        expect(during).not.toContain("sunnah_fasting");
+        expect(during).toEqual(expect.arrayContaining(["menstruation_dhikr", "udzur_murottal", "udzur_learn", "daily_intention", "salawat_100x"]));
+    });
+
+    it("hides the udzur missions on ordinary days", () => {
+        const normal = ids({});
+        expect(normal).toContain("fajr_prayer");
+        expect(normal).not.toContain("menstruation_dhikr");
+        expect(normal).not.toContain("udzur_murottal");
+    });
+
+    it("never applies udzur to other genders", () => {
+        expect(ids({ udzur: true }, "male")).toContain("fajr_prayer");
+        expect(ids({ udzur: true }, null)).not.toContain("udzur_learn");
+    });
+
+    it("shows the qadha mission only while fasts are owed or unknown", () => {
+        expect(ids({ qadhaOwed: false })).not.toContain("makeup_fasting_tracker");
+        expect(ids({ qadhaOwed: true })).toContain("makeup_fasting_tracker");
+        expect(ids({})).toContain("makeup_fasting_tracker");
+    });
+
+    it("keeps the udzur missions in the catalog the server validates against", () => {
+        for (const id of ["menstruation_dhikr", "udzur_murottal", "udzur_learn"]) {
+            expect(findMissionDefinition(id)?.hasanahReward, id).toBe(30);
+        }
+    });
+
+    it("localizes the new missions in both languages", () => {
+        const mission = findMissionDefinition("udzur_murottal")!;
+        expect(getLocalizedMission(mission, "en").title).toBe("Listen to the Quran");
+        expect(getLocalizedMission(mission, "id").title).toBe("Dengarkan Murottal");
+        expect(getLocalizedMissionContent("udzur_learn", "en")?.intro).toContain("Prophet Muhammad SAW");
+    });
+});

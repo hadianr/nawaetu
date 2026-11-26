@@ -438,6 +438,38 @@ export const missionsID = {
     mission_doa_sore_reading_1_translation: "Aku berlindung dengan kalimat-kalimat Allah yang sempurna dari kejahatan makhluk-Nya.",
     mission_doa_sore_reading_1_note: "Dibaca 3x",
 
+    mission_udzur_murottal_title: "Dengarkan Murottal",
+    mission_udzur_murottal_desc: "Dengarkan bacaan Al-Quran, minimal satu surah",
+    mission_udzur_murottal_dalil: "HR. Bukhari no. 297",
+    mission_udzur_murottal_intro: "Nabi Muhammad SAW membaca Al-Quran sambil bersandar di pangkuan Aisyah RA yang sedang haid. Haid tidak menjauhkanmu dari Al-Quran.",
+    mission_udzur_murottal_fadhilah: [
+        "Hati tetap hidup dengan Al-Quran selama udzur",
+        "Mendengarkan Al-Quran dengan saksama mendatangkan rahmat (QS. Al-A'raf: 204)",
+        "Menjaga hafalan dan kedekatan dengan kalam Allah"
+    ],
+    mission_udzur_murottal_guides: [
+        "Buka halaman Quran dan putar audio murottal",
+        "Simak sambil membaca terjemahan atau tafsirnya",
+        "Soal membaca langsung dan menyentuh mushaf saat haid, ulama berbeda pendapat"
+    ],
+    mission_udzur_murottal_source: "HR. Bukhari no. 297, Muslim no. 301",
+
+    mission_udzur_learn_title: "Belajar Fiqih Haid",
+    mission_udzur_learn_desc: "Baca satu hadits tentang haid dan nifas",
+    mission_udzur_learn_dalil: "HR. Bukhari no. 321",
+    mission_udzur_learn_intro: "Para sahabiyah bertanya langsung tentang haid kepada Nabi Muhammad SAW dan Aisyah RA. Memahami hukumnya membuat ibadahmu tenang dan yakin.",
+    mission_udzur_learn_fadhilah: [
+        "Tahu mana yang gugur dan mana yang wajib diqadha",
+        "Bisa membedakan haid dan istihadah",
+        "Menuntut ilmu adalah jalan menuju surga (HR. Muslim no. 2699)"
+    ],
+    mission_udzur_learn_guides: [
+        "Buka topik Muslimah & Haid di halaman Hadits",
+        "Baca satu hadits beserta penjelasannya",
+        "Catat hal yang ingin kamu tanyakan kepada ustadzah"
+    ],
+    mission_udzur_learn_source: "HR. Bukhari no. 321, Muslim no. 335",
+
     mission_menstruation_dhikr_title: "Dzikir Saat Udzur",
     mission_menstruation_dhikr_desc: "Perbanyak dzikir dan istighfar saat haid",
     mission_menstruation_dhikr_dalil: "HR. Bukhari no. 305",
