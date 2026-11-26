@@ -46,24 +46,39 @@ function addUtcDays(localDate: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
+const NO_EXCUSED: ReadonlySet<string> = new Set();
+
+/** Days strictly between two local dates, minus the ones excused (haid/nifas). */
+export function missedDaysBetween(from: string, to: string, excused: ReadonlySet<string> = NO_EXCUSED): number {
+  const gap = Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000) - 1;
+  if (gap <= 0) return gap;
+  let excusedInGap = 0;
+  for (const date of excused) if (date > from && date < to) excusedInGap++;
+  return gap - excusedInGap;
+}
+
+/**
+ * Excused days (haid/nifas, see src/lib/udzur.ts) bridge a gap: they neither add to the streak nor use a
+ * freeze. Activity on an excused day still counts as a normal day.
+ */
 export function advanceStreak(
   state: ProgressionStreakState,
   localDate: string,
+  excused: ReadonlySet<string> = NO_EXCUSED,
 ): ProgressionAdvance {
   if (state.lastStreakDate === localDate) {
     return { state, frozenDate: null, freezeGranted: false };
   }
 
-  const currentDay = Date.parse(`${localDate}T00:00:00Z`);
-  const previousDay = state.lastStreakDate
-    ? Date.parse(`${state.lastStreakDate}T00:00:00Z`)
-    : Number.NaN;
-  const dayDifference = Number.isNaN(previousDay)
-    ? null
-    : Math.round((currentDay - previousDay) / 86_400_000);
-  const usesFreeze = dayDifference === 2 && state.freezesAvailable > 0;
-  const currentDays = dayDifference === 1 || usesFreeze ? state.currentDays + 1 : 1;
-  const frozenDate = usesFreeze && state.lastStreakDate ? addUtcDays(state.lastStreakDate, 1) : null;
+  const missed = state.lastStreakDate ? missedDaysBetween(state.lastStreakDate, localDate, excused) : null;
+  const usesFreeze = missed === 1 && state.freezesAvailable > 0;
+  const currentDays = missed === 0 || usesFreeze ? state.currentDays + 1 : 1;
+  let frozenDate: string | null = null;
+  if (usesFreeze && state.lastStreakDate) {
+    // The one missed day that was not excused.
+    frozenDate = addUtcDays(state.lastStreakDate, 1);
+    while (excused.has(frozenDate)) frozenDate = addUtcDays(frozenDate, 1);
+  }
   let freezesAvailable = usesFreeze ? state.freezesAvailable - 1 : state.freezesAvailable;
   const freezeGranted = state.currentDays < STREAK_FREEZE_GRANT_DAYS
     && currentDays >= STREAK_FREEZE_GRANT_DAYS
@@ -83,10 +98,10 @@ export function advanceStreak(
   };
 }
 
-export function rebuildStreakState(dates: string[], freezesAvailable = 0): ProgressionStreakState {
+export function rebuildStreakState(dates: string[], freezesAvailable = 0, excused: ReadonlySet<string> = NO_EXCUSED): ProgressionStreakState {
   const orderedDates = [...new Set(dates)].sort();
   return orderedDates.reduce<ProgressionStreakState>(
-    (state, localDate) => advanceStreak(state, localDate).state,
+    (state, localDate) => advanceStreak(state, localDate, excused).state,
     { currentDays: 0, longestDays: 0, lastStreakDate: null, freezesAvailable },
   );
 }
@@ -96,15 +111,15 @@ export function rebuildStreakState(dates: string[], freezesAvailable = 0): Progr
  * Freezes come only from the history itself (earned at a 7-day streak, spent on a one-day gap), never from
  * a stored count: seeding with today's count would spend a freeze earned later on a gap from long ago.
  */
-export function rebuildStreakFromHistory(dates: string[]): ProgressionStreakState {
-  return rebuildStreakDetailed(dates).state;
+export function rebuildStreakFromHistory(dates: string[], excused: ReadonlySet<string> = NO_EXCUSED): ProgressionStreakState {
+  return rebuildStreakDetailed(dates, excused).state;
 }
 
 /** The same rebuild, also reporting which missed days a freeze protected along the way. */
-export function rebuildStreakDetailed(dates: string[]): { state: ProgressionStreakState; frozenDates: string[] } {
+export function rebuildStreakDetailed(dates: string[], excused: ReadonlySet<string> = NO_EXCUSED): { state: ProgressionStreakState; frozenDates: string[] } {
   const frozenDates: string[] = [];
   const state = [...new Set(dates)].sort().reduce<ProgressionStreakState>((current, localDate) => {
-    const step = advanceStreak(current, localDate);
+    const step = advanceStreak(current, localDate, excused);
     if (step.frozenDate) frozenDates.push(step.frozenDate);
     return step.state;
   }, { currentDays: 0, longestDays: 0, lastStreakDate: null, freezesAvailable: 0 });

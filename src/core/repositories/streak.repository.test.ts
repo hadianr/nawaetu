@@ -9,6 +9,7 @@ const { values, addHasanah } = vi.hoisted(() => ({
 vi.mock("@/core/infrastructure/storage", () => ({
   getStorageService: () => ({
     get: (key: string, fallback: unknown) => values.get(key) ?? fallback,
+    getOptional: (key: string) => values.get(key) ?? null,
     set: (key: string, value: unknown) => values.set(key, value),
   }),
 }));
@@ -40,6 +41,36 @@ describe("LocalStreakRepository achievements", () => {
       freezesAvailable: 0,
       protectedDates: [],
     })).toEqual({ streak: 0, isActiveToday: false, isLost: true });
+  });
+
+  it("keeps the streak while the days since the last activity were excused (udzur)", () => {
+    const data = {
+      currentStreak: 12,
+      longestStreak: 12,
+      lastActiveDate: "2026-08-25",
+      milestones: [7],
+      freezesAvailable: 0,
+      protectedDates: [],
+    };
+    const excused = new Set(["2026-08-26", "2026-08-27", "2026-08-28", "2026-08-29", "2026-08-30"]);
+    expect(getDisplayStreakForData(data, excused)).toEqual({ streak: 12, isActiveToday: false, isLost: false });
+    expect(getDisplayStreakForData(data, new Set(["2026-08-26"]))).toEqual({ streak: 0, isActiveToday: false, isLost: true });
+  });
+
+  it("continues the streak after an excused period instead of restarting it", () => {
+    values.set(STORAGE_KEYS.USER_STREAK, {
+      currentStreak: 9,
+      longestStreak: 9,
+      lastActiveDate: "2026-08-26",
+      milestones: [7],
+    });
+    values.set(STORAGE_KEYS.UDZUR_PERIODS, [{
+      id: "p1",
+      kind: "haid",
+      startedAt: new Date("2026-08-27T08:00:00").toISOString(),
+      endedAt: new Date("2026-08-29T20:00:00").toISOString(),
+    }]);
+    expect(new LocalStreakRepository().updateStreak().streak.currentStreak).toBe(10);
   });
 
   it("emits one persisted milestone celebration and never repeats it the same day", () => {
