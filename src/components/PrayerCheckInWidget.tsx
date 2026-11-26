@@ -92,6 +92,8 @@ export default function PrayerCheckInWidget() {
     );
     const [sheet, setSheet] = useState<SheetState>(null);
     const [selectedDate, setSelectedDate] = useState<string>(DateUtils.today());
+    // Only the prayer the user just checked in animates; ones loaded as done do not.
+    const [justDone, setJustDone] = useState<string | null>(null);
     const dateInputRef = useRef<HTMLInputElement>(null);
     const [showSunnah, setShowSunnah] = useState(false);
     const todayStr = DateUtils.today();
@@ -223,6 +225,7 @@ export default function PrayerCheckInWidget() {
 
     const doComplete = (missionId: string, hasanahReward: number) => {
         const finalHasanah = getHasanahReward(hasanahReward);
+        setJustDone(normalizeMissionId(missionId));
 
         const completedTodayCount = completedMissions.filter(
             (m) => DateUtils.toLocalDate(m.completedAt) === selectedDate
@@ -412,7 +415,8 @@ export default function PrayerCheckInWidget() {
                                 {done ? (
                                     <div className={cn(
                                         "w-5 h-5 rounded-full flex items-center justify-center",
-                                        "bg-[rgb(var(--color-primary))]"
+                                        "bg-[rgb(var(--color-primary))]",
+                                        justDone === normalizeMissionId(getMissionId(prayer.suffix)) && "animate-check-in"
                                     )}>
                                     <Check className="w-3 h-3 text-[rgb(var(--color-primary-foreground))]" />
                                     </div>
@@ -533,6 +537,7 @@ export default function PrayerCheckInWidget() {
                                         >
                                             <div className={cn(
                                                 "w-6 h-6 rounded-full flex items-center justify-center text-xl",
+                                                done && justDone === normalizeMissionId(prayer.id) && "animate-check-in",
                                                 done
                                                     ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
                                                     : isLate
