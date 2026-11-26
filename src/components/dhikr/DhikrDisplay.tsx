@@ -101,9 +101,9 @@ export function DhikrDisplay({
             </div>
 
             {/* Middle: Digital Counter - Responsive Size */}
-            <div className="flex-1 flex items-center justify-center w-full pointer-events-none min-h-0 py-0.5 xs:py-10">
+            <div className="flex-1 flex items-center justify-center w-full pointer-events-none min-h-0 py-0.5 xs:py-10 md:py-4">
                 <div className={cn(
-                    "relative aspect-square h-44 xs:h-56 md:h-64 lg:h-80 max-h-full [container-type:size] flex items-center justify-center pointer-events-auto rounded-full transition-all duration-300",
+                    "relative aspect-square h-44 xs:h-56 md:h-[min(28rem,55vw)] max-h-full [container-type:size] flex items-center justify-center pointer-events-auto rounded-full transition-all duration-300",
                     "shadow-[var(--shadow-floating)]"
                 )}>
 
@@ -132,7 +132,7 @@ export function DhikrDisplay({
                         )}
                     >
                         <span className={cn(
-                            "text-xs md:text-xs font-bold mb-0.5 xs:mb-1.5",
+                            "text-xs md:text-base font-bold mb-0.5 xs:mb-1.5",
                             "text-[rgb(var(--color-primary-strong))]"
                         )}>
                             {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
@@ -151,7 +151,7 @@ export function DhikrDisplay({
                             )}
                         </span>
                         <div className={cn(
-                            "mt-1 text-xs md:text-sm font-medium",
+                            "mt-1 text-xs md:text-base font-medium",
                             "text-[rgb(var(--color-primary-strong))]"
                         )}>
                             {t.tasbihTap}
