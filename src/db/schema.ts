@@ -317,6 +317,18 @@ export const userStreakState = pgTable("user_streak_state", {
     freezesNonnegative: check("user_streak_state_freezes_nonnegative", sql`${table.freezesAvailable} >= 0`),
 }));
 
+// Udzur (haid/nifas) days: dates only, no reason. They bridge the streak (src/lib/habits/progression.ts).
+export const userExcusedDays = pgTable("user_excused_days", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    localDate: date("local_date").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+    userDateUnique: uniqueIndex("user_excused_days_user_date_unique").on(table.userId, table.localDate),
+}));
+
 export const hasanahLedger = pgTable("hasanah_ledger", {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: text("user_id")
@@ -468,6 +480,7 @@ export type NewDailyActivity = typeof dailyActivities.$inferInsert;
 export type UserStreakDay = typeof userStreakDays.$inferSelect;
 export type NewUserStreakDay = typeof userStreakDays.$inferInsert;
 export type UserStreakState = typeof userStreakState.$inferSelect;
+export type UserExcusedDay = typeof userExcusedDays.$inferSelect;
 export type HasanahLedgerEntry = typeof hasanahLedger.$inferSelect;
 export type UserProgressState = typeof userProgressState.$inferSelect;
 export type ChatSession = typeof chatSessions.$inferSelect;
