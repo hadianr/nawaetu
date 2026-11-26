@@ -8,6 +8,7 @@
  */
 
 import { useState, useMemo, useEffect, useCallback, Suspense, memo } from "react";
+import { formatHadithSource } from "@/lib/hadith/format";
 import TargetIdReader from "@/components/TargetIdReader";
 import dynamic from "next/dynamic";
 import { BookOpen, Quote, Copy, Check, ChevronDown, ChevronUp, ShieldCheck, User, Share2, ChevronDown as MoreIcon, Lightbulb } from "@/components/ui/icons";
@@ -73,7 +74,7 @@ const HadithCard = memo(function HadithCard({
         const sourcePrefix = locale === "en" ? "Source" : "Sumber";
         const narratorPrefix = locale === "en" ? "Narrator" : "Perawi";
         const credit = item.hadeethEncId ? `\n${(t.hadithTranslationCredit || "Teks & terjemahan: HadeethEnc.com")} (${hadeethEncUrl(item.hadeethEncId, locale)})` : "";
-        const text = `${title}\n\n${item.arabic}${item.latin ? `\n${item.latin}` : ""}\n\n"${trans}"\n\n${sourcePrefix}: HR. ${item.collection} No. ${item.hadithNumber} (${item.authenticity})${item.narrator ? `\n${narratorPrefix}: ${item.narrator}` : ""}${credit}`;
+        const text = `${title}\n\n${item.arabic}${item.latin ? `\n${item.latin}` : ""}\n\n"${trans}"\n\n${sourcePrefix}: ${formatHadithSource(item)} (${item.authenticity})${item.narrator ? `\n${narratorPrefix}: ${item.narrator}` : ""}${credit}`;
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -100,12 +101,13 @@ const HadithCard = memo(function HadithCard({
                     {/* Badges Container (100% Full Top-Left Width) */}
                     <div className="flex flex-wrap items-center gap-1.5 min-w-0">
                         <span className={cn(
-                            "text-xs px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
+                            // May wrap at "&" when it names two books; a single number stays on one line.
+                            "text-xs px-2 py-0.5 rounded-full font-bold tabular-nums border min-w-0",
                             isHighlighted
                                 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
                                 : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
                         )}>
-                            {locale === "en" ? `${item.collection} No. ${item.hadithNumber}` : `HR. ${item.collection} No. ${item.hadithNumber}`}
+                            {formatHadithSource(item, locale)}
                         </span>
                         <span className={cn(
                             "text-xs px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider border flex items-center gap-0.5 whitespace-nowrap flex-shrink-0",

@@ -58,6 +58,8 @@ export interface HadithItem {
     id: string;
     collection: HadithCollection;
     hadithNumber: string | number;
+    /** Book of the number after " / " in hadithNumber. Not needed for muttafaq 'alaih (Bukhari / Muslim). */
+    secondCollection?: HadithCollection;
     bookName?: string;             // Kitab title, e.g., "Kitab al-Iman"
     chapterName?: string;          // Bab title
     narrator?: string;             // e.g., "Abu Hurairah RA"

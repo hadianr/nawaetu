@@ -7,6 +7,7 @@
 
 import { ShareableCardData } from "./story-card-renderer";
 import { sanitizePlainText } from "@/lib/sanitize";
+import { formatHadithSource } from "@/lib/hadith/format";
 
 export interface HadithLike {
     id: string;
@@ -21,6 +22,7 @@ export interface HadithLike {
     explanation?: string;
     explanationEn?: string;
     authenticity: string;
+    secondCollection?: string;
 }
 
 export interface DuaLike {
@@ -59,7 +61,7 @@ export function mapHadithToShareData(item: HadithLike, locale: string = "id"): S
         latin: item.latin,
         translation: isEn && item.translationEn ? item.translationEn : item.translation,
         explanation: isEn && item.explanationEn ? item.explanationEn : item.explanation,
-        sourceText: `HR. ${item.collection} No. ${item.hadithNumber} (${item.authenticity})`,
+        sourceText: `${formatHadithSource(item)} (${item.authenticity})`,
     };
 }
 
