@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { pushSubscriptions, userStreakState, users } from "@/db/schema";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { pushSubscriptions, userExcusedDays, userStreakState, users } from "@/db/schema";
+import { and, eq, gte, isNotNull } from "drizzle-orm";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
 import { getStreakNotificationCopy } from "@/lib/notifications/push-copy";
 
@@ -41,6 +41,14 @@ export async function POST(request: Request) {
     .innerJoin(users, eq(users.id, pushSubscriptions.userId))
     .where(and(eq(pushSubscriptions.active, 1), isNotNull(pushSubscriptions.userId)));
 
+  // Udzur (haid/nifas) days do not break the streak, so there is nothing to remind about on them.
+  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString().slice(0, 10);
+  const excusedRows = subscriptions.length === 0 ? [] : await db
+    .select({ userId: userExcusedDays.userId, localDate: userExcusedDays.localDate })
+    .from(userExcusedDays)
+    .where(gte(userExcusedDays.localDate, recent));
+  const excused = new Set(excusedRows.map((row) => `${row.userId}:${row.localDate}`));
+
   const results = { sent: 0, skipped: 0, failed: 0, invalidTokens: 0 };
   for (const subscription of subscriptions) {
     const settings = subscription.settings as Record<string, unknown> | null;
@@ -51,7 +59,7 @@ export async function POST(request: Request) {
     const timezone = subscription.timezone || "UTC";
     const localDate = new Date().toLocaleDateString("sv-SE", { timeZone: timezone });
     const lastSent = parseMap(subscription.lastNotificationSent);
-    if (lastSent.streak === localDate || subscription.streak.lastStreakDate === localDate) {
+    if (lastSent.streak === localDate || subscription.streak.lastStreakDate === localDate || excused.has(`${subscription.userId}:${localDate}`)) {
       results.skipped++;
       continue;
     }

@@ -17,6 +17,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { isPaused } from "@/lib/notifications/prayer-preferences";
 import { db } from "@/db";
 import { pushSubscriptions, users } from "@/db/schema";
 import { eq, inArray } from "drizzle-orm";
@@ -324,9 +325,9 @@ export async function POST(req: NextRequest) {
                             continue;
                         }
 
-                        // 6. Check preferences
-                        const prefs = sub.prayerPreferences ? parseJsonField<Record<string, boolean>>(sub.prayerPreferences) : null;
-                        if (prefs && prefs[activePrayer.toLowerCase()] === false) {
+                        // 6. Check preferences (and a pause the user set, e.g. while in udzur)
+                        const prefs = sub.prayerPreferences ? parseJsonField<Record<string, boolean | string | null>>(sub.prayerPreferences) : null;
+                        if (prefs && (prefs[activePrayer.toLowerCase()] === false || isPaused(prefs.pausedUntil, now))) {
                             results.skipped++;
                             settled.add(sub.id);
                             continue;
