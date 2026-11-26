@@ -241,20 +241,6 @@ export const FEMALE_MISSIONS: Mission[] = [
         validationType: 'manual'
     }),
     createMission({
-        id: 'menstruation_dhikr',
-        title: 'Dzikir Saat Haid',
-        description: 'Rutin berdzikir dan berdoa meski sedang berhalangan',
-        hasanahReward: 30,
-        iconKey: 'tasbih',
-        gender: 'female',
-        dalil: 'HR. Bukhari no. 305',
-        hadithId: 'hadith_haid_dzikir',
-        type: 'daily',
-        category: 'dhikr',
-        ruling: 'sunnah',
-        validationType: 'manual'
-    }),
-    createMission({
         id: 'salawat_100x',
         title: 'Shalawat 100x',
         description: 'Membaca shalawat 100 kali',
@@ -269,6 +255,63 @@ export const FEMALE_MISSIONS: Mission[] = [
         validationType: 'manual'
     })
 ];
+
+/**
+ * Worship she can do while in haid or nifas (udzur mode, src/lib/udzur.ts). Shown only while the mode is on;
+ * the five prayers are then excused and left out of the daily count.
+ */
+export const UDZUR_MISSIONS: Mission[] = [
+    createMission({
+        id: 'menstruation_dhikr',
+        title: 'Dzikir Saat Haid',
+        description: 'Rutin berdzikir dan berdoa meski sedang berhalangan',
+        hasanahReward: 30,
+        iconKey: 'tasbih',
+        gender: 'female',
+        dalil: 'HR. Bukhari no. 305',
+        hadithId: 'hadith_haid_dzikir',
+        type: 'daily',
+        category: 'dhikr',
+        ruling: 'sunnah',
+        validationType: 'manual'
+    }),
+    createMission({
+        id: 'udzur_murottal',
+        title: 'Dengarkan Murottal',
+        description: 'Dengarkan bacaan Al-Quran, minimal satu surah',
+        hasanahReward: 30,
+        iconKey: 'headphones',
+        gender: 'female',
+        dalil: 'HR. Bukhari no. 297',
+        hadithId: 'hadith_haid_quran_pangkuan',
+        type: 'daily',
+        category: 'quran',
+        ruling: 'sunnah',
+        validationType: 'manual'
+    }),
+    createMission({
+        id: 'udzur_learn',
+        title: 'Belajar Fiqih Haid',
+        description: 'Baca satu hadits tentang haid dan nifas',
+        hasanahReward: 30,
+        iconKey: 'book-heart',
+        gender: 'female',
+        dalil: 'HR. Bukhari no. 321',
+        hadithId: 'hadith_haid_qadha_puasa',
+        type: 'daily',
+        category: 'worship',
+        ruling: 'sunnah',
+        validationType: 'manual'
+    }),
+];
+
+/** Missions that cannot be done during haid or nifas, beyond the prayer and fasting categories. */
+export const UDZUR_HIDDEN_MISSION_IDS = new Set(['pre_dawn_meal', 'breaking_fast_dua']);
+
+/** True when a mission is set aside while she is in udzur: prayers, fasts, and what belongs to them. */
+export function isExcusedDuringUdzur(mission: Pick<Mission, 'id' | 'category'>): boolean {
+    return mission.category === 'prayer' || mission.category === 'fasting' || UDZUR_HIDDEN_MISSION_IDS.has(mission.id);
+}
 
 export const MALE_MISSIONS: Mission[] = [
     createMission({

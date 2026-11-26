@@ -18,7 +18,7 @@
 
 import { SETTINGS_TRANSLATIONS } from '../translations';
 import { Mission, Gender } from './types';
-import { UNIVERSAL_MISSIONS, MALE_MISSIONS, FEMALE_MISSIONS, resolveRitualForGender } from './daily';
+import { UNIVERSAL_MISSIONS, MALE_MISSIONS, FEMALE_MISSIONS, UDZUR_MISSIONS, isExcusedDuringUdzur, resolveRitualForGender } from './daily';
 import { SUNNAH_PRAYER_MISSIONS } from './sunnah-prayer';
 import { RAMADHAN_MISSIONS, SYABAN_MISSIONS } from './seasonal';
 import { MISSION_CONTENTS } from './content';
@@ -32,6 +32,7 @@ const MISSION_CATALOG = [
     ...UNIVERSAL_MISSIONS,
     ...MALE_MISSIONS,
     ...FEMALE_MISSIONS,
+    ...UDZUR_MISSIONS,
     ...SUNNAH_PRAYER_MISSIONS,
     ...RAMADHAN_MISSIONS,
     ...SYABAN_MISSIONS,
@@ -50,16 +51,26 @@ export function missionRewardOptions(mission: Mission): number[] {
 /**
  * Returns missions filtered and polymorphically adapted by gender, Hijri date, and active days.
  */
+export interface MissionContext {
+    /** She is in haid or nifas today: prayers and fasts are excused, the udzur missions shown instead. */
+    udzur?: boolean;
+    /** Whether Ramadan fasts are owed. Unknown (undefined) keeps the qadha mission visible. */
+    qadhaOwed?: boolean;
+}
+
 export function getMissionsForGender(
     gender: Gender,
     hijriMonth?: string,
     hijriDay?: number,
-    currentDay: number = new Date().getDay()
+    currentDay: number = new Date().getDay(),
+    context: MissionContext = {}
 ): Mission[] {
-    const rawMissions = [...UNIVERSAL_MISSIONS, ...SUNNAH_PRAYER_MISSIONS];
+    let rawMissions = [...UNIVERSAL_MISSIONS, ...SUNNAH_PRAYER_MISSIONS];
+    const udzur = gender === 'female' && context.udzur === true;
 
     if (gender === 'female') {
-        rawMissions.push(...FEMALE_MISSIONS);
+        rawMissions.push(...FEMALE_MISSIONS.filter(m => m.id !== 'makeup_fasting_tracker' || context.qadhaOwed !== false));
+        if (udzur) rawMissions = [...rawMissions.filter(m => !isExcusedDuringUdzur(m)), ...UDZUR_MISSIONS];
     } else if (gender === 'male') {
         rawMissions.push(...MALE_MISSIONS);
     }
@@ -96,13 +107,13 @@ export function getMissionsForGender(
 }
 
 // Get daily missions only
-export function getDailyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number, currentDay?: number): Mission[] {
-    return getMissionsForGender(gender, hijriMonth, hijriDay, currentDay).filter(m => m.type === 'daily');
+export function getDailyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number, currentDay?: number, context?: MissionContext): Mission[] {
+    return getMissionsForGender(gender, hijriMonth, hijriDay, currentDay, context).filter(m => m.type === 'daily');
 }
 
 // Get weekly missions only
-export function getWeeklyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number, currentDay?: number): Mission[] {
-    return getMissionsForGender(gender, hijriMonth, hijriDay, currentDay).filter(m => m.type === 'weekly');
+export function getWeeklyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number, currentDay?: number, context?: MissionContext): Mission[] {
+    return getMissionsForGender(gender, hijriMonth, hijriDay, currentDay, context).filter(m => m.type === 'weekly');
 }
 
 export function getRamadhanMissions(): Mission[] {

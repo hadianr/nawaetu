@@ -526,6 +526,38 @@ export const missionsEN = {
     mission_doa_sore_reading_1_translation: "I seek refuge in the Perfect Words of Allah from the evil of what He created.",
     mission_doa_sore_reading_1_note: "Recite 3x",
 
+    mission_udzur_murottal_title: "Listen to the Quran",
+    mission_udzur_murottal_desc: "Listen to at least one surah being recited",
+    mission_udzur_murottal_dalil: "HR. Bukhari no. 297",
+    mission_udzur_murottal_intro: "Prophet Muhammad SAW recited the Quran while resting in the lap of Aisyah during her period. Your period does not keep you from the Quran.",
+    mission_udzur_murottal_fadhilah: [
+        "Keeps the heart alive with the Quran while excused",
+        "Listening attentively to the Quran brings mercy (QS. Al-A'raf: 204)",
+        "Keeps what you have memorised close"
+    ],
+    mission_udzur_murottal_guides: [
+        "Open the Quran page and play a recitation",
+        "Follow along with the translation or tafsir",
+        "On reciting it yourself and touching the mushaf during a period, scholars differ"
+    ],
+    mission_udzur_murottal_source: "HR. Bukhari no. 297, Muslim no. 301",
+
+    mission_udzur_learn_title: "Learn the Fiqh of Haid",
+    mission_udzur_learn_desc: "Read one hadith on haid and nifas",
+    mission_udzur_learn_dalil: "HR. Bukhari no. 321",
+    mission_udzur_learn_intro: "The women companions asked Prophet Muhammad SAW and Aisyah directly about their periods. Knowing the rulings brings calm and certainty to your worship.",
+    mission_udzur_learn_fadhilah: [
+        "Know what is excused and what is made up",
+        "Tell a period apart from istihadah",
+        "Seeking knowledge is a path to Paradise (Muslim 2699)"
+    ],
+    mission_udzur_learn_guides: [
+        "Open the Women & Menstruation topic on the Hadith page",
+        "Read one hadith and its explanation",
+        "Note anything you want to ask a scholar"
+    ],
+    mission_udzur_learn_source: "HR. Bukhari no. 321, Muslim no. 335",
+
     mission_menstruation_dhikr_title: "Dhikr During Period",
     mission_menstruation_dhikr_desc: "Increase dhikr and istighfar during period",
     mission_menstruation_dhikr_dalil: "HR. Bukhari no. 305",
