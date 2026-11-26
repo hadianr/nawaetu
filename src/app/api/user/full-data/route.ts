@@ -31,6 +31,7 @@ import {
     userProgressState,
     userStreakDays,
     userStreakState,
+    userExcusedDays,
 } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { calculatePlayerStats } from "@/lib/habits/progression";
@@ -62,6 +63,7 @@ export async function GET() {
             progressState,
             streakState,
             streakDays,
+            excusedDays,
         ] = await inSequence([
             // 1. Profile & Settings
             db.query.users.findFirst({
@@ -115,6 +117,13 @@ export async function GET() {
                 orderBy: [desc(userStreakDays.localDate)],
                 limit: 30,
             }),
+            // Udzur days (dates only): part of the account's data, and they keep the streak on a new device.
+            db.query.userExcusedDays.findMany({
+                where: eq(userExcusedDays.userId, userId),
+                orderBy: [desc(userExcusedDays.localDate)],
+                columns: { localDate: true },
+                limit: 400,
+            }),
         ]);
 
         if (!userProfile) {
@@ -149,6 +158,7 @@ export async function GET() {
                     freezesAvailable: streakState?.freezesAvailable ?? 0,
                     timezone: streakState?.timezone ?? "UTC",
                     days: streakDays,
+                    excusedDays: excusedDays.map((day) => day.localDate),
                 },
             },
             readingState: readingState ? {

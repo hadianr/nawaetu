@@ -2,9 +2,11 @@ import { transactionDb } from "@/db";
 import { inSequence } from "@/lib/db-sequential";
 import {
   hasanahLedger,
+  userExcusedDays,
   userProgressState,
   userStreakDays,
   userStreakState,
+  users,
 } from "@/db/schema";
 import {
   LEVEL_RULES_VERSION,
@@ -13,7 +15,7 @@ import {
   advanceStreak,
   rebuildStreakDetailed,
 } from "@/lib/habits/progression";
-import { and, asc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, eq, gt, inArray, sql } from "drizzle-orm";
 
 export type ProgressionSource = "mission" | "prayer" | "quran" | "dhikr" | "intention" | "streak_milestone";
 
@@ -30,6 +32,29 @@ export interface ProgressionEvidence {
 }
 
 type Tx = Parameters<Parameters<typeof transactionDb.transaction>[0]>[0];
+
+/** Udzur (haid/nifas) days: they bridge a gap in the streak without adding to it. Only those after `after` if given. */
+async function loadExcusedDates(tx: Tx, userId: string, after?: string | null): Promise<Set<string>> {
+  const rows = await tx.query.userExcusedDays.findMany({
+    where: after ? and(eq(userExcusedDays.userId, userId), gt(userExcusedDays.localDate, after)) : eq(userExcusedDays.userId, userId),
+    columns: { localDate: true },
+  });
+  return new Set(rows.map((row) => row.localDate));
+}
+
+/** The streak from every qualified day, with the excused ones bridging gaps, stored with its frozen days. */
+async function rebuildAndStoreStreak(tx: Tx, userId: string, timezone: string) {
+  // One query at a time on a transaction.
+  const qualifiedDays = await tx.query.userStreakDays.findMany({
+    where: and(eq(userStreakDays.userId, userId), eq(userStreakDays.status, "qualified")),
+    orderBy: [asc(userStreakDays.localDate)],
+    columns: { localDate: true },
+  });
+  const excused = await loadExcusedDates(tx, userId);
+  const rebuilt = rebuildStreakDetailed(qualifiedDays.map((day) => day.localDate), excused);
+  await reconcileFrozenDays(tx, userId, rebuilt.frozenDates, timezone);
+  return rebuilt.state;
+}
 
 /**
  * Makes the stored "frozen" days equal to the days the streak rules say a freeze protected. A frozen day
@@ -163,9 +188,11 @@ export async function processProgressionEvidenceBatch(userId: string, evidences:
       let next: ProgressionStreakState;
       if (currentStreak && inOrder) {
         // Normal case: the new days come after the last one, so continue from the stored state.
+        // Only the gap after the last streak day can be bridged.
+        const excused = await loadExcusedDates(tx, userId, currentStreak.lastStreakDate);
         const newlyFrozen: string[] = [];
         next = newDates.reduce<ProgressionStreakState>((state, date) => {
-          const step = advanceStreak(state, date);
+          const step = advanceStreak(state, date, excused);
           if (step.frozenDate) newlyFrozen.push(step.frozenDate);
           return step.state;
         }, {
@@ -188,14 +215,7 @@ export async function processProgressionEvidenceBatch(userId: string, evidences:
         }
       } else {
         // Out-of-order sync (an older day arrived late): rebuild from the ordered history so it cannot reset.
-        const qualifiedDays = await tx.query.userStreakDays.findMany({
-          where: and(eq(userStreakDays.userId, userId), eq(userStreakDays.status, "qualified")),
-          orderBy: [asc(userStreakDays.localDate)],
-          columns: { localDate: true },
-        });
-        const rebuilt = rebuildStreakDetailed(qualifiedDays.map((day) => day.localDate));
-        next = rebuilt.state;
-        await reconcileFrozenDays(tx, userId, rebuilt.frozenDates, timezone);
+        next = await rebuildAndStoreStreak(tx, userId, timezone);
       }
 
       [streak] = await tx
@@ -261,17 +281,11 @@ export async function reverseProgressionEvidence(
         .where(and(eq(userStreakDays.userId, userId), eq(userStreakDays.localDate, target.localDate)))
         .returning({ id: userStreakDays.id });
       if (deleted.length > 0) {
-        const days = await tx.query.userStreakDays.findMany({
-          where: and(eq(userStreakDays.userId, userId), eq(userStreakDays.status, "qualified")),
-          orderBy: [asc(userStreakDays.localDate)],
-          columns: { localDate: true },
-        });
-        const rebuilt = rebuildStreakDetailed(days.map((day) => day.localDate));
+        const state = await rebuildAndStoreStreak(tx, userId, "UTC");
         await tx
           .update(userStreakState)
-          .set({ ...rebuilt.state, updatedAt: new Date() })
+          .set({ ...state, updatedAt: new Date() })
           .where(eq(userStreakState.userId, userId));
-        await reconcileFrozenDays(tx, userId, rebuilt.frozenDates, "UTC");
       }
     }
 
@@ -310,4 +324,60 @@ export async function raiseProgressionEvidence(userId: string, evidence: Progres
 
   if (raised === null) await processProgressionEvidenceBatch(userId, [evidence]);
   return raised ?? { changed: true };
+}
+
+/** No excused run is longer than this: nifas is at most 60 days in any madhhab (same cap as src/lib/udzur.ts). */
+export const EXCUSED_RUN_CAP_DAYS = 60;
+
+export class ExcusedDaysError extends Error {}
+
+function longestRun(dates: string[]): number {
+  let longest = 0;
+  let run = 0;
+  let previous = "";
+  for (const date of [...dates].sort()) {
+    const next = previous ? new Date(`${previous}T00:00:00Z`) : null;
+    next?.setUTCDate(next.getUTCDate() + 1);
+    run = next && next.toISOString().slice(0, 10) === date ? run + 1 : 1;
+    longest = Math.max(longest, run);
+    previous = date;
+  }
+  return longest;
+}
+
+/**
+ * Adds and removes udzur (haid/nifas) days, then rebuilds the streak so a period recorded late repairs it.
+ * Only for accounts set to female. The dates carry no reason. Validation of each date's format and range
+ * happens in the sync route; this guards the account and the run length.
+ */
+export async function applyExcusedDays(userId: string, change: { add: string[]; remove: string[]; timezone: string }) {
+  const add = [...new Set(change.add)];
+  const remove = [...new Set(change.remove)].filter((date) => !add.includes(date));
+  if (add.length === 0 && remove.length === 0) return { streak: null };
+
+  return transactionDb.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${userId}))`);
+
+    if (add.length > 0) {
+      const owner = await tx.query.users.findFirst({ where: eq(users.id, userId), columns: { gender: true } });
+      if (owner?.gender !== "female") throw new ExcusedDaysError("Excused days are only for accounts set to female");
+    }
+    if (remove.length > 0) {
+      await tx.delete(userExcusedDays).where(and(eq(userExcusedDays.userId, userId), inArray(userExcusedDays.localDate, remove)));
+    }
+    if (add.length > 0) {
+      await tx.insert(userExcusedDays).values(add.map((localDate) => ({ userId, localDate }))).onConflictDoNothing();
+      const all = await loadExcusedDates(tx, userId);
+      // Throwing rolls the whole change back.
+      if (longestRun([...all]) > EXCUSED_RUN_CAP_DAYS) throw new ExcusedDaysError("Excused period is too long");
+    }
+
+    const state = await rebuildAndStoreStreak(tx, userId, change.timezone);
+    const [streak] = await tx
+      .insert(userStreakState)
+      .values({ userId, ...state, timezone: change.timezone })
+      .onConflictDoUpdate({ target: userStreakState.userId, set: { ...state, updatedAt: new Date() } })
+      .returning();
+    return { streak };
+  });
 }

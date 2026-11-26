@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { and, desc, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { bookmarks, dailyActivities, ramadhanFastingLog, userCompletedMissions, userProgressState, userStreakDays, userStreakState, users } from "@/db/schema";
+import { bookmarks, dailyActivities, ramadhanFastingLog, userCompletedMissions, userExcusedDays, userProgressState, userStreakDays, userStreakState, users } from "@/db/schema";
 import { getServerSession } from "@/lib/auth";
 import { inSequence } from "@/lib/db-sequential";
 import { logger } from "@/lib/logger";
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
         const body: Record<string, unknown> = {};
 
         if (wants("progress")) {
-            const [progressState, streakState, streakDays] = await inSequence([
+            const [progressState, streakState, streakDays, excusedDays] = await inSequence([
                 db.query.userProgressState.findFirst({ where: eq(userProgressState.userId, userId) }),
                 db.query.userStreakState.findFirst({ where: eq(userStreakState.userId, userId) }),
                 db.query.userStreakDays.findMany({
@@ -65,6 +65,11 @@ export async function GET(req: NextRequest) {
                     orderBy: [desc(userStreakDays.localDate)],
                     columns: { localDate: true, status: true },
                     limit: 30,
+                }),
+                // Udzur days in the window, so another device marks the same prayers excused and keeps the streak.
+                db.query.userExcusedDays.findMany({
+                    where: and(eq(userExcusedDays.userId, userId), gte(userExcusedDays.localDate, windowStart)),
+                    columns: { localDate: true },
                 }),
             ]);
             body.progression = {
@@ -76,6 +81,7 @@ export async function GET(req: NextRequest) {
                     freezesAvailable: streakState?.freezesAvailable ?? 0,
                     timezone: streakState?.timezone ?? "UTC",
                     days: streakDays,
+                    excusedDays: excusedDays.map((day) => day.localDate),
                 },
             };
         }

@@ -18,6 +18,7 @@ interface Progression {
     streak?: {
         currentDays?: number; longestDays?: number; lastStreakDate?: string | null; freezesAvailable?: number;
         days?: Array<{ localDate: string; status?: string }>;
+        excusedDays?: string[];
     };
 }
 

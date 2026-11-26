@@ -32,7 +32,8 @@ export type SyncEntityType =
   | 'sirah_progress'
   | 'sirah_bookmark'
   | 'streak'
-  | 'hasanah_event';
+  | 'hasanah_event'
+  | 'excused_day';
 
 /**
  * Supported operation types
@@ -125,6 +126,7 @@ export function entityKey(type: SyncEntityType, data: Record<string, unknown>): 
     case 'ramadhan_taraweh': return `rt:${str(data.hijriYear)}-${str(data.hijriDay)}`;
     case 'ramadhan_daily': return `rd:${str(data.hijriYear)}-${str(data.hijriDay)}`;
     case 'ramadhan_fasting': return `rf:${str(data.hijriYear)}-${str(data.hijriDay)}`;
+    case 'excused_day': return `x:${str(data.localDate)}`;
     default: return `${type}:${crypto.randomUUID()}`;
   }
 }
