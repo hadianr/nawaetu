@@ -80,7 +80,7 @@ export const users = pgTable("user", {
     intentionStreakLongest: integer("intention_streak_longest").default(0),
     lastIntentionDate: date("last_intention_date"),
 
-    // Muhsinin & Donation Tracking (v1.6.0)
+    // Supporter & donation tracking (v1.6.0). Column names keep the old "muhsinin" wording; shown to users as "Pendukung Nawaetu".
     isMuhsinin: boolean("is_muhsinin").default(false),
     muhsininSince: timestamp("muhsinin_since"),
     totalInfaq: integer("total_infaq").default(0), // Track total donation amount
