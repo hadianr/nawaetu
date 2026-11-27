@@ -67,7 +67,7 @@ export function QiblaPermissionPrompt({
                     "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25"
                 )}>
                     <p className="text-xs leading-relaxed text-[rgb(var(--color-warning))]">
-                        <strong className="text-[rgb(var(--color-warning))]">Penting:</strong> Setelah app di-close, klik tombol ini lagi untuk mengaktifkan kompas. Browser perlu izin ulang untuk akses sensor.
+                        <strong className="text-[rgb(var(--color-warning))]">{t.qiblaSessionNoteLabel}</strong> {t.qiblaSessionNote}
                     </p>
                 </div>
             )}

@@ -407,7 +407,7 @@ function HadithContent() {
                                 )}
                             >
                                 <MoreIcon className="w-3.5 h-3.5" />
-                                <span>Tampilkan Lebih Banyak ({filtered.length - visibleItems.length} Hadits Lagi)</span>
+                                <span>{t.loadMore} ({filtered.length - visibleItems.length})</span>
                             </button>
                         </div>
                     )}

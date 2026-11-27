@@ -403,7 +403,7 @@ export default function MentorAIClient() {
                         <p className={cn(
                             "leading-relaxed text-sm text-[rgb(var(--color-text-muted))]"
                         )}>
-                            {translations.tanyaLoginDesc || "Fitur Tanya Nawaitu hanya tersedia untuk pengguna yang sudah login."}
+                            {translations.tanyaLoginDesc || "Fitur Tanya Nawaetu hanya tersedia untuk pengguna yang sudah login."}
                         </p>
                     </div>
 
