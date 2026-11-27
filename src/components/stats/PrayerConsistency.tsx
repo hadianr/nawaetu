@@ -4,6 +4,7 @@ import React from 'react';
 import { useLocale } from '@/context/LocaleContext';
 import type { TranslationTree } from '@/context/LocaleContext';
 import { AppIcon } from '@/components/ui/AppIcon';
+import { prayersDue } from '@/lib/stats/message';
 
 interface PrayerConsistencyProps {
     t: TranslationTree;
@@ -32,7 +33,7 @@ export function PrayerConsistency({
     const displayedDays = last14Days.slice(0, viewDays);
     const totalCompleted = displayedDays.reduce((acc, date) => acc + (prayerMap[date]?.size || 0), 0);
     // An excused day only counts what was actually prayed on it.
-    const maxPossible = displayedDays.reduce((acc, date) => acc + (excusedDates.has(date) ? (prayerMap[date]?.size || 0) : 5), 0);
+    const maxPossible = prayersDue(displayedDays, prayerMap, excusedDates);
     const now = new Date();
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const anyExcused = displayedDays.some((date) => excusedDates.has(date));

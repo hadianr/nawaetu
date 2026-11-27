@@ -29,6 +29,7 @@ export function CategoryBreakdown({
             <h2 className="font-bold text-sm mb-5 flex items-center gap-2">
                 <AppIcon name="target" size="sm" tone="primary" label={t.stats.missions.title} />
                 {t.stats.missions.title}
+                <span className="ml-auto text-xs font-semibold text-[rgb(var(--color-text-muted))]">{t.stats.missions.allTime}</span>
             </h2>
             <div className="space-y-4">
                 {activeStats.map(([key, cat]) => (
