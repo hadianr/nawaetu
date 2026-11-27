@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import UserProfileDialog from "@/components/UserProfileDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Session } from "next-auth";
+import { useLocale } from "@/context/LocaleContext";
 
 interface ProfileCardProps {
     status: "authenticated" | "loading" | "unauthenticated";
@@ -28,7 +29,6 @@ interface ProfileCardProps {
     hasCachedProfile: boolean;
     userAvatar: string | null;
     userName: string;
-    userTitle: string;
     isAuthenticated: boolean;
     refreshProfile: () => void;
 }
@@ -39,10 +39,11 @@ export default function ProfileCard({
     hasCachedProfile,
     userAvatar,
     userName,
-    userTitle,
     isAuthenticated,
     refreshProfile,
 }: ProfileCardProps) {
+    const { t } = useLocale();
+    const tr = t as unknown as Record<string, string>;
     if (status === "loading" && !hasCachedProfile) {
         return (
             <div className="w-full p-4 bg-[rgb(var(--color-surface-subtle))]/60 border border-[rgb(var(--color-border))]/20 rounded-2xl flex items-center gap-4 animate-pulse shadow-[var(--shadow-card)]">
@@ -76,14 +77,8 @@ export default function ProfileCard({
                 </div>
                 <div className="flex-1 min-w-0">
                     <h3 className="text-base font-bold text-[rgb(var(--color-text-strong))] truncate group-hover:text-[rgb(var(--color-primary-strong))] transition-colors">{userName}</h3>
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-[rgb(var(--color-primary-strong))]">{userTitle}</span>
-                        {!isAuthenticated && (
-                            <span className="text-xs px-1.5 py-0.5 rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/20 text-[rgb(var(--color-text-muted))]">
-                                Guest
-                            </span>
-                        )}
-                    </div>
+                    {/* Account state, not a title: the old "gelar" can no longer be chosen. */}
+                    <p className="text-xs text-[rgb(var(--color-primary-strong))]">{isAuthenticated ? tr.profileSynced : tr.profileGuestDevice}</p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors flex-shrink-0" aria-hidden="true" />
             </button>

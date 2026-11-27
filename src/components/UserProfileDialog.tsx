@@ -19,7 +19,7 @@
  */
 
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
-import { Edit2 } from "@/components/ui/icons";
+import { Database, Edit2, HandHeart, ShieldCheck, User } from "@/components/ui/icons";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";
@@ -42,6 +42,7 @@ import { GamificationStats } from "./profile/GamificationStats";
 import { AuthActions } from "./profile/AuthActions";
 
 // --- CONSTANTS & DATA ---
+const chip = "inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold";
 const AVATAR_LIST = [
     { id: 'boy-1', src: 'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg' },
 ];
@@ -53,12 +54,13 @@ interface UserProfileDialogProps {
 
 export default function UserProfileDialog({ children, onProfileUpdate }: UserProfileDialogProps) {
     const { data: session, status } = useSession();
-    const { resetInfaq } = useInfaq();
+    const { resetInfaq, isMuhsinin } = useInfaq();
     const { t, locale } = useLocale();
     const { updateProfile, isUpdating } = useProfile();
     const { syncData } = useDataSync();
 
     const isAuthenticated = status === "authenticated";
+    const tr = t as unknown as Record<string, string>;
 
     // Keep the first render identical on server and client; storage is loaded below.
     const [userName, setUserName] = useState<string>("Sobat Nawaetu");
@@ -207,7 +209,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                 <DialogTitle className="sr-only">{locale === 'id' ? 'Profil Pengguna' : 'User profile'}</DialogTitle>
 
                 <ProfileHeader
-                    isAuthenticated={isAuthenticated}
                     userImage={userImage}
                     onClose={() => setIsOpen(false)}
                 />
@@ -245,6 +246,25 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                 {session.user.email}
                                             </div>
                                         )}
+                                        {/* Who this profile is: account state, chosen gender, supporter. */}
+                                        <ul className="mt-3 flex flex-wrap gap-1.5">
+                                            <li className={cn(chip, isAuthenticated ? "border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))]" : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))]")}>
+                                                {isAuthenticated ? <ShieldCheck className="size-3.5" aria-hidden="true" /> : <Database className="size-3.5" aria-hidden="true" />}
+                                                {isAuthenticated ? tr.profileSyncedShort : tr.profileGuestShort}
+                                            </li>
+                                            {editGender && (
+                                                <li className={cn(chip, "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))]")}>
+                                                    <User className="size-3.5" aria-hidden="true" />
+                                                    {editGender === "female" ? tr.profileMuslimah : tr.profileMuslim}
+                                                </li>
+                                            )}
+                                            {isMuhsinin && (
+                                                <li className={cn(chip, "border-[rgb(var(--color-accent))]/30 bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))]")}>
+                                                    <HandHeart className="size-3.5" aria-hidden="true" />
+                                                    {tr.profileSupporter}
+                                                </li>
+                                            )}
+                                        </ul>
                                     </div>
                                 </>
                             )}

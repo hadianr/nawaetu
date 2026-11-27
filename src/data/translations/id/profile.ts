@@ -48,5 +48,13 @@ export const profileID = {
     profileLogoutConfirmYes: "Ya, Keluar",
     profileLogoutConfirmNo: "Batal",
     profileGuestMode: "Mode Guest",
+    profileSynced: "Tersinkron dengan akun Google",
+    profileSyncedShort: "Tersinkron",
+    profileGuestShort: "Mode tamu",
+    profileGuestDevice: "Data tersimpan di perangkat ini",
+    profileSupporter: "Pendukung Nawaetu",
+    profileMuslim: "Muslim",
+    profileMuslimah: "Muslimah",
+    profileAccountSection: "Akun",
     profileFooter: "Terima kasih telah menggunakan Nawaetu",
 };

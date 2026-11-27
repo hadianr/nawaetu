@@ -86,20 +86,17 @@ export default function SettingsPageContent() {
 
     // Profile State
     const [userName, setUserName] = useState("Sobat Nawaetu");
-    const [userTitle, setUserTitle] = useState("Hamba Allah");
     const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
     // Initial Cache Load for Optimistic UI
     useEffect(() => {
-        const [savedName, savedTitle, savedAvatar] = storage.getMany([
+        const [savedName, savedAvatar] = storage.getMany([
             STORAGE_KEYS.USER_NAME,
-            STORAGE_KEYS.USER_TITLE,
             STORAGE_KEYS.USER_AVATAR
         ]).values();
 
         queueMicrotask(() => {
             if (savedName) setUserName(savedName as string);
-            if (savedTitle) setUserTitle(savedTitle as string);
             if (savedAvatar) setUserAvatar(savedAvatar as string | null);
         });
     }, []);
@@ -138,9 +135,8 @@ export default function SettingsPageContent() {
     // Audio Preview State has been moved to AudioCard
     
     const refreshProfile = useCallback(() => {
-        const [savedName, savedTitle, savedAvatar] = storage.getMany([
+        const [savedName, savedAvatar] = storage.getMany([
             STORAGE_KEYS.USER_NAME,
-            STORAGE_KEYS.USER_TITLE,
             STORAGE_KEYS.USER_AVATAR
         ]).values();
 
@@ -154,7 +150,6 @@ export default function SettingsPageContent() {
         }
         else setUserAvatar(savedAvatar as string | null);
 
-        if (savedTitle) setUserTitle(savedTitle as string);
     }, [session]);
 
     // Update profile when session changes
@@ -275,7 +270,6 @@ export default function SettingsPageContent() {
                     hasCachedProfile={hasCachedProfile}
                     userAvatar={userAvatar}
                     userName={userName}
-                    userTitle={userTitle}
                     isAuthenticated={isAuthenticated}
                     refreshProfile={refreshProfile}
                 />
