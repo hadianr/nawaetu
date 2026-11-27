@@ -36,7 +36,7 @@ Quran, prayer, hadith and Sirah you can check, and a daily habit built around <i
 | **Solution** | One app that links intention, worship and learning: a morning intention and evening reflection, prayer times, Qibla, a Quran with tajweed and audio, hadith and duas with attribution and grade, Sirah in three formats, and an AI assistant designed to cite references. |
 | **Why it stands out** | Intention-first design, source-backed content shown exactly as published, an assistant that says when it cannot confirm a source, no ads, and open source. |
 | **Market** | Indonesia alone has about 246 million Muslims (87% of the population). Global Muslim consumer spending was $2.6 trillion in 2024. ([sources](#market)) |
-| **Traction** | Live at nawaetu.com since 2026, 889 active users this year (Google Analytics), 277 registered accounts, 825 missions completed, 90 releases. ([details](#traction)) |
+| **Traction** | Live at nawaetu.com since 2026, 889 active users this year (Google Analytics), 286 registered accounts, 587 prayers and 217 intentions logged, 90 releases. ([details](#traction)) |
 | **Business model** | Worship stays free, with no ads. Revenue comes from co-branded organisation plans (companies, schools, pesantren), an optional Plus subscription for services such as extended AI use, and sponsored programmes, with donations as community support. ([details](#business-model)) |
 | **Founder** | Hadian Rahmat ([@hadianr](https://github.com/hadianr)) |
 
@@ -45,21 +45,23 @@ Quran, prayer, hadith and Sirah you can check, and a daily habit built around <i
 ## At a Glance
 
 <a name="traction"></a>
-Figures as of **20 November 2026**. Usage numbers come from the app's public endpoint [`/api/stats/global`](https://nawaetu.com/api/stats/global), so they can be refreshed for any deck.
+Figures as of **27 November 2026**. Prayers, intentions and this week's worshippers come from the app's public endpoint [`/api/stats/global`](https://nawaetu.com/api/stats/global), so they can be refreshed for any deck. Accounts and missions are counted in the database.
 
 | Area | Figure |
 | :--- | :--- |
-| **Registered accounts** | 277 (guests use the app without an account and are not counted) |
+| **Registered accounts** | 286 (guests use the app without an account and are not counted) |
 | **Active users** | 889 in 2026, averaging 3 minutes of engagement each (Google Analytics, 1 January to 23 November). Tracking was blocked until mid-August 2026, so earlier months are undercounted |
 | **Where users come from** | Mostly direct visits and shared links, then Google search, Instagram and Threads. Users are in Indonesia, led by Bandung and Jakarta |
-| **Missions completed** | 825 |
-| **Worship days logged** | 69 |
+| **Missions completed** | 844 |
+| **Prayers logged** | 587 |
+| **Intentions written** | 217 |
+| **Worshipping this week** | 11 people |
 | **Quran** | All 114 surahs, verse-by-verse audio, tajweed colours, Indonesian and English translations |
-| **Hadith and dua** | 116 selected sahih and hasan hadith and 50 duas, each with attribution and grade |
+| **Hadith and dua** | 122 selected sahih and hasan hadith (including hadith on menstruation and istihadah) and 50 duas, each with attribution and grade |
 | **Sirah** | 3 formats: a 10-part concise book (with the author's permission), a 50-chapter complete Sirah, and a 13-chapter timeline |
-| **Search presence** | 591 indexable pages in the sitemap, with server-rendered content pages and `llms.txt` for AI search |
-| **Delivery** | 90 tagged releases and 1,295 commits since January 2026 |
-| **Quality** | 153 test files (984 tests), an 80% line-coverage gate in CI, CodeQL scanning, and browser checks with Anoa |
+| **Search presence** | 592 indexable pages in the sitemap, with server-rendered content pages and `llms.txt` for AI search |
+| **Delivery** | 90 tagged releases and 1,417 commits since January 2026 |
+| **Quality** | 168 test files (1,087 tests), an 80% line-coverage gate in CI, CodeQL scanning, and browser checks with Anoa |
 | **Accessibility** | Button text, accent text and status colours meet WCAG AA in all 5 themes (automated test), with visible keyboard focus |
 | **Languages** | English and Indonesian |
 | **Platforms** | Web app (installable PWA) and an Android app wrapper in this repository |
@@ -80,9 +82,9 @@ Nawaetu builds the day around three ideas.
 
 | Pillar | What it means in the app |
 | :--- | :--- |
-| **Intention (niat)** | Set an intention every morning and reflect every evening. Missions, streaks and the Hasanah rank (Mubtadi to Muhsin) reward consistency, not just counts. |
+| **Intention (niat)** | Set an intention every morning and reflect every evening. Missions, forgiving streaks and seven journey stages (Memulai to Menebar Manfaat) reward consistency, not just counts. Stages name what you practise, never a spiritual title, and Hasanah is a record of effort, not a count of reward. |
 | **Knowledge you can check** | Quran, hadith, duas and Sirah show their source, attribution and grade, and keep other publishers' text exactly as published. Tanya Nawaetu, the AI assistant, is designed to cite references and to say when a source cannot be confirmed. |
-| **Everyday worship** | GPS prayer times with reminders, Qibla compass, Hijri calendar with recommended fasting days, tasbih with sequences and a focus mode, and seasonal Ramadan tools. |
+| **Everyday worship** | GPS prayer times with reminders, Qibla compass, Hijri calendar with recommended fasting days, tasbih with sequences and a focus mode, seasonal Ramadan tools, and an udzur mode for women during haid and nifas. |
 
 <a name="market"></a>
 ## Why Now
@@ -119,7 +121,7 @@ Many Islamic apps centre on utilities such as prayer schedules and tasbih counte
 | **Reflection** | Counters and passive reminders | **Muhasabah journal**: morning intention, evening reflection |
 | **Religious content** | Varies by app | **Source shown with the text**: attribution, grade and a link, kept exactly as published |
 | **Islamic Q&A** | Articles and text search | **Tanya Nawaetu**: AI assistant designed to cite Quran and hadith references and to say when a source cannot be confirmed |
-| **Motivation** | Counters and streaks | **Hasanah system**: rank progression (Mubtadi to Muhsin) and Istiqamah streaks |
+| **Motivation** | Counters and streaks | **Journey stages**: seven stages named after the practice, with no spiritual titles, forgiving streaks, and an udzur mode so haid and nifas never count as missed |
 | **Ads** | Varies by app and plan | No advertising |
 | **Source code** | Typically closed | Open source (AGPLv3) |
 
@@ -130,10 +132,12 @@ Many Islamic apps centre on utilities such as prayer schedules and tasbih counte
 | When | Milestone |
 | :--- | :--- |
 | January 2026 | First commit |
-| 2026 | Web app live at nawaetu.com: intention journal, missions, Hasanah ranks, prayer check-in, Quran, hadith and dua, tasbih, fasting and Ramadan tools |
+| 2026 | Web app live at nawaetu.com: intention journal, missions, Hasanah levels, prayer check-in, Quran, hadith and dua, tasbih, fasting and Ramadan tools |
 | October 2026 | Content pages server-rendered for search and AI search (`llms.txt`, structured data) |
 | November 2026 | Sirah in three formats, including Shaykh Haytham Sarhan's concise book published with his written permission |
 | November 2026 | Brand refresh: a flat vector logo and icon set, a light default theme, a two-font system, and WCAG AA contrast in every theme |
+| November 2026 | Udzur mode for haid and nifas: excused prayers keep the streak, missions adapt, prayer alerts pause, and hadith on menstruation join the library |
+| November 2026 | Stats and progression revamp: seven journey stages without spiritual titles, fair counting of udzur days, a personal message on the stats page, and a "Worship Together" community card |
 
 ## Roadmap
 
@@ -164,7 +168,7 @@ Organisations are the main growth path: each organisation brings its members int
 
 ### Where Nawaetu is now
 
-- **Early stage**: with 889 active users and 277 accounts in 2026, consumer subscriptions would earn little, so Nawaetu Plus waits. The first commercial step is one organisation pilot, which also brings a whole group of users at once.
+- **Early stage**: with 889 active users and 286 accounts in 2026, consumer subscriptions would earn little, so Nawaetu Plus waits. The first commercial step is one organisation pilot, which also brings a whole group of users at once.
 - **Local, word-of-mouth growth**: most users arrive directly, through shared links or Instagram, and are concentrated in Bandung and Jakarta. That suits a first pilot with a nearby company, campus or pesantren.
 - **Measure before pitching**: sign-ups, intentions and prayer check-ins are tracked, but conversion and retention do not have a baseline yet. Setting them is part of the [roadmap](ROADMAP.md#-success-metrics-public).
 
@@ -205,7 +209,7 @@ Organisations are the main growth path: each organisation brings its members int
 *   **Tanya Nawaetu**: An Islamic assistant designed to ground answers in the Quran, Sunnah, and Hadith with references, and to acknowledge its limits when a source cannot be confirmed.
     *   **Civic questions without taking sides**: political questions are answered with Islamic principles (trust, justice, consultation, checking news) and the main scholarly views. It never endorses or rejects a party, candidate, figure, law, or protest.
     *   **Speaks Gen Z**: understands everyday terms such as *privilege*, *ordal*, *bagi-bagi kue*, *cawe-cawe*, *buzzer*, *pencitraan*, *politik identitas*, *serangan fajar*, *apatis*, *oposisi*, and *rezim*.
-*   **Gamified Growth**: Earn Niat Points through intention-based missions, including an optional daily mission to pray for leaders and the country.
+*   **Missions and journey stages**: Earn Hasanah through daily missions, including an optional mission to pray for leaders and the country. Levels group into seven stages named after what you practise (Memulai, Membiasakan, Menjaga Waktu, Menambah, Memperdalam, Meneguhkan, Menebar Manfaat), each with an optional focus and a checked reminder from the Quran or hadith. Hasanah is a record of effort in the app, not a count of reward, and no stage is a spiritual title.
 
 ### 2. 📖 Spiritual Content Engine
 *   **Digital Quran**: Mushaf & List mode with verse-by-verse audio, Tajweed colors, and authentic Kemenag standards.
@@ -225,7 +229,8 @@ Organisations are the main growth path: each organisation brings its members int
 ### 4. 📈 Consistency (Istiqamah) Tools
 *   **Tasbih 2.0**: Advanced counter with Sequential (Berantai), Custom readings, and OLED Zen Mode.
 *   **Prayer Check-in**: High-precision ritual tracker with mosque/solo options.
-*   **Ibadah Dashboard**: Lifetime statistics, milestones, and Hasanah trend visualizers.
+*   **Ibadah Stats**: Opens with a personal message and one next step, then the journey stage, 14-day prayer consistency, Hasanah trends and Quran time. A "Worship Together" card shows prayers kept, intentions set and people worshipping this week, with no leaderboard.
+*   **Udzur Mode (haid & nifas)**: For women, start and end a period in two taps. Prayers in that window are marked excused instead of missed, the streak pauses instead of breaking, missions switch to dhikr, Quran listening and learning, prayer alerts pause, Ramadan days are noted for qadha, and the hadith library gains a Muslimah & Menstruation topic. Only dates are synced; period details stay on the device and can be deleted.
 
 ### 5. 🗓️ Fasting & Seasonal Companion
 *   **Sunnah & Voluntary Fasting**: Track Monday/Thursday (Senin-Kamis), Ayyamul Bidh, and custom fasting with fiqh-based statuses and Hasanah rewards.
@@ -240,13 +245,13 @@ Religious content should be checkable. Nawaetu shows where each text comes from,
 
 | Content | Source | Notes |
 | :--- | :--- | :--- |
-| Civic Life hadith, Timeline of Events chapters | [HadeethEnc.com](https://hadeethenc.com) | Arabic, Indonesian, and English text, attribution, and grade shown unchanged, with a link to each hadith |
+| Civic Life hadith, menstruation and istihadah hadith, Timeline of Events chapters | [HadeethEnc.com](https://hadeethenc.com) | Arabic, Indonesian, and English text, attribution, and grade shown unchanged, with a link to each hadith |
 | Evening reflection verses | [QuranEnc.com](https://quranenc.com) | Ministry of Religious Affairs (Kemenag) Indonesian translation and Saheeh International, unchanged |
 | Concise Sirah | *A Concise Biography of the Prophet and His Special Traits* by Shaykh Haytham Sarhan ([sarhaan.com](https://sarhaan.com/ab/a-concise-biography-of-the-prophet-peace-be-upon-him-and-his-special-traits/), [IslamHouse](https://islamhouse.com/id/books/2831882)) | English translation by Ibraheem Abu Tameem Al-Mubtasim; Indonesian translation by Abdul Aziz Firdaus and Mufassir Arif. Shown unchanged, with the author's written permission |
 | Complete Sirah | Sirah Nabawiyah datasets ([Part 1](https://doi.org/10.17632/mwmzf8c2r5.1), [Part 2](https://doi.org/10.17632/zvn9cjn8nh.1), CC BY 4.0) | Based on *Ar-Rahiq al-Makhtum* by Shaykh Safiur Rahman al-Mubarakpuri (Indonesian translation) |
 | Quran text and audio | [Quran.com](https://quran.com), Kemenag | Murattal by Mishary Rashid Al-Afasy |
 
-Titles, reflections, chapter introductions, and connecting lines are written by Nawaetu, are labelled as such, and only summarise what their sources say. Hadith numbers in the hadith library are pending verification against [Sunnah.com](https://sunnah.com).
+Titles, reflections, chapter introductions, and connecting lines are written by Nawaetu, are labelled as such, and only summarise what their sources say. Hadith numbers in the library are being checked against [Sunnah.com](https://sunnah.com) and other references. Where a hadith is in two collections, both numbers are shown with the book name, for example "Bukhari No. 321 & Muslim No. 335".
 
 Nawaetu's licence (AGPLv3) covers its own code and writing. Content from the publishers above remains under their own terms.
 
@@ -274,6 +279,12 @@ English and Indonesian.
 
 **Where does the religious content come from?**
 From published sources: hadith from HadeethEnc, Quran translations via QuranEnc, the Concise Sirah from Shaykh Haytham Sarhan's book (with his permission), and the Complete Sirah from a credited dataset based on *Ar-Rahiq al-Makhtum*. Each item shows its source. See [Content Sources](#-content-sources).
+
+**Is Hasanah the same as pahala (reward from Allah)?**
+No. Hasanah is a record of your effort in the app, used for levels and stages. Only Allah knows a person's reward and rank, so stages describe what you practise and never give a spiritual title.
+
+**How does Nawaetu handle haid and nifas?**
+Women can turn on udzur mode. Prayers during that time are marked excused, the streak is kept, missions change to acts that are still possible, such as dhikr and listening to the Quran, and stats leave those days out. Only the dates are synced to an account.
 
 **Does Nawaetu take political sides?**
 No. The civic content and Tanya Nawaetu teach principles from the Quran and Sunnah and never name or support a party, candidate, or official.
@@ -309,7 +320,7 @@ Versions are pinned in [`package.json`](package.json).
 *   **Tailwind CSS v4** & **Shadcn UI** (Radix UI primitives)
 *   **Framer Motion** & **dotLottie** - Animations & micro-interactions
 *   **Recharts** - Analytics & Hasanah trends
-*   **Lucide React** & **Sonner** - Iconography & toast notifications
+*   **Lucide React**, **Hugeicons** (free icons, paths copied) & **Sonner** - Iconography & toast notifications
 *   **Next PWA (`@ducanh2912/next-pwa`)** - Installable Progressive Web App
 
 ### Monitoring & Quality
