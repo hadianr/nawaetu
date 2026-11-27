@@ -20,6 +20,8 @@ interface StatsOverviewProps {
     nextRank: NextRankDetails | null;
     streakData: { currentStreak: number; longestStreak: number };
     recentPrayerCount: number;
+    /** Obligatory prayers due in those 14 days, with udzur days left out. */
+    prayersDue: number;
     consistency: number;
     timeRange: string;
     totalHasanah: number;
@@ -35,6 +37,7 @@ export function StatsOverview({
     nextRank,
     streakData,
     recentPrayerCount,
+    prayersDue,
     consistency,
     timeRange,
     totalHasanah,
@@ -133,7 +136,7 @@ export function StatsOverview({
                         icon: <AppIcon name="mosque" size="sm" tone="primary" label={t.stats.quick.weeklyPrayers} />,
                         label: t.stats.quick.weeklyPrayers,
                         value: `${recentPrayerCount}`,
-                        sub: t.stats.quick.outOf35,
+                        sub: t.stats.quick.outOfDue.replace('{{due}}', prayersDue.toString()),
                         gradient: "from-[rgb(var(--color-primary))]/10",
                     },
                     {

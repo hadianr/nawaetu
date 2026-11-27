@@ -26,12 +26,14 @@ import { useUdzur } from '@/hooks/useUdzur';
 import { DateUtils } from '@/lib/utils/date';
 import { AppIcon, resolveAppIconName } from '@/components/ui/AppIcon';
 import StreakBadge from '@/components/StreakBadge';
+import { StatsMessage } from '@/components/stats/StatsMessage';
+import { prayersDue } from '@/lib/stats/message';
 
 export default function StatsPage() {
     const { t, locale } = useLocale();
     const playerStats = usePlayerStats();
     const { streak, display: streakDisplay } = useStreak();
-    const { excusedDates } = useUdzur();
+    const { excusedDates, excusedToday } = useUdzur();
     const [history, setHistory] = useState<DailyActivity[]>([]);
     const [completedMissions, setCompletedMissions] = useState<CompletedMission[]>([]);
     const [activeInsight, setActiveInsight] = useState<InsightKey | null>(null);
@@ -63,8 +65,12 @@ export default function StatsPage() {
             localStorage.getItem(`nawaetu_quran_daily_total_${dateString}`) || '0', 10
         );
         const todayVal = isNaN(storedSeconds) ? 0 : storedSeconds;
+        // "All time" is every day stored on this device, not just today.
+        const allTimeVal = Object.keys(localStorage)
+            .filter((key) => key.startsWith('nawaetu_quran_daily_total_'))
+            .reduce((sum, key) => sum + (parseInt(localStorage.getItem(key) || '0', 10) || 0), 0);
         queueMicrotask(() => {
-            setTotalQuranReadSeconds(todayVal);
+            setTotalQuranReadSeconds(Math.max(todayVal, allTimeVal));
             setTodayReadSeconds(todayVal);
         });
 
@@ -75,7 +81,8 @@ export default function StatsPage() {
                 if (data.success && typeof data.totalTodaySeconds === 'number') {
                     const serverVal = data.totalTodaySeconds;
                     setTodayReadSeconds(prev => Math.max(prev, serverVal));
-                    setTotalQuranReadSeconds(prev => Math.max(prev, serverVal));
+                    // Server only knows today: raise the total by what this device has not seen yet.
+                    setTotalQuranReadSeconds(prev => prev + Math.max(0, serverVal - todayVal));
                 }
             })
             .catch(() => {});
@@ -125,10 +132,18 @@ export default function StatsPage() {
     const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const todayPrayerCount = prayerMap[todayStr]?.size || 0;
 
-    const activeDaysLast30 = history.slice(-30).filter(d => (d.hasanahGained || 0) > 0).length;
+    const prayersDueRecent = Math.max(recentPrayerCount, prayersDue(last14Days, prayerMap, excusedDates));
+
+    // History only holds days with activity, so count the calendar days instead:
+    // the last 30, or since the first recorded day if that is sooner.
+    const last30Days = Array.from({ length: 30 }, (_, i) => DateUtils.daysAgo(i));
+    const firstDay = history.reduce((min, day) => (day.date < min ? day.date : min), todayStr);
+    const activeDates = new Set(history.filter(day => (day.hasanahGained || 0) > 0).map(day => day.date));
+    const countedDays = last30Days.filter(date => date >= firstDay);
+    const activeDaysLast30 = countedDays.filter(date => activeDates.has(date)).length;
     // A quiet udzur day is not a lapse: it leaves the denominator.
-    const excusedIdleDays = history.slice(-30).filter(d => excusedDates.has(d.date) && !((d.hasanahGained || 0) > 0)).length;
-    const consistency = Math.round((activeDaysLast30 / Math.max(1, Math.min(history.length || 1, 30) - excusedIdleDays)) * 100) || 0;
+    const excusedIdleDays = countedDays.filter(date => excusedDates.has(date) && !activeDates.has(date)).length;
+    const consistency = history.length === 0 ? 0 : Math.round((activeDaysLast30 / Math.max(1, countedDays.length - excusedIdleDays)) * 100);
 
     const chartData = useMemo(() => {
         const hasanahByDate = new Map<string, number>();
@@ -240,6 +255,17 @@ export default function StatsPage() {
                     <GlobalStatsWidget />
                 </div>
 
+                <StatsMessage
+                    t={t}
+                    prayed={recentPrayerCount}
+                    due={prayersDueRecent}
+                    excusedToday={excusedToday}
+                    hasHistory={history.length > 0 || completedMissions.length > 0}
+                    last14Days={last14Days}
+                    prayerMap={prayerMap}
+                    excusedDates={excusedDates}
+                />
+
                 <StatsOverview
                     t={t}
                     playerStats={playerStats}
@@ -247,6 +273,7 @@ export default function StatsPage() {
                     nextRank={nextRank}
                     streakData={streakData}
                     recentPrayerCount={recentPrayerCount}
+                    prayersDue={prayersDueRecent}
                     consistency={consistency}
                     timeRange={timeRange}
                     totalHasanah={rangeStats.totalHasanah}

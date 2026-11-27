@@ -42,7 +42,7 @@ export const statsID = {
             currentStreak: "Streak Saat Ini",
             longestStreak: "Terpanjang: {{days}} hari",
             weeklyPrayers: "Sholat 14 Hari Terakhir",
-            outOf35: "dari 70 waktu sholat",
+            outOfDue: "dari {{due}} waktu wajib",
             weeklyHasanah: "Hasanah Minggu Ini",
             last7Days: "14 hari terakhir",
             consistency: "Konsistensi",
@@ -72,6 +72,7 @@ export const statsID = {
         },
         missions: {
             title: "Ibadah Terlaksana",
+            allTime: "sejak awal",
             total: "total",
             categories: {
                 prayer: "Sholat Fardhu",
@@ -81,6 +82,17 @@ export const statsID = {
                 dhikr: "Dzikir",
                 fasting: "Puasa"
             }
+        },
+        message: {
+            title: "Pesan untukmu",
+            udzur: "Masa udzurmu tidak dihitung sebagai bolong. Haid adalah ketetapan Allah, bukan kelalaian; dzikir, doa, dan niat baikmu tetap bernilai.",
+            udzurSource: "\u201cIni adalah perkara yang telah Allah tetapkan bagi putri-putri Adam.\u201d HR. Bukhari No. 294",
+            start: "Perjalanan ini dimulai dari satu langkah. Catat satu sholat hari ini, lalu jaga pelan-pelan.",
+            return: "Belum ada sholat yang tercatat 14 hari ini. Pintu kembali selalu terbuka; mulai dari sholat berikutnya.",
+            grow: "{{prayed}} dari {{due}} sholat wajib terjaga dalam 14 hari. Tidak perlu sempurna sekaligus: mulai jaga {{prayer}}, waktu yang paling sering terlewat.",
+            strong: "{{prayed}} dari {{due}} sholat wajib terjaga dalam 14 hari. Ini fondasi yang kuat; teruskan, walau sedikit asal kontinu.",
+            consistencySource: "\u201cAmalan yang paling dicintai Allah adalah yang paling kontinu, walaupun sedikit.\u201d HR. Bukhari No. 6464",
+            returnSource: "\u201cJanganlah kamu berputus asa dari rahmat Allah.\u201d QS. Az-Zumar: 53"
         },
         quote: {
             text: '"Sesungguhnya Allah tidak menyia-nyiakan pahala orang yang berbuat kebaikan."',

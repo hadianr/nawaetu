@@ -42,7 +42,7 @@ export const statsEN = {
             currentStreak: "Current Streak",
             longestStreak: "Longest: {{days}} days",
             weeklyPrayers: "Prayers (Last 14 Days)",
-            outOf35: "out of 70 prayers",
+            outOfDue: "of {{due}} obligatory prayers",
             weeklyHasanah: "Weekly Hasanah",
             last7Days: "last 14 days",
             consistency: "Consistency",
@@ -72,6 +72,7 @@ export const statsEN = {
         },
         missions: {
             title: "Completed Worships",
+            allTime: "all time",
             total: "total",
             categories: {
                 prayer: "Fard Prayer",
@@ -81,6 +82,17 @@ export const statsEN = {
                 dhikr: "Dhikr",
                 fasting: "Fasting"
             }
+        },
+        message: {
+            title: "A note for you",
+            udzur: "Your days of udzur are not counted as missed. Menstruation is decreed by Allah, not a lapse; your dhikr, du'a and good intentions still count.",
+            udzurSource: "\u201cThis is something Allah has decreed for the daughters of Adam.\u201d Bukhari No. 294",
+            start: "This journey starts with one step. Log one prayer today, then keep it gently.",
+            return: "No prayers logged in the last 14 days. The way back is always open; start with the next prayer.",
+            grow: "{{prayed}} of {{due}} obligatory prayers kept in 14 days. No need to be perfect at once: start with {{prayer}}, the one missed most.",
+            strong: "{{prayed}} of {{due}} obligatory prayers kept in 14 days. That is a strong foundation; keep it up, little but constant.",
+            consistencySource: "\u201cThe most beloved deed to Allah is the most constant, even if it is little.\u201d Bukhari No. 6464",
+            returnSource: "\u201cDo not despair of the mercy of Allah.\u201d Quran, Az-Zumar 39:53"
         },
         quote: {
             text: '"Indeed, Allah does not allow to be lost the reward of the doers of good."',
