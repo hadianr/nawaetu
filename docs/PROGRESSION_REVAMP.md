@@ -87,6 +87,7 @@ Stage 4 starts near day 60, when habit research says the routine has formed. All
 
 - **StageCard** (`src/components/progress/StageCard.tsx`), used on `/stats` and in the profile: stage n of 7, stage name and meaning, level, progress bar with "N Hasanah lagi ke Level X", a suggested focus, the next stage and its level, and "Cara kerja level".
 - **StageGuide** (`StageGuide.tsx`): three rules (every worship adds Hasanah; Hasanah raises the level; the stage names the practice and its focus is optional), all seven stages with "Kamu di sini" and the current reminder, and "Tentang Hasanah" with QS An-Najm 32.
+- Donors are called "Pendukung Nawaetu" ("Nawaetu Supporter") instead of "Muhsinin", the same virtue-title problem tied to payment. The `is_muhsinin` columns keep their names; renaming them needs a migration and changes nothing users see.
 - Removed: the rank modal on `/stats`, the duplicate "Lv" chip in its header, the profile phase list and its outdated copy, and the unused "Muhsinin Nawaetu" role label.
 
 ### 4.3 Code
@@ -96,7 +97,6 @@ Stage 4 starts near day 60, when habit research says the routine has formed. All
 
 ## 5. Follow-ups, not in this change
 
-- **"Muhsinin" for donors.** The infaq flow and `user.is_muhsinin` call supporters "Muhsinin". This is the same problem, a virtue title, now tied to payment. Recommend a neutral name such as "Pendukung Nawaetu".
 - **Fresh starts.** Restart prompts on Monday, Jumu'ah, 1 Muharram and Ramadan.
 - **Niat as a plan.** Let the intention journal capture when and where (implementation intentions).
 - **The v2 economy.** Award caps and the longer curve in `HASANAH_LEVELS_AND_REWARDS_PLAN.md` need 4–8 weeks of baseline data first. Stage boundaries are expressed in levels, so they move with the curve.
