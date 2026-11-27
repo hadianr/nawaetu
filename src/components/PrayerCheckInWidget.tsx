@@ -510,41 +510,41 @@ export default function PrayerCheckInWidget() {
 
                 {/* Udzur: the active period (the way in sits in the sunnah row below) */}
                 {udzur.active && !isBackdated && (
-                    <div className="mt-2.5 relative z-10 flex items-start gap-2.5 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-2.5">
-                        {udzurJustStarted ? (
-                            <LottieMoment
-                                src="/lottie/blossom.lottie"
-                                quietLoad
-                                className="size-9 shrink-0"
-                                fallback={<AppIcon name="flower" size="md" tone="primary" />}
-                            />
-                        ) : (
-                            <span className="flex size-9 shrink-0 items-center justify-center"><AppIcon name="flower" size="md" tone="primary" /></span>
-                        )}
-                        <div className="min-w-0 flex-1">
-                            <p className="text-xs font-bold text-[rgb(var(--color-text-strong))]">
+                    // Compact: icon, title and action share one row; the text below uses the full width.
+                    <div className="mt-2.5 relative z-10 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-2.5 py-2">
+                        <div className="flex items-center gap-2">
+                            {udzurJustStarted ? (
+                                <LottieMoment
+                                    src="/lottie/blossom.lottie"
+                                    quietLoad
+                                    className="size-7 shrink-0"
+                                    fallback={<AppIcon name="flower" size="sm" tone="primary" />}
+                                />
+                            ) : (
+                                <AppIcon name="flower" size="sm" tone="primary" className="shrink-0" />
+                            )}
+                            <p className="min-w-0 flex-1 text-xs font-bold leading-tight text-[rgb(var(--color-text-strong))]">
                                 {t.udzurActiveTitle.replace("{day}", String(udzur.day))}
                             </p>
-                            <p className="mt-0.5 text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{t.udzurActiveDesc}</p>
-                            {udzur.day > udzurLimit && (
-                                <p className="mt-1.5 text-xs leading-relaxed text-[rgb(var(--color-warning))]">
-                                    {madzhab && madzhab in MADZHAB_LABEL_KEYS
-                                        ? t.udzurLongPeriodMadzhab
-                                            .replace("{days}", String(udzur.day))
-                                            .replace("{madzhab}", getTranslation(MADZHAB_LABEL_KEYS[madzhab], madzhab))
-                                            .replace("{limit}", String(udzurLimit))
-                                        : t.udzurLongPeriodUnset.replace("{days}", String(udzur.day))}
-                                </p>
-                            )}
-                            {/* Below the text, so the text keeps the full width on small phones. */}
                             <button
                                 type="button"
                                 onClick={() => setUdzurSheetOpen(true)}
-                                className="mt-2 min-h-11 rounded-lg border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/10 px-2.5 text-xs font-bold text-[rgb(var(--color-primary-strong))] transition-colors hover:bg-[rgb(var(--color-primary))]/15"
-                        >
+                                className="min-h-11 shrink-0 rounded-lg px-2 text-xs font-bold text-[rgb(var(--color-primary-strong))] underline-offset-4 transition-colors hover:bg-[rgb(var(--color-primary))]/10 hover:underline"
+                            >
                                 {t.udzurEndButton}
                             </button>
                         </div>
+                        <p className="text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{t.udzurActiveDesc}</p>
+                        {udzur.day > udzurLimit && (
+                            <p className="mt-1.5 text-xs leading-relaxed text-[rgb(var(--color-warning))]">
+                                {madzhab && madzhab in MADZHAB_LABEL_KEYS
+                                    ? t.udzurLongPeriodMadzhab
+                                        .replace("{days}", String(udzur.day))
+                                        .replace("{madzhab}", getTranslation(MADZHAB_LABEL_KEYS[madzhab], madzhab))
+                                        .replace("{limit}", String(udzurLimit))
+                                    : t.udzurLongPeriodUnset.replace("{days}", String(udzur.day))}
+                            </p>
+                        )}
                     </div>
                 )}
 
