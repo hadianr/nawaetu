@@ -13,7 +13,7 @@ describe("StageCard", () => {
     it("shows the stage, the focus as a suggestion, and the next stage", () => {
         render(<StageCard t={t} stats={{ level: 7, hasanah: 2287, nextLevelHasanah: 2800, progress: 26 }} />);
         expect(screen.getByRole("heading", { name: t.stats.stages.onTime.name })).toBeTruthy();
-        expect(screen.getByText("Stage 3 of 7")).toBeTruthy();
+        expect(screen.getByText(/^Stage 3 of 7/)).toBeTruthy();
         expect(screen.getByText(t.stats.stages.onTime.focus)).toBeTruthy();
         expect(screen.getByText("513 Hasanah to Level 8")).toBeTruthy();
         expect(screen.getByText(`Next: ${t.stats.stages.add.name} at Level 10`)).toBeTruthy();

@@ -78,21 +78,24 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
                 </p>
             )}
 
-            <div className="grid grid-cols-3 gap-3">
+            {/* A row per stat on phones; three columns from sm up. */}
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
                 {stats.map((stat, i) => (
                     <div
                         key={i}
                         className={cn(
-                            'relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br to-transparent p-3 shadow-[var(--shadow-card)]',
+                            'relative flex items-center gap-3 overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br to-transparent p-3 shadow-[var(--shadow-card)] sm:block',
                             stat.gradient
                         )}
                     >
-                        <div className="flex items-center gap-1.5 mb-2">
+                        <div className="flex shrink-0 items-center gap-1.5 sm:mb-2">
                             {stat.icon}
                         </div>
-                        <p className="text-xs text-[rgb(var(--color-text-muted))] leading-tight mb-1 line-clamp-2">{stat.label}</p>
-                        <p className={cn('text-base font-bold', stat.color)}>{stat.value}</p>
-                        <p className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5 line-clamp-1">{stat.sub}</p>
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] leading-tight sm:mb-1 sm:line-clamp-2">{stat.label}</p>
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5 sm:line-clamp-1">{stat.sub}</p>
+                        </div>
+                        <p className={cn('shrink-0 text-base font-bold sm:mt-1', stat.color)}>{stat.value}</p>
                     </div>
                 ))}
             </div>

@@ -174,45 +174,45 @@ export default function PrayerTimesDisplay() {
                     <Link
                         href="/hijri-calendar"
                         className={cn(
-                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
+                            "flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl border px-1 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
                         <CalendarDays className="h-3.5 w-3.5 shrink-0 text-[rgb(var(--color-primary-strong))]" />
-                        <span className="truncate text-xs font-bold tracking-tight">{t.homeQuickHijri}</span>
+                        <span className="text-center text-xs font-bold leading-tight tracking-tight">{t.homeQuickHijri}</span>
                     </Link>
                     <Link
                         href="/qibla"
                         className={cn(
-                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
+                            "flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl border px-1 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
                         <AppIcon name="compass" size="xs" tone="primary" />
-                        <span className="text-xs font-bold">{t.homeQiblaLabel}</span>
+                        <span className="text-center text-xs font-bold leading-tight tracking-tight">{t.homeQiblaLabel}</span>
                     </Link>
                     <button
                         onClick={() => setShowMosqueFinder(true)}
                         aria-label={t.homeFindMosqueAria}
                         className={cn(
-                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
+                            "flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl border px-1 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
                         <MapPin className="h-3 w-3 text-[rgb(var(--color-primary-strong))]" />
-                        <span className="truncate text-xs font-bold tracking-tight">{t.homeQuickMosque}</span>
+                        <span className="text-center text-xs font-bold leading-tight tracking-tight">{t.homeQuickMosque}</span>
                     </button>
                     <Link
                         href="/mentor-ai"
                         prefetch={false}
                         aria-label={`${t.homeAiTitle}: ${t.homeAiSubtitle}`}
                         className={cn(
-                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
+                            "flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl border px-1 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]",
                             "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
                         <AppIcon name="message" size="xs" tone="primary" />
-                        <span className="truncate text-xs font-bold tracking-tight">{t.homeQuickAi}</span>
+                        <span className="text-center text-xs font-bold leading-tight tracking-tight">{t.homeQuickAi}</span>
                     </Link>
                 </div>
             </div>

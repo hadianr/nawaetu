@@ -498,7 +498,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                 {/* --- Sticky Header --- */}
                 <div className="sticky top-0 z-30 -mx-4 md:mx-0">
                     <div className="absolute inset-0 border-b bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))]" />
-                    <div className="relative px-4 h-16 flex items-center justify-between gap-4">
+                    <div className="relative px-4 h-16 flex items-center justify-between gap-2 sm:gap-4">
                         {/* Left: Back & Title */}
                         <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
                             <Tooltip>
@@ -513,14 +513,14 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                 <h1 className="text-base md:text-lg font-bold truncate leading-tight text-[rgb(var(--color-text-strong))]">
                                     {chapter.name_simple}
                                 </h1>
-                                <p className="text-xs md:text-xs text-[rgb(var(--color-primary-strong))] font-medium truncate uppercase tracking-wider">
+                                <p className="text-xs md:text-xs text-[rgb(var(--color-primary-strong))] font-medium truncate sm:uppercase sm:tracking-wider">
                                     {chapter.revelation_place === "Makkah" ? t.quranMakkah : t.quranMadinah}, {chapter.verses_count} {t.quranVerseCount}
                                 </p>
                             </div>
                         </div>
 
-                        {/* Right: Actions */}
-                        <div className="flex items-center gap-2 shrink-0">
+                        {/* Right: Actions (tighter on small phones so the surah name fits) */}
+                        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                             {/* Play Surah Button */}
                             {!playingVerseKey && (
                                 <Tooltip>

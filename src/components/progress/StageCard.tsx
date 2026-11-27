@@ -51,16 +51,17 @@ export function StageCard({ t, stats, className }: StageCardProps) {
                     <AppIcon name={STAGE_ICONS[stage.key]} size="md" tone="primary" />
                 </span>
                 <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-[rgb(var(--color-text-muted))]">
+                    {/* The level sits on this line, not beside the text, so the text keeps the full width. */}
+                    <p className="flex flex-wrap items-center gap-x-1.5 text-xs font-semibold text-[rgb(var(--color-text-muted))]">
                         {j.stageOf.replace("{{n}}", String(index + 1)).replace("{{total}}", String(STAGES.length))}
+                        <span className="rounded-md border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 px-1.5 font-bold text-[rgb(var(--color-primary-strong))]">
+                            {j.level.replace("{{level}}", String(stats.level))}
+                        </span>
                     </p>
                     <h2 id="stage-card-name" className="text-lg font-bold leading-tight text-[rgb(var(--color-text-strong))]">{copy.name}</h2>
-                    <p className="mt-0.5 text-xs leading-relaxed text-[rgb(var(--color-text))]">{copy.about}</p>
                 </div>
-                <span className="shrink-0 rounded-lg border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 px-2 py-0.5 text-xs font-bold text-[rgb(var(--color-primary-strong))]">
-                    {j.level.replace("{{level}}", String(stats.level))}
-                </span>
             </div>
+            <p className="mt-2 text-xs leading-relaxed text-[rgb(var(--color-text))]">{copy.about}</p>
 
             <div
                 className="mt-3 h-2 w-full overflow-hidden rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]"

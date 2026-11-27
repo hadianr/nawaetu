@@ -48,7 +48,7 @@ export function DhikrControls({
                 variant="ghost"
                 onClick={(e) => { e.stopPropagation(); handleReset(); }}
                 className={cn(
-                    "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
+                    "flex flex-col h-auto min-w-0 px-1 py-3 gap-1 rounded-2xl whitespace-normal border transition-colors",
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]"
                 )}
             >
@@ -69,19 +69,19 @@ export function DhikrControls({
                     }
                 }}
                 className={cn(
-                    "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
+                    "flex flex-col h-auto min-w-0 px-1 py-3 gap-1 rounded-2xl whitespace-normal border transition-colors",
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]"
                 )}
             >
                 <Moon className="h-4 w-4 text-[rgb(var(--color-text-muted))]" />
-                <span className="text-xs font-medium text-[rgb(var(--color-text-muted))]">Mode Zen</span>
+                <span className="text-xs font-medium leading-tight text-center text-[rgb(var(--color-text-muted))]">{t.tasbihZen}</span>
             </Button>
 
             <Button
                 variant="ghost"
                 onClick={(e) => { e.stopPropagation(); toggleFeedback(); }}
                 className={cn(
-                    "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-all shadow-[var(--shadow-card)]",
+                    "flex flex-col h-auto min-w-0 px-1 py-3 gap-1 rounded-2xl whitespace-normal border transition-all shadow-[var(--shadow-card)]",
                     feedbackMode !== 'none'
                         ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
                         : "bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"

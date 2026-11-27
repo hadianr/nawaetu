@@ -56,7 +56,7 @@ export function DhikrPresetSelector({
                     variant="ghost"
                     onClick={(e) => e.stopPropagation()}
                     className={cn(
-                        "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
+                        "flex flex-col h-auto min-w-0 px-1 py-3 gap-1 rounded-2xl whitespace-normal border transition-colors",
                         "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]"
                     )}
                 >
