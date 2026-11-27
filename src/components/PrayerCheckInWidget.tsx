@@ -349,7 +349,7 @@ export default function PrayerCheckInWidget() {
                 <div className="flex items-center justify-between mb-2 relative z-10 gap-1">
                     <div className="flex min-w-0 items-center gap-1.5">
                         <AppIcon name="mosque" size="sm" tone="primary" />
-                        <p className="truncate text-xs font-bold tracking-tight">
+                        <p className="text-xs font-bold leading-tight tracking-tight">
                             {isBackdated ? t.homePrayerCheckInHistoryTitle : t.homePrayerCheckInSectionTitle}
                         </p>
                     </div>
@@ -371,10 +371,11 @@ export default function PrayerCheckInWidget() {
                         >
                             <Calendar className="w-3 h-3 text-[rgb(var(--color-text-muted))] transition-colors" />
                             <span className="text-xs font-bold text-[rgb(var(--color-text-muted))] transition-colors">
+                                {/* The year only when it is not this year, so the title fits small phones. */}
                                 {new Date(selectedDate).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
                                     day: '2-digit',
                                     month: 'short',
-                                    year: 'numeric'
+                                    ...(selectedDate.slice(0, 4) === String(new Date().getFullYear()) ? {} : { year: 'numeric' as const }),
                                 })}
                             </span>
                             <input
@@ -535,14 +536,15 @@ export default function PrayerCheckInWidget() {
                                         : t.udzurLongPeriodUnset.replace("{days}", String(udzur.day))}
                                 </p>
                             )}
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => setUdzurSheetOpen(true)}
-                            className="min-h-11 shrink-0 rounded-lg border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/10 px-2.5 text-xs font-bold text-[rgb(var(--color-primary-strong))] transition-colors hover:bg-[rgb(var(--color-primary))]/15"
+                            {/* Below the text, so the text keeps the full width on small phones. */}
+                            <button
+                                type="button"
+                                onClick={() => setUdzurSheetOpen(true)}
+                                className="mt-2 min-h-11 rounded-lg border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/10 px-2.5 text-xs font-bold text-[rgb(var(--color-primary-strong))] transition-colors hover:bg-[rgb(var(--color-primary))]/15"
                         >
-                            {t.udzurEndButton}
-                        </button>
+                                {t.udzurEndButton}
+                            </button>
+                        </div>
                     </div>
                 )}
 

@@ -123,7 +123,8 @@ const DuaCard = memo(function DuaCard({
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex flex-wrap items-center gap-1.5 min-w-0">
                         <span className={cn(
-                            "text-xs px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
+                            // May wrap: a two-book reference is wider than a small phone.
+                            "text-xs px-2 py-0.5 rounded-full font-bold tabular-nums border min-w-0",
                             isHighlighted
                                 ? "bg-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]"
                                 : "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border-[rgb(var(--color-accent))]/25"
@@ -431,7 +432,7 @@ function DuaContent() {
                             >
                                 <MoreIcon className="w-3.5 h-3.5" />
                                 <span>
-                                    {t.loadMore || "Tampilkan Lebih Banyak"} ({filtered.length - visibleItems.length})
+                                    {t.loadMore} ({filtered.length - visibleItems.length})
                                 </span>
                             </button>
                         </div>

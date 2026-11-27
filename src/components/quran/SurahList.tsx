@@ -347,8 +347,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                 </span>
             </div>
 
-            {/* Surah Grid */}
-            <div className="grid gap-3 grid-cols-2 lg:grid-cols-3">
+            {/* Surah Grid: one column below 400px, where two columns cut the play button off. */}
+            <div className="grid gap-3 grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-3">
                 {filteredChapters.map((chapter) => {
                     const isBookmarked = bookmarkedSurahIds.has(chapter.id);
                     const isLastRead = lastRead?.surahId === chapter.id;

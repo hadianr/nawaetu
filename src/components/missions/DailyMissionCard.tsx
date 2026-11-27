@@ -153,14 +153,15 @@ export default function DailyMissionCard({
                             </span>
                         )}
                     </div>
-                    <div className="flex items-center gap-2">
+                    {/* Wraps instead of cutting the reward off on small phones. */}
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                         <span className={cn(
-                            "text-xs px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
+                            "text-xs px-1 py-0.5 rounded font-bold uppercase tracking-wide shrink-0",
                             getRulingBadgeClass(mission.ruling)
                         )}>
                             {getRulingLabel(mission.ruling, t)}
                         </span>
-                        <p className="text-xs truncate text-[rgb(var(--color-text))]">
+                        <p className="text-xs whitespace-nowrap text-[rgb(var(--color-text))]">
                             {formatHasanahRange(mission.hasanahReward, mission.completionOptions, isBackdated)} Hasanah
                         </p>
 

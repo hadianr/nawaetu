@@ -96,8 +96,8 @@ export function StatsOverview({
                     >
                         <div className="flex items-center gap-2 mb-2">
                             {stat.icon}
-                            <span className="text-xs text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))] transition-colors line-clamp-1">{stat.label}</span>
-                            <Info className="w-2.5 h-2.5 ml-auto opacity-0 group-hover:opacity-40 transition-opacity" />
+                            <span className="text-xs text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))] transition-colors leading-tight break-words min-w-0">{stat.label}</span>
+                            <Info className="hidden sm:block w-2.5 h-2.5 ml-auto shrink-0 opacity-0 group-hover:opacity-40 transition-opacity" />
                         </div>
                         <div className="text-xl md:text-2xl font-bold text-[rgb(var(--color-text-strong))]">{stat.value}</div>
                         <div className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5">{stat.sub}</div>

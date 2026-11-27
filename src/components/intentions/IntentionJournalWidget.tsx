@@ -353,10 +353,11 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         >
                             <Calendar className="w-3 h-3 transition-colors text-[rgb(var(--color-text-muted))] group-hover/date:text-[rgb(var(--color-text))]" />
                             <span className="text-xs font-bold transition-colors text-[rgb(var(--color-text-muted))] group-hover/date:text-[rgb(var(--color-text))]">
+                                {/* The year only when it is not this year, so the title fits small phones. */}
                                 {new Date(selectedDate).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
                                     day: '2-digit',
                                     month: 'short',
-                                    year: 'numeric'
+                                    ...(selectedDate.slice(0, 4) === String(new Date().getFullYear()) ? {} : { year: 'numeric' as const }),
                                 })}
                             </span>
                             <input
