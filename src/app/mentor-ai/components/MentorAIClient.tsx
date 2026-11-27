@@ -51,7 +51,7 @@ function getTimestamp(): number {
 export default function MentorAIClient() {
     const { status } = useSession();
     const [stats, setStats] = useState({ streakDays: 0, todayAyat: 0, todayTasbih: 0, prayersLogged: [] as string[] });
-    const [profile, setProfile] = useState({ name: "Hamba Allah", title: "Hamba Allah" });
+    const [profile, setProfile] = useState({ name: "Hamba Allah" });
 
     useEffect(() => {
         const load = () => {
@@ -59,8 +59,7 @@ export default function MentorAIClient() {
             const activity = getActivityRepository().getActivity();
             setStats({ streakDays: streak.streak, todayAyat: activity.quranAyat, todayTasbih: activity.tasbihCount, prayersLogged: activity.prayersLogged });
             const name = storage.getOptional<string>(STORAGE_KEYS.USER_NAME);
-            const title = storage.getOptional<string>(STORAGE_KEYS.USER_TITLE);
-            if (name || title) setProfile({ name: name || "Hamba Allah", title: title || "Hamba Allah" });
+            if (name) setProfile({ name });
         };
         load();
         window.addEventListener("activity_updated", load);

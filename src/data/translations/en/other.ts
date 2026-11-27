@@ -148,8 +148,6 @@ export const otherEN = {
     profileAuthTitle: "Save Your Worship Progress",
     profileAuthDesc: "Login to save your streak data, bookmarks, and donor status permanently in the cloud.",
     profileAuthButton: "Login with Google",
-    profileRoleGuest: "Nawaetu Companion",
-    profileTotalDays: "Total Days",
 
     // Gamification Terminology
     gamificationXpName: "Hasanah",
@@ -157,11 +155,6 @@ export const otherEN = {
     toastRamadhanKhatamanReward: "Masya Allah! +20 Hasanah",
 
     // Streak & Progress
-    profileStreak: "Streak",
-    profileRecord: "Record",
-    profileStreakMaintain: "Maintain your commitment every day!",
-    profileBestAchievement: "Your best achievement.",
-    profileTitleCollection: "Title Collection",
 
     // Hasanah Earning Methods Section
     xpSectionTitle: "How to Earn Hasanah",
