@@ -48,5 +48,13 @@ export const profileEN = {
     profileLogoutConfirmYes: "Yes, Logout",
     profileLogoutConfirmNo: "Cancel",
     profileGuestMode: "Guest Mode",
+    profileSynced: "Synced with your Google account",
+    profileSyncedShort: "Synced",
+    profileGuestShort: "Guest mode",
+    profileGuestDevice: "Data is saved on this device",
+    profileSupporter: "Nawaetu Supporter",
+    profileMuslim: "Muslim",
+    profileMuslimah: "Muslimah",
+    profileAccountSection: "Account",
     profileFooter: "Thank you for using Nawaetu",
 };

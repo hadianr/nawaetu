@@ -17,7 +17,7 @@
  */
 
 import { Button } from "@/components/ui/button";
-import { Settings, Share2, ChevronRight, LogOut } from "@/components/ui/icons";
+import { ShieldCheck, Share2, ChevronRight, LogOut } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 
@@ -53,7 +53,7 @@ export function AuthActions({
                         "w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3 transition-all",
                         "bg-[rgb(var(--color-primary))]/15"
                     )}>
-                        <Settings className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
+                        <ShieldCheck className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" aria-hidden="true" />
                     </div>
                     <h3 className="text-sm font-bold mb-1 text-[rgb(var(--color-text-strong))]">{translations.profileAuthTitle}</h3>
                     <p className="text-xs mb-4 leading-relaxed text-[rgb(var(--color-text-muted))]">{translations.profileAuthDesc}</p>
@@ -75,10 +75,11 @@ export function AuthActions({
                 </div>
             )}
 
-            {/* 5. Menu Items */}
-            <div className="space-y-1">
+            {/* 5. Account actions, grouped in one card */}
+            <h3 className="mb-2 px-1 text-xs font-bold text-[rgb(var(--color-text-muted))]">{translations.profileAccountSection}</h3>
+            <div className="overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] divide-y divide-[rgb(var(--color-border))]">
                 <button onClick={handleShareApp} className={cn(
-                    "w-full flex items-center justify-between p-3 rounded-xl transition-colors group",
+                    "w-full min-h-14 flex items-center justify-between px-4 py-3 transition-colors group",
                     "hover:bg-[rgb(var(--color-primary))]/10"
                 )}>
                     <div className="flex items-center gap-3">
@@ -96,8 +97,8 @@ export function AuthActions({
                 {isAuthenticated && (
                     !showLogoutConfirm ? (
                         <button onClick={() => setShowLogoutConfirm(true)} className={cn(
-                            "w-full flex items-center justify-between p-3 rounded-xl transition-colors group mt-2 border border-transparent shadow-[var(--shadow-card)]",
-                            "hover:bg-[rgb(var(--color-danger))]/10 hover:border-[rgb(var(--color-danger))]/20"
+                            "w-full min-h-14 flex items-center justify-between px-4 py-3 transition-colors group",
+                            "hover:bg-[rgb(var(--color-danger))]/10"
                         )}>
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-danger))]/10 flex items-center justify-center">
@@ -108,8 +109,8 @@ export function AuthActions({
                         </button>
                     ) : (
                         <div className={cn(
-                            "mt-2 p-3 rounded-xl animate-in fade-in slide-in-from-top-2 duration-200 border shadow-[var(--shadow-card)]",
-                            "bg-[rgb(var(--color-danger))]/10 border-[rgb(var(--color-danger))]/20"
+                            "p-4 animate-in fade-in slide-in-from-top-2 duration-200",
+                            "bg-[rgb(var(--color-danger))]/10"
                         )}>
                             <p className={cn(
                                 "text-xs mb-3 text-center font-medium",

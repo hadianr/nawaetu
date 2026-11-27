@@ -19,27 +19,24 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { X } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
-import { useLocale, type TranslationTree } from "@/context/LocaleContext";
+import { useLocale } from "@/context/LocaleContext";
 
 interface ProfileHeaderProps {
-    isAuthenticated: boolean;
     userImage: string;
     onClose: () => void;
 }
 
 export function ProfileHeader({
-    isAuthenticated,
     userImage,
     onClose
 }: ProfileHeaderProps) {
     const { t } = useLocale();
-    const translations = t as TranslationTree;
 
     return (
         <div className="relative flex-none">
             <div className={cn(
-                "h-24 w-full absolute top-0 left-0",
-                "bg-[rgb(var(--color-primary))]"
+                "h-28 w-full absolute top-0 left-0",
+                "bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))]"
             )}>
                 {/* Base Gradient & Noise */}
                 <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20"></div>
@@ -55,15 +52,7 @@ export function ProfileHeader({
 
             {/* Top Actions */}
             <div className="relative z-20 flex justify-between items-center p-4">
-                {!isAuthenticated ? (
-                    <div className="px-3 py-1 bg-[rgb(var(--color-background))]/30 rounded-full border border-[rgb(var(--color-primary-foreground))]/20 text-xs items-center flex gap-1 text-[rgb(var(--color-primary-foreground))]">
-                        <span className="w-2 h-2 rounded-full bg-[rgb(var(--color-text-muted))]"></span>
-                        {translations.profileGuestMode}
-                    </div>
-                ) : (
-                    <div /> // Spacer
-                )}
-
+                <div />
                 <button
                     type="button"
                     aria-label={String(t.a11yClose)}
@@ -75,10 +64,10 @@ export function ProfileHeader({
             </div>
 
             {/* Profile Picture Area */}
-            <div className="relative z-10 px-6 pt-0 flex items-end justify-between -mt-10">
+            <div className="relative z-10 px-6 pt-0 flex items-end justify-between -mt-6">
                 <div className="relative">
                     <div className={cn(
-                        "w-20 h-20 rounded-full p-1 transition-all",
+                        "w-24 h-24 rounded-full p-1 transition-all",
                         "bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]",
                         "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]"
                     )}>
