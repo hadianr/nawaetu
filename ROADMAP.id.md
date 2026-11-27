@@ -29,7 +29,9 @@ Roadmap ini menjelaskan visi kami untuk menjadikan Nawaetu sebagai **Islamic hab
 - **Sirah dalam Tiga Format** - Ringkasan Sirah karya Syaikh Haitsam Sarhan (Indonesia dan Inggris, dengan izin tertulis beliau), Sirah Lengkap, dan Lini Masa Peristiwa
 - **Kalender Hijriah** - Hari puasa sunnah dan peristiwa sirah di bulan berjalan
 - **100 Hari Menuju Ramadhan** - Kartu perjalanan dengan panduan puasa, dalil, dan streak
-- **Hasanah & Streak** - Misi harian, tujuh rank dari Mubtadi sampai Muhsin, dan streak freeze gratis setiap 7 hari
+- **Hasanah & Streak** - Misi harian, tujuh tahap perjalanan yang dinamai sesuai amalan (tanpa gelar spiritual), dan streak freeze gratis setiap 7 hari
+- **Mode Udzur** - Untuk haid dan nifas: sholat yang terhalang tetap menjaga streak, misi menyesuaikan, pengingat sholat dijeda, dan hadits tentang haid
+- **Statistik Ibadah** - Pesan personal dengan satu langkah berikutnya, perhitungan hari udzur yang adil, dan kartu komunitas "Ibadah Bersama"
 - **Tanya Nawaetu (Asisten AI)** - Dirancang menyertakan rujukan; 10 chat per hari untuk semua pengguna (Gemini, Groq, dan OpenRouter)
 - **Mode Tamu & Sinkronisasi** - Bisa dipakai tanpa akun; data ikut saat masuk akun dan antarperangkat
 - **Lima Tema, Semua Gratis** - Daylight sebagai bawaan, Emerald sebagai tema gelap
@@ -37,7 +39,7 @@ Roadmap ini menjelaskan visi kami untuk menjadikan Nawaetu sebagai **Islamic hab
 - **Pencarian & Pencarian AI** - Halaman konten dirender di server, data terstruktur, dan `llms.txt`
 - **Multi-bahasa** - Bahasa Indonesia & English
 
-**Pengguna Saat Ini:** 277 akun terdaftar (20 Nov 2026)
+**Pengguna Saat Ini:** 286 akun terdaftar (27 Nov 2026)
 **Tech Stack:** Next.js 16, React 19, PostgreSQL dengan Drizzle ORM (lihat [README](README.id.md#️-tech-stack))
 
 ---
@@ -123,12 +125,12 @@ AI: Aku paham. Yuk coba langkah kecil:
 ---
 
 #### 🎮 Badge & Hadiah Hasanah
-**Status:** 💡 Konsep (rank dan streak sudah rilis)
+**Status:** 💡 Konsep (tahap perjalanan dan streak sudah rilis)
 
-- **Badge baru:** "Sahur Champion" (streak Ramadhan 30 hari), "Night Warrior" (100x Qiyamul Lail), "Pure Intention" (Niat Streak 40 hari).
+- **Badge baru:** "Sahur Champion" (streak Ramadhan 30 hari), "Night Warrior" (100x Qiyamul Lail), "40 Hari Niat" (Niat Streak 40 hari). Badge menamai amalannya, bukan keadaan hati.
 - **Hadiah bersponsor:** mitra menyediakan hadiah yang dicapai pengguna lewat konsistensi ibadah. Lihat [`docs/HASANAH_LEVELS_AND_REWARDS_PLAN.md`](docs/HASANAH_LEVELS_AND_REWARDS_PLAN.md).
 
-**Prinsip:** Hasanah, rank, dan streak tidak pernah dijual. Tidak ada boost atau perbaikan streak berbayar.
+**Prinsip:** Hasanah, tahap, dan streak tidak pernah dijual. Tidak ada boost atau perbaikan streak berbayar.
 
 ---
 
@@ -156,7 +158,7 @@ Langganan opsional untuk layanan yang punya biaya berjalan atau berupa pendampin
 - 📊 Insight jurnal dan kebiasaan yang lebih dalam
 - 🤝 Pay it forward: setiap langganan membiayai akun Plus gratis untuk pelajar atau orang yang membutuhkan
 
-**Selalu gratis:** Al-Qur'an, hadits, alat sholat, dzikir, Sirah, niat, streak, rank, dan tema.
+**Selalu gratis:** Al-Qur'an, hadits, alat sholat, dzikir, Sirah, niat, streak, tahap, dan tema.
 
 ---
 
@@ -236,7 +238,7 @@ Kami ukur sukses dari **dampak**, bukan cuma jumlah unduhan.
 | Metrik | Saat ini (Nov 2026) | Target berikutnya |
 |--------|---------------------|-------------------|
 | **Pengguna aktif (Google Analytics)** | 889 sepanjang 2026 (pelacakan andal sejak pertengahan Agustus) | - |
-| **Akun terdaftar** | 277 | - |
+| **Akun terdaftar** | 286 | - |
 | **Pemasang niat mingguan** | Belum diukur | Baseline ditetapkan |
 | **Retensi (D1 / D7 / D30)** | Belum diukur | Baseline ditetapkan |
 | **Pengguna aktif harian / bulanan** | Belum diukur | Baseline ditetapkan |

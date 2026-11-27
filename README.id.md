@@ -36,7 +36,7 @@ Al-Qur'an, sholat, hadits, dan Sirah yang bisa dicek sumbernya, dalam kebiasaan 
 | **Solusi** | Satu aplikasi yang menghubungkan niat, ibadah, dan belajar: niat pagi dan refleksi malam, jadwal sholat, kiblat, Al-Qur'an dengan tajwid dan audio, hadits dan doa dengan perawi dan derajat, Sirah dalam tiga format, serta asisten AI yang dirancang menyertakan rujukan. |
 | **Keunggulan** | Desain yang dimulai dari niat, konten bersumber yang ditampilkan persis seperti aslinya, asisten yang menyatakan bila sumber belum dapat dipastikan, tanpa iklan, dan open source. |
 | **Pasar** | Indonesia saja memiliki sekitar 246 juta Muslim (87% penduduk). Belanja konsumen Muslim global mencapai $2,6 triliun pada 2024. ([sumber](#mengapa-sekarang)) |
-| **Traksi** | Live di nawaetu.com sejak 2026, 889 pengguna aktif tahun ini (Google Analytics), 277 akun terdaftar, 825 misi diselesaikan, 90 rilis. ([detail](#sekilas)) |
+| **Traksi** | Live di nawaetu.com sejak 2026, 889 pengguna aktif tahun ini (Google Analytics), 286 akun terdaftar, 587 sholat dan 217 niat tercatat, 90 rilis. ([detail](#sekilas)) |
 | **Model bisnis** | Ibadah tetap gratis, tanpa iklan. Pendapatan dari paket organisasi co-branded (perusahaan, sekolah, pesantren), langganan Plus opsional untuk layanan seperti penggunaan AI lebih banyak, dan program bersponsor, dengan donasi sebagai dukungan komunitas. ([detail](#model-bisnis)) |
 | **Founder** | Hadian Rahmat ([@hadianr](https://github.com/hadianr)) |
 
@@ -45,21 +45,23 @@ Al-Qur'an, sholat, hadits, dan Sirah yang bisa dicek sumbernya, dalam kebiasaan 
 <a name="sekilas"></a>
 ## Sekilas Nawaetu
 
-Angka per **20 November 2026**. Angka penggunaan diambil dari endpoint publik aplikasi [`/api/stats/global`](https://nawaetu.com/api/stats/global), sehingga bisa diperbarui untuk setiap deck.
+Angka per **27 November 2026**. Sholat, niat, dan jumlah orang yang beribadah minggu ini diambil dari endpoint publik aplikasi [`/api/stats/global`](https://nawaetu.com/api/stats/global), sehingga bisa diperbarui untuk setiap deck. Akun dan misi dihitung dari database.
 
 | Bidang | Angka |
 | :--- | :--- |
-| **Akun terdaftar** | 277 (tamu memakai aplikasi tanpa akun dan tidak dihitung) |
+| **Akun terdaftar** | 286 (tamu memakai aplikasi tanpa akun dan tidak dihitung) |
 | **Pengguna aktif** | 889 sepanjang 2026, rata-rata 3 menit keterlibatan per pengguna (Google Analytics, 1 Januari sampai 23 November). Pelacakan sempat terblokir sampai pertengahan Agustus 2026, jadi bulan-bulan sebelumnya tercatat lebih rendah |
 | **Asal pengguna** | Sebagian besar kunjungan langsung dan tautan yang dibagikan, lalu pencarian Google, Instagram, dan Threads. Pengguna berada di Indonesia, terbanyak di Bandung dan Jakarta |
-| **Misi diselesaikan** | 825 |
-| **Hari ibadah tercatat** | 69 |
+| **Misi diselesaikan** | 844 |
+| **Sholat tercatat** | 587 |
+| **Niat ditulis** | 217 |
+| **Beribadah minggu ini** | 11 orang |
 | **Al-Qur'an** | 114 surah, audio per ayat, warna tajwid, terjemahan Indonesia dan Inggris |
-| **Hadits dan doa** | 116 hadits sahih dan hasan pilihan serta 50 doa, masing-masing dengan perawi dan derajat |
+| **Hadits dan doa** | 122 hadits sahih dan hasan pilihan (termasuk hadits tentang haid dan istihadah) serta 50 doa, masing-masing dengan perawi dan derajat |
 | **Sirah** | 3 format: buku ringkas 10 bagian (dengan izin penulis), Sirah lengkap 50 bab, dan linimasa 13 bab |
-| **Kehadiran di pencarian** | 591 halaman terindeks di sitemap, dengan halaman konten yang dirender di server dan `llms.txt` untuk pencarian AI |
-| **Pengembangan** | 90 rilis bertag dan 1.295 commit sejak Januari 2026 |
-| **Kualitas** | 153 file test (984 test), batas coverage baris 80% di CI, pemindaian CodeQL, dan uji browser dengan Anoa |
+| **Kehadiran di pencarian** | 592 halaman terindeks di sitemap, dengan halaman konten yang dirender di server dan `llms.txt` untuk pencarian AI |
+| **Pengembangan** | 90 rilis bertag dan 1.417 commit sejak Januari 2026 |
+| **Kualitas** | 168 file test (1.087 test), batas coverage baris 80% di CI, pemindaian CodeQL, dan uji browser dengan Anoa |
 | **Aksesibilitas** | Teks tombol, teks aksen, dan warna status memenuhi WCAG AA di kelima tema (diuji otomatis), dengan fokus keyboard yang terlihat |
 | **Bahasa** | Indonesia dan Inggris |
 | **Platform** | Aplikasi web (PWA yang bisa dipasang) dan Android wrapper di repositori ini |
@@ -80,9 +82,9 @@ Nawaetu membangun hari pengguna di atas tiga gagasan.
 
 | Pilar | Wujudnya di aplikasi |
 | :--- | :--- |
-| **Niat** | Menetapkan niat setiap pagi dan berefleksi setiap malam. Misi, streak, dan rank Hasanah (Mubtadi sampai Muhsin) menghargai konsistensi, bukan sekadar hitungan. |
+| **Niat** | Menetapkan niat setiap pagi dan berefleksi setiap malam. Misi, streak yang pemaaf, dan tujuh tahap perjalanan (Memulai sampai Menebar Manfaat) menghargai konsistensi, bukan sekadar hitungan. Tahap menamai apa yang sedang dilatih, bukan gelar spiritual, dan Hasanah adalah catatan usaha, bukan hitungan pahala. |
 | **Ilmu yang bisa dicek** | Al-Qur'an, hadits, doa, dan Sirah menampilkan sumber, perawi, dan derajatnya, serta menjaga teks dari penerbit lain persis seperti aslinya. Tanya Nawaetu, asisten AI-nya, dirancang menyertakan rujukan dan menyatakan bila sumber belum dapat dipastikan. |
-| **Ibadah harian** | Jadwal sholat berbasis GPS dengan pengingat, kompas kiblat, kalender Hijriah dengan hari puasa sunnah, tasbih berantai dengan mode fokus, dan panduan Ramadhan musiman. |
+| **Ibadah harian** | Jadwal sholat berbasis GPS dengan pengingat, kompas kiblat, kalender Hijriah dengan hari puasa sunnah, tasbih berantai dengan mode fokus, panduan Ramadhan musiman, dan mode udzur untuk muslimah saat haid dan nifas. |
 
 <a name="mengapa-sekarang"></a>
 ## Mengapa Sekarang
@@ -119,7 +121,7 @@ Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitun
 | **Refleksi** | Penghitung dan pengingat pasif | **Jurnal Muhasabah**: niat pagi, refleksi malam |
 | **Konten agama** | Bervariasi menurut aplikasi | **Sumber ditampilkan bersama teksnya**: perawi, derajat, dan tautan, persis seperti aslinya |
 | **Tanya jawab Islami** | Artikel dan pencarian teks | **Tanya Nawaetu**: asisten AI yang dirancang menyertakan rujukan Al-Qur'an dan hadits, dan menyatakan bila sumber belum dapat dipastikan |
-| **Motivasi** | Penghitung dan streak | **Sistem Hasanah**: progres rank (Mubtadi sampai Muhsin) dan streak Istiqamah |
+| **Motivasi** | Penghitung dan streak | **Tahap perjalanan**: tujuh tahap yang dinamai sesuai amalan, tanpa gelar spiritual, streak yang pemaaf, dan mode udzur agar haid dan nifas tidak pernah dihitung bolong |
 | **Iklan** | Bervariasi menurut aplikasi dan paket | Tanpa iklan |
 | **Kode sumber** | Umumnya closed-source | Open source (AGPLv3) |
 
@@ -130,10 +132,12 @@ Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitun
 | Waktu | Milestone |
 | :--- | :--- |
 | Januari 2026 | Commit pertama |
-| 2026 | Aplikasi web live di nawaetu.com: jurnal niat, misi, rank Hasanah, check-in sholat, Al-Qur'an, hadits dan doa, tasbih, alat puasa dan Ramadhan |
+| 2026 | Aplikasi web live di nawaetu.com: jurnal niat, misi, level Hasanah, check-in sholat, Al-Qur'an, hadits dan doa, tasbih, alat puasa dan Ramadhan |
 | Oktober 2026 | Halaman konten dirender di server untuk mesin pencari dan pencarian AI (`llms.txt`, data terstruktur) |
 | November 2026 | Sirah dalam tiga format, termasuk buku ringkas Syaikh Haytham Sarhan yang diterbitkan dengan izin tertulis beliau |
 | November 2026 | Penyegaran brand: logo dan set ikon vektor datar, tema terang sebagai bawaan, sistem dua font, dan kontras WCAG AA di setiap tema |
+| November 2026 | Mode udzur untuk haid dan nifas: sholat yang terhalang tetap menjaga streak, misi menyesuaikan, pengingat sholat dijeda, dan hadits tentang haid masuk ke perpustakaan |
+| November 2026 | Revamp statistik dan progres: tujuh tahap perjalanan tanpa gelar spiritual, perhitungan hari udzur yang adil, pesan personal di halaman statistik, dan kartu komunitas "Ibadah Bersama" |
 
 ## Roadmap
 
@@ -164,7 +168,7 @@ Organisasi adalah jalur pertumbuhan utama: setiap organisasi membawa anggotanya 
 
 ### Posisi Nawaetu saat ini
 
-- **Tahap awal**: dengan 889 pengguna aktif dan 277 akun di 2026, langganan perorangan belum akan menghasilkan banyak, jadi Nawaetu Plus ditunda. Langkah komersial pertama adalah satu uji coba organisasi, yang sekaligus membawa satu kelompok pengguna.
+- **Tahap awal**: dengan 889 pengguna aktif dan 286 akun di 2026, langganan perorangan belum akan menghasilkan banyak, jadi Nawaetu Plus ditunda. Langkah komersial pertama adalah satu uji coba organisasi, yang sekaligus membawa satu kelompok pengguna.
 - **Tumbuh lokal dari mulut ke mulut**: sebagian besar pengguna datang langsung, lewat tautan yang dibagikan, atau Instagram, dan terpusat di Bandung dan Jakarta. Ini cocok untuk uji coba pertama dengan perusahaan, kampus, atau pesantren terdekat.
 - **Ukur sebelum pitching**: pendaftaran, niat, dan check-in sholat sudah dilacak, tetapi konversi dan retensi belum punya baseline. Menetapkannya termasuk dalam [roadmap](ROADMAP.id.md#-metrik-sukses-publik).
 
@@ -205,7 +209,7 @@ Organisasi adalah jalur pertumbuhan utama: setiap organisasi membawa anggotanya 
 *   **Tanya Nawaetu**: Asisten Islami yang dirancang mendasarkan jawaban pada Al-Qur'an, Sunnah, dan Hadits beserta rujukan, serta mengakui batasnya bila sumber belum dapat dipastikan.
     *   **Pertanyaan seputar politik tanpa memihak**: dijawab dengan prinsip Islam (amanah, keadilan, syura, tabayyun) dan pendapat-pendapat utama para ulama. Tanya Nawaetu tidak pernah mendukung atau menolak partai, calon, tokoh, undang-undang, atau aksi tertentu.
     *   **Paham bahasa Gen Z**: mengerti istilah sehari-hari seperti *privilege*, *ordal*, *bagi-bagi kue*, *cawe-cawe*, *buzzer*, *pencitraan*, *politik identitas*, *serangan fajar*, *apatis*, *oposisi*, dan *rezim*.
-*   **Gamifikasi Ibadah**: Kumpulkan Niat Points melalui misi harian yang bermakna, termasuk misi opsional untuk mendoakan pemimpin dan negeri.
+*   **Misi dan Tahap Perjalanan**: Kumpulkan Hasanah melalui misi harian, termasuk misi opsional untuk mendoakan pemimpin dan negeri. Level dikelompokkan menjadi tujuh tahap yang dinamai sesuai amalan yang sedang dilatih (Memulai, Membiasakan, Menjaga Waktu, Menambah, Memperdalam, Meneguhkan, Menebar Manfaat), masing-masing dengan saran fokus opsional dan pengingat dari Al-Qur'an atau hadits yang sudah dicek. Hasanah adalah catatan usaha di aplikasi, bukan hitungan pahala, dan tidak ada tahap yang menjadi gelar spiritual.
 
 ### 2. 📖 Konten Spiritual Terpadu
 *   **Al-Qur'an Digital**: Mode Mushaf & List dengan audio per ayat, pewarnaan Tajwid, dan standar Mushaf Kemenag RI.
@@ -225,7 +229,8 @@ Organisasi adalah jalur pertumbuhan utama: setiap organisasi membawa anggotanya 
 ### 4. 📈 Alat Konsistensi (Istiqamah)
 *   **Tasbih 2.0**: Penghitung canggih dengan mode Berantai (Sequential), bacaan Kustom, dan Mode Zen OLED.
 *   **Check-in Sholat**: Pelacak ritual presisi tinggi dengan opsi jamaah/sendiri.
-*   **Dashboard Ibadah**: Statistik seumur hidup, milestone, dan visualisasi tren Hasanah.
+*   **Statistik Ibadah**: Dibuka dengan pesan personal dan satu langkah berikutnya, lalu tahap perjalanan, konsistensi sholat 14 hari, tren Hasanah, dan waktu tilawah. Kartu "Ibadah Bersama" menampilkan sholat yang dijaga, niat yang diikrarkan, dan jumlah orang yang beribadah minggu ini, tanpa papan peringkat.
+*   **Mode Udzur (haid & nifas)**: Muslimah dapat memulai dan mengakhiri masa haid atau nifas dengan dua ketukan. Sholat pada masa itu ditandai terhalang, bukan terlewat, streak dijeda alih-alih putus, misi berganti ke dzikir, mendengarkan murottal, dan belajar, pengingat sholat dijeda, hari Ramadhan dicatat untuk qadha, dan perpustakaan hadits memiliki topik Muslimah & Haid. Hanya tanggal yang disinkronkan; detail masa udzur tetap di perangkat dan dapat dihapus.
 
 ### 5. 🗓️ Pendamping Puasa & Amalan Musiman
 *   **Puasa Sunnah & Sukarela**: Pelacak puasa Senin-Kamis, Ayyamul Bidh, dan puasa kustom dengan status berbasis fiqih dan reward Hasanah.
@@ -240,13 +245,13 @@ Konten agama harus bisa dicek. Nawaetu menampilkan asal setiap teks, dan menjaga
 
 | Konten | Sumber | Keterangan |
 | :--- | :--- | :--- |
-| Hadits Amanah & Kepemimpinan, bab Lini Masa Peristiwa | [HadeethEnc.com](https://hadeethenc.com) | Teks Arab, terjemahan Indonesia dan Inggris, perawi, serta derajat ditampilkan tanpa diubah, dengan tautan ke setiap hadits |
+| Hadits Amanah & Kepemimpinan, hadits haid dan istihadah, bab Lini Masa Peristiwa | [HadeethEnc.com](https://hadeethenc.com) | Teks Arab, terjemahan Indonesia dan Inggris, perawi, serta derajat ditampilkan tanpa diubah, dengan tautan ke setiap hadits |
 | Ayat refleksi malam | [QuranEnc.com](https://quranenc.com) | Terjemahan Kementerian Agama RI dan Saheeh International, tanpa diubah |
 | Ringkasan Sirah | *Catatan Penting Seputar Sejarah dan Kepribadian Rasulullah* karya Syaikh Haitsam Sarhan ([IslamHouse](https://islamhouse.com/id/books/2831882), [sarhaan.com](https://sarhaan.com/ab/a-concise-biography-of-the-prophet-peace-be-upon-him-and-his-special-traits/)) | Diterjemahkan ke bahasa Indonesia oleh Abdul Aziz Firdaus dan Mufassir Arif, ke bahasa Inggris oleh Ibraheem Abu Tameem Al-Mubtasim. Ditampilkan tanpa diubah, dengan izin tertulis dari penulis |
 | Sirah Lengkap | Dataset Sirah Nabawiyah ([Bagian 1](https://doi.org/10.17632/mwmzf8c2r5.1), [Bagian 2](https://doi.org/10.17632/zvn9cjn8nh.1), CC BY 4.0) | Berdasarkan *Ar-Rahiq al-Makhtum* karya Syaikh Shafiyyurrahman al-Mubarakfuri (terjemahan Indonesia) |
 | Teks dan audio Al-Qur'an | [Quran.com](https://quran.com), Kemenag | Murattal oleh Mishary Rashid Al-Afasy |
 
-Judul, tadabbur, pengantar bab, dan kalimat penghubung ditulis oleh Nawaetu, diberi keterangan demikian, dan hanya merangkum isi sumbernya. Nomor hadits di perpustakaan hadits masih menunggu verifikasi dengan [Sunnah.com](https://sunnah.com).
+Judul, tadabbur, pengantar bab, dan kalimat penghubung ditulis oleh Nawaetu, diberi keterangan demikian, dan hanya merangkum isi sumbernya. Nomor hadits di perpustakaan sedang dicek terhadap [Sunnah.com](https://sunnah.com) dan rujukan lain. Bila sebuah hadits ada di dua kitab, kedua nomornya ditampilkan beserta nama kitabnya, misalnya "HR. Bukhari No. 321 & Muslim No. 335".
 
 Lisensi Nawaetu (AGPLv3) mencakup kode dan tulisan Nawaetu sendiri. Konten dari penerbit di atas tetap mengikuti ketentuan masing-masing.
 
@@ -274,6 +279,12 @@ Indonesia dan Inggris.
 
 **Dari mana konten agamanya berasal?**
 Dari sumber yang diterbitkan: hadits dari HadeethEnc, terjemahan Al-Qur'an melalui QuranEnc, Ringkasan Sirah dari buku Syaikh Haitsam Sarhan (dengan izin beliau), dan Sirah Lengkap dari dataset yang dicantumkan sumbernya, berdasarkan *Ar-Rahiq al-Makhtum*. Setiap konten menampilkan sumbernya. Lihat [Sumber Konten](#-sumber-konten).
+
+**Apakah Hasanah sama dengan pahala?**
+Tidak. Hasanah adalah catatan usahamu di aplikasi, dipakai untuk level dan tahap. Pahala dan derajat seseorang hanya Allah yang tahu, jadi tahap menggambarkan apa yang sedang dilatih dan tidak pernah memberi gelar spiritual.
+
+**Bagaimana Nawaetu menangani haid dan nifas?**
+Muslimah dapat menyalakan mode udzur. Sholat pada masa itu ditandai terhalang, streak tetap terjaga, misi berganti ke amalan yang tetap bisa dilakukan seperti dzikir dan mendengarkan Al-Qur'an, dan statistik tidak menghitung hari-hari itu. Hanya tanggalnya yang disinkronkan ke akun.
 
 **Apakah Nawaetu memihak dalam politik?**
 Tidak. Konten Amanah & Kepemimpinan dan Tanya Nawaetu mengajarkan prinsip dari Al-Qur'an dan Sunnah, tanpa pernah menyebut atau mendukung partai, calon, maupun pejabat tertentu.
@@ -309,7 +320,7 @@ Versi dikunci di [`package.json`](package.json).
 *   **Tailwind CSS v4** & **Shadcn UI** (Primitif Radix UI)
 *   **Framer Motion** & **dotLottie** - Animasi & mikro-interaksi
 *   **Recharts** - Analitik dinamis & grafik tren Hasanah
-*   **Lucide React** & **Sonner** - Ikonografi & notifikasi toast
+*   **Lucide React**, **Hugeicons** (ikon gratis, path disalin) & **Sonner** - Ikonografi & notifikasi toast
 *   **Next PWA (`@ducanh2912/next-pwa`)** - Progressive Web App yang dapat diinstal
 
 ### Monitoring & Kualitas

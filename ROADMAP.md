@@ -29,7 +29,9 @@ This roadmap outlines our vision for making Nawaetu the **most meaningful Islami
 - **Sirah in Three Formats** - Shaykh Haytham Sarhan's concise sirah (English and Indonesian, with his written permission), the complete sirah, and a timeline of events
 - **Hijri Calendar** - Recommended fasting days and sirah events for the month
 - **100 Days to Ramadan** - A journey card with a fasting guide, dalil and streak
-- **Hasanah & Streaks** - Daily missions, seven ranks from Mubtadi to Muhsin, and a free streak freeze every 7 days
+- **Hasanah & Streaks** - Daily missions, seven journey stages named after the practice (no spiritual titles), and a free streak freeze every 7 days
+- **Udzur Mode** - For haid and nifas: excused prayers keep the streak, missions adapt, prayer alerts pause, and hadith on menstruation
+- **Ibadah Stats** - A personal message with one next step, fair counting of udzur days, and a "Worship Together" community card
 - **Tanya Nawaetu (AI Mentor)** - Designed to cite references; 10 chats a day for everyone (Gemini, Groq and OpenRouter)
 - **Guest Mode & Sync** - Use the app without an account; data follows the user on sign-in and across devices
 - **Five Themes, All Free** - Daylight by default, Emerald as the dark theme
@@ -37,7 +39,7 @@ This roadmap outlines our vision for making Nawaetu the **most meaningful Islami
 - **Search & AI Search** - Server-rendered content pages, structured data and `llms.txt`
 - **Multi-language** - English & Indonesian
 
-**Current Users:** 277 registered accounts (20 Nov 2026)
+**Current Users:** 286 registered accounts (27 Nov 2026)
 **Tech Stack:** Next.js 16, React 19, PostgreSQL with Drizzle ORM (see the [README](README.md#️-tech-stack))
 
 ---
@@ -123,12 +125,12 @@ AI: I understand. Let's try something small:
 ---
 
 #### 🎮 Badges & Hasanah Rewards
-**Status:** 💡 Concept (ranks and streaks are shipped)
+**Status:** 💡 Concept (journey stages and streaks are shipped)
 
-- **New badges:** "Sahur Champion" (30-day Ramadhan streak), "Night Warrior" (100 Qiyamul Lail), "Pure Intention" (40-day Niat Streak).
+- **New badges:** "Sahur Champion" (30-day Ramadhan streak), "Night Warrior" (100 Qiyamul Lail), "40 Days of Niat" (40-day Niat Streak). Badges name the act, never a state of the heart.
 - **Sponsored rewards:** partners supply rewards that users reach through consistent practice. See [`docs/HASANAH_LEVELS_AND_REWARDS_PLAN.md`](docs/HASANAH_LEVELS_AND_REWARDS_PLAN.md).
 
-**Principle:** Hasanah, ranks and streaks are never sold. No paid boosts or streak repairs.
+**Principle:** Hasanah, stages and streaks are never sold. No paid boosts or streak repairs.
 
 ---
 
@@ -156,7 +158,7 @@ An optional subscription for services that cost money to run or are personal coa
 - 📊 Deeper journal and habit insights
 - 🤝 Pay it forward: each subscription funds a free Plus account for a student or someone in need
 
-**Always free:** the Quran, hadith, prayer tools, dhikr, Sirah, intentions, streaks, ranks and themes.
+**Always free:** the Quran, hadith, prayer tools, dhikr, Sirah, intentions, streaks, stages and themes.
 
 ---
 
@@ -236,7 +238,7 @@ We measure success by **impact**, not just downloads.
 | Metric | Current (Nov 2026) | Next goal |
 |--------|--------------------|-----------|
 | **Active users (Google Analytics)** | 889 in 2026 (tracking reliable from mid-August) | - |
-| **Registered users** | 277 | - |
+| **Registered users** | 286 | - |
 | **Weekly Niat Setters** | To be measured | Baseline set |
 | **Retention (D1 / D7 / D30)** | To be measured | Baseline set |
 | **Daily / monthly active users** | To be measured | Baseline set |
