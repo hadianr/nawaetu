@@ -1,24 +1,28 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { userCompletedMissions, userStreakDays, users } from "@/db/schema";
+import { intentions, userCompletedMissions, userStreakDays } from "@/db/schema";
 import { sql } from "drizzle-orm";
 
 export const maxDuration = 30;
+
+// Fardhu and sunnah prayer missions, under both the old and the current ids.
+const PRAYER_MISSION = "(^sholat_|_prayer(_male|_female)?$)";
 
 export async function GET() {
   try {
     // One query on purpose: several concurrent queries on our single pooled connection can wedge it.
     // count(*) comes back as a string (bigint) from postgres-js.
-    const [row] = await db.execute<{ missions: string; days: string; users: string }>(sql`
+    const [row] = await db.execute<{ prayers: string; intentions: string; active: string }>(sql`
       select
-        (select count(*) from ${userCompletedMissions}) as missions,
-        (select count(*) from ${userStreakDays}) as days,
-        (select count(*) from ${users}) as users
+        (select count(*) from ${userCompletedMissions} where ${userCompletedMissions.missionId} ~ ${PRAYER_MISSION}) as prayers,
+        (select count(*) from ${intentions}) as intentions,
+        (select count(distinct ${userStreakDays.userId}) from ${userStreakDays}
+          where ${userStreakDays.localDate} > current_date - 7) as active
     `);
     return NextResponse.json({
-      missionsCompleted: Number(row?.missions ?? 0),
-      activeWorshipDays: Number(row?.days ?? 0),
-      users: Number(row?.users ?? 0),
+      prayers: Number(row?.prayers ?? 0),
+      intentions: Number(row?.intentions ?? 0),
+      activeThisWeek: Number(row?.active ?? 0),
     }, {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
     });
