@@ -88,7 +88,7 @@ export const otherEN = {
 
     // Support Card
     supportTitle: "Support Nawaetu",
-    supportPremiumText: "Thank you for being a Muhsinin! Your donations support server and development.",
+    supportPremiumText: "Thank you for being a Nawaetu Supporter! Your donations support server and development.",
     supportText: "Help us keep the app free and ad-free forever.",
     infaqButtonPremium: "Donate Again",
     infaqButton: "Donate",
@@ -595,7 +595,7 @@ export const otherEN = {
     donationCreateFailed: "Could not create the payment link",
     donationGenericError: "Something went wrong. Please try again later.",
     donationDescription: "Your infaq pays for the servers and for developing the app, so it stays useful.",
-    donationLoginBody: "Sign in first so your \"Muhsinin\" status and infaq history are saved to your account.",
+    donationLoginBody: "Sign in first so your \"Nawaetu Supporter\" status and infaq history are saved to your account.",
     donationOtherAmount: "Other amount",
     donationAmountLabel: "Infaq amount",
     donationAmountPlaceholder: "Enter an amount...",

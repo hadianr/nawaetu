@@ -88,7 +88,7 @@ export const otherID = {
 
     // Support Card
     supportTitle: "Dukung Nawaetu",
-    supportPremiumText: "Terima kasih telah menjadi Muhsinin! Hasil infaq digunakan untuk server & pengembangan.",
+    supportPremiumText: "Terima kasih telah menjadi Pendukung Nawaetu! Hasil infaq digunakan untuk server & pengembangan.",
     supportText: "Bantu kami menjaga aplikasi tetap gratis dan bebas iklan selamanya.",
     infaqButtonPremium: "Infaq Lagi",
     infaqButton: "Infaq",
@@ -595,7 +595,7 @@ export const otherID = {
     donationCreateFailed: "Gagal membuat link pembayaran",
     donationGenericError: "Terjadi kesalahan. Coba lagi nanti.",
     donationDescription: "Infaq Anda digunakan untuk biaya operasional server dan pengembangan aplikasi agar terus bermanfaat.",
-    donationLoginBody: "Agar status \"Muhsinin\" dan riwayat infaq Anda tersimpan permanen di database, mohon login terlebih dahulu.",
+    donationLoginBody: "Agar status \"Pendukung Nawaetu\" dan riwayat infaq Anda tersimpan permanen di database, mohon login terlebih dahulu.",
     donationOtherAmount: "Nominal Lainnya",
     donationAmountLabel: "Nominal infaq",
     donationAmountPlaceholder: "Masukkan nominal...",
