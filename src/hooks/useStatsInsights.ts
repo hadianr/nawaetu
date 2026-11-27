@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo } from 'react';
-import { PlayerStats, RankKey } from "@/lib/habits/leveling";
 import type { TranslationTree } from "@/context/LocaleContext";
 import type { AppIconName } from "@/lib/icon-names";
 
@@ -26,7 +25,6 @@ export interface CompletedMission {
 
 interface UseStatsInsightsProps {
     history: DailyActivity[];
-    playerStats: PlayerStats;
     weeklyHasanah: number;
     last14Days: string[];
     prayerMap: Record<string, Set<string>>;
@@ -36,7 +34,6 @@ interface UseStatsInsightsProps {
 
 export function useStatsInsights({
     history,
-    playerStats,
     weeklyHasanah,
     last14Days,
     prayerMap,
@@ -130,44 +127,6 @@ export function useStatsInsights({
         return Math.round(weeklyHasanah / activeDays);
     }, [weeklyHasanah, history]);
 
-    const playerRank = useMemo(() =>
-        t.stats.ranks[playerStats.rankKey] || t.stats.ranks.mubtadi
-        , [playerStats.rankKey, t]);
-
-    const nextRank = useMemo(() => {
-        const currentLevel = playerStats.level;
-        let nextLevel = 5;
-        let nextRankKey: RankKey = 'seeker';
-
-        if (currentLevel >= 60) return null;
-
-        if (currentLevel >= 40) {
-            nextLevel = 60;
-            nextRankKey = 'muhsin';
-        } else if (currentLevel >= 25) {
-            nextLevel = 40;
-            nextRankKey = 'mukhlis';
-        } else if (currentLevel >= 15) {
-            nextLevel = 25;
-            nextRankKey = 'salik';
-        } else if (currentLevel >= 10) {
-            nextLevel = 15;
-            nextRankKey = 'abid';
-        } else if (currentLevel >= 5) {
-            nextLevel = 10;
-            nextRankKey = 'warrior';
-        }
-
-        const rankInfo = t.stats.ranks[nextRankKey];
-        if (!rankInfo) return null;
-
-        return {
-            ...rankInfo,
-            targetLevel: nextLevel,
-            levelsRemaining: nextLevel - currentLevel
-        };
-    }, [playerStats.level, t]);
-
     return {
         categoryStats,
         maxCatCount,
@@ -177,7 +136,5 @@ export function useStatsInsights({
         totalQuranAyat,
         nextQuranMilestone,
         avgDailyHasanah,
-        playerRank,
-        nextRank
     };
 }

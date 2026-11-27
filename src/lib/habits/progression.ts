@@ -13,14 +13,28 @@ export const LEVEL_THRESHOLDS = [
   4500,
 ] as const;
 
-export type RankKey = "mubtadi" | "seeker" | "warrior" | "abid" | "salik" | "mukhlis" | "muhsin";
+/**
+ * Journey stages, in order. A stage names what is being practised, never a state of the heart
+ * (QS An-Najm 53:32; Muslim 2142), and is reached through Hasanah from any worship.
+ */
+export const STAGES = [
+  { key: "start", fromLevel: 1 },
+  { key: "habit", fromLevel: 3 },
+  { key: "onTime", fromLevel: 6 },
+  { key: "add", fromLevel: 10 },
+  { key: "deepen", fromLevel: 15 },
+  { key: "steady", fromLevel: 25 },
+  { key: "share", fromLevel: 40 },
+] as const;
+
+export type StageKey = typeof STAGES[number]["key"];
 
 export interface PlayerStats {
   hasanah: number;
   level: number;
   nextLevelHasanah: number;
   progress: number;
-  rankKey: RankKey;
+  stageKey: StageKey;
   levelRuleVersion: number;
 }
 
@@ -126,14 +140,13 @@ export function rebuildStreakDetailed(dates: string[], excused: ReadonlySet<stri
   return { state, frozenDates };
 }
 
-export function getRankKey(level: number): RankKey {
-  if (level >= 60) return "muhsin";
-  if (level >= 40) return "mukhlis";
-  if (level >= 25) return "salik";
-  if (level >= 15) return "abid";
-  if (level >= 10) return "warrior";
-  if (level >= 5) return "seeker";
-  return "mubtadi";
+/** Index into STAGES for a level. */
+export function getStageIndex(level: number): number {
+  return STAGES.filter((stage) => level >= stage.fromLevel).length - 1;
+}
+
+export function getStageKey(level: number): StageKey {
+  return STAGES[Math.max(0, getStageIndex(level))].key;
 }
 
 export function calculatePlayerStats(hasanah: number, earnedLevelFloor = 1): PlayerStats {
@@ -159,7 +172,7 @@ export function calculatePlayerStats(hasanah: number, earnedLevelFloor = 1): Pla
     level,
     nextLevelHasanah,
     progress,
-    rankKey: getRankKey(level),
+    stageKey: getStageKey(level),
     levelRuleVersion: LEVEL_RULES_VERSION,
   };
 }

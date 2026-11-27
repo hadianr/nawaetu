@@ -27,16 +27,29 @@ export const statsID = {
             title: "Statistik Ibadah",
             subtitle: "Perjalanan spiritualmu"
         },
-        level: {
-            rankLabel: "Peringkat Spiritual",
-            totalHasanah: "Total Hasanah",
-            toNextLevel: "menuju Level",
-            hasanahNeeded: "Hasanah dibutuhkan",
-            nextRankGoal: "Target Berikutnya:",
-            currentHasanah: "Hasanah Saat Ini",
-            nextLevelHasanah: "Hasanah Berikutnya",
-            levelsRemaining: "level lagi",
-            understand: "Mengerti"
+        journey: {
+            stageOf: "Tahap {{n}} dari {{total}}",
+            level: "Level {{level}}",
+            toNextLevel: "{{n}} Hasanah lagi ke Level {{level}}",
+            focus: "Saran fokus",
+            nextStage: "Berikutnya: {{name}} di Level {{level}}",
+            lastStage: "Ini tahap terakhir. Teruskan, sedikit asal kontinu.",
+            howItWorks: "Cara kerja level",
+            guideTitle: "Perjalananmu di Nawaetu",
+            guideIntro: "Level dan tahap membantumu melihat arah, bukan menilai dirimu.",
+            rule1: "Setiap ibadah yang kamu catat, seperti sholat, dzikir, tilawah, dan niat, menambah Hasanah.",
+            rule2: "Hasanah menaikkan level. Setiap beberapa level, kamu masuk tahap baru.",
+            rule3: "Tahap menggambarkan apa yang sedang kamu latih. Saran fokusnya pilihan, bukan syarat naik.",
+            stagesTitle: "Tujuh tahap",
+            levels: "Level {{from}}–{{to}}",
+            levelsFrom: "Level {{from}}+",
+            youAreHere: "Kamu di sini",
+            disclaimerTitle: "Tentang Hasanah",
+            disclaimer: "Hasanah adalah catatan usahamu di Nawaetu, bukan hitungan pahala. Pahala dan derajat seseorang hanya Allah yang tahu.",
+            disclaimerQuote: "“…maka janganlah kamu menganggap dirimu suci. Dialah yang paling mengetahui siapa yang bertakwa.” QS. An-Najm: 32",
+            close: "Tutup",
+            streakRestart: "Mulai hari ini",
+            streakRecord: "Rekor: {{days}} hari",
         },
         quick: {
             currentStreak: "Streak Saat Ini",
@@ -181,63 +194,14 @@ export const statsID = {
                 summary: "Zikir harianmu membantu menjaga kejernihan pikiran di tengah kesibukan."
             }
         },
-        ranks: {
-            mubtadi: {
-                icon: "sparkles",
-                title: "Mubtadi",
-                desc: "Istilah bagi pemula (al-mubtadi) yang baru memulai langkah pertama dalam perjalanan kedisiplinan diri dan perbaikan spiritual.",
-                milestone: "Fokus pada menyempurnakan niat dalam setiap amal.",
-                quote: "Sesungguhnya setiap amal tergantung pada niatnya.",
-                source: "Hadits Bukhari & Muslim"
-            },
-            seeker: {
-                icon: "compass",
-                title: "Pencari Rahmat",
-                desc: "Mulai menemukan ketenangan dalam keteraturan ibadah fardhu.",
-                milestone: "Usahakan sholat tepat waktu sebagai prioritas utama.",
-                quote: "Janganlah kamu berputus asa dari rahmat Allah.",
-                source: "QS. Az-Zumar: 53"
-            },
-            warrior: {
-                icon: "shield-check",
-                title: "Pejuang Subuh",
-                desc: "Disiplin di waktu yang paling sulit namun penuh berkah.",
-                milestone: "Jaga konsistensi sholat Subuh berjamaah atau tepat waktu.",
-                quote: "Sesungguhnya shalat subuh itu disaksikan (oleh malaikat).",
-                source: "QS. Al-Isra: 78"
-            },
-            abid: {
-                icon: "mosque",
-                title: "Abid",
-                desc: "Hamba yang mulai merasakan manisnya ibadah melebihi kewajiban.",
-                milestone: "Mulai tambahkan amalan sunnah rawatib secara perlahan.",
-                quote: "Hamba-Ku mendekatkan diri dengan amalan sunnah hingga Aku mencintainya.",
-                source: "Hadits Qudsi (Bukhari)"
-            },
-            salik: {
-                icon: "compass",
-                title: "Salik",
-                desc: "Seorang penempuh jalan spiritual yang sadar akan setiap langkahnya.",
-                milestone: "Latih kehadiran hati (khusyuk) dalam setiap gerakan sholat.",
-                quote: "Jika hati itu baik, maka baiklah seluruh tubuhnya.",
-                source: "Hadits Bukhari & Muslim"
-            },
-            mukhlis: {
-                icon: "star",
-                title: "Mukhlis",
-                desc: "Memurnikan segala amal hanya untuk mencari ridha Allah semata.",
-                milestone: "Hindari perasaan ingin dipuji orang lain dalam beribadah.",
-                quote: "Menyembah Allah dengan memurnikan ketaatan kepada-Nya.",
-                source: "QS. Al-Bayyinah: 5"
-            },
-            muhsin: {
-                icon: "sparkles",
-                title: "Muhsin",
-                desc: "Beribadah seakan-akan melihat Allah, atau sadar Ia melihatmu.",
-                milestone: "Jadikan setiap detik sebagai bentuk zikir dan rasa syukur.",
-                quote: "Beribadah seakan-akan engkau melihat-Nya... Dia melihatmu.",
-                source: "Hadits Jibril (Muslim)"
-            }
+        stages: {
+            start: { name: "Memulai", about: "Menata niat dan mulai mencatat ibadah harian.", focus: "Catat niat pagi dan sholat yang kamu kerjakan hari ini.", reminder: "“Sesungguhnya setiap amal tergantung pada niatnya.” HR. Bukhari No. 1" },
+            habit: { name: "Membiasakan", about: "Membangun kebiasaan mencatat setiap hari, sedikit asal kontinu.", focus: "Usahakan lima waktu tercatat setiap hari, walau belum sempurna.", reminder: "“Amalan yang paling dicintai Allah adalah yang paling kontinu, walaupun sedikit.” HR. Bukhari No. 6464" },
+            onTime: { name: "Menjaga Waktu", about: "Kebiasaan mulai terbentuk. Sekarang jaga waktunya.", focus: "Sholat di awal waktu, termasuk Subuh.", reminder: "Ditanya amal yang paling dicintai Allah, Nabi Muhammad SAW menjawab: “Sholat pada waktunya.” HR. Bukhari No. 527" },
+            add: { name: "Menambah", about: "Yang wajib sudah terjaga. Mulai menambah amalan sunnah.", focus: "Tambahkan satu sunnah rawatib atau dhuha, perlahan.", reminder: "“Hamba-Ku terus mendekat kepada-Ku dengan amalan sunnah hingga Aku mencintainya.” HR. Bukhari No. 6502" },
+            deepen: { name: "Memperdalam", about: "Bukan hanya menambah jumlah, tapi memperdalam makna.", focus: "Latih khusyuk, rutinkan tilawah, dan dzikir pagi petang.", reminder: "“Sungguh beruntung orang-orang beriman, (yaitu) orang yang khusyuk dalam sholatnya.” QS. Al-Mu'minun: 1–2" },
+            steady: { name: "Meneguhkan", about: "Menjaga semuanya tetap berjalan, juga saat sibuk dan lelah.", focus: "Siapkan rencana kecil untuk hari-hari padat agar ibadah tetap terjaga.", reminder: "“Sesungguhnya orang-orang yang berkata, ‘Tuhan kami adalah Allah,’ kemudian tetap istiqamah, malaikat akan turun kepada mereka.” QS. Fussilat: 30" },
+            share: { name: "Menebar Manfaat", about: "Kebaikanmu mulai mengalir kepada orang lain.", focus: "Ajak keluarga atau teman, dan bagikan ilmu yang bermanfaat.", reminder: "“Barangsiapa menunjukkan kepada kebaikan, maka baginya pahala seperti pelakunya.” HR. Muslim No. 1893" },
         }
     }
 };
