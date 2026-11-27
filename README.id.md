@@ -101,7 +101,7 @@ Nawaetu dimulai dari pengguna berbahasa Indonesia dan Inggris, pasar mayoritas M
 
 ## ✨ Produk
 
-Tangkapan layar asli dari aplikasi di [nawaetu.com](https://nawaetu.com) (ukuran HP, 27 November 2026, dengan profil demo). Tersedia lima tema; Daylight adalah tema bawaan dan Emerald adalah tema gelap.
+Tangkapan layar asli dari aplikasi di [nawaetu.com](https://nawaetu.com) (HP kecil, lebar 300 px, 27 November 2026, dengan profil demo). Tersedia lima tema; Daylight adalah tema bawaan dan Emerald adalah tema gelap.
 
 | Beranda: niat dan jadwal sholat | Al-Qur'an dengan audio | Sirah dalam tiga format |
 | :---: | :---: | :---: |
