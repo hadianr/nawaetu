@@ -49,7 +49,8 @@ export const statsID = {
             disclaimerQuote: "“…maka janganlah kamu menganggap dirimu suci. Dialah yang paling mengetahui siapa yang bertakwa.” QS. An-Najm: 32",
             close: "Tutup",
             streakRestart: "Mulai hari ini",
-            streakRecord: "Rekor: {{days}} hari",
+            streakDays: "{{n}} hari beruntun",
+            seeJourney: "Lihat detail",
         },
         quick: {
             currentStreak: "Streak Saat Ini",

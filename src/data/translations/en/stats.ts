@@ -49,7 +49,8 @@ export const statsEN = {
             disclaimerQuote: "“…So do not claim yourselves to be pure; He knows best who fears Him.” Quran, An-Najm 53:32",
             close: "Close",
             streakRestart: "Start today",
-            streakRecord: "Record: {{days}} days",
+            streakDays: "{{n}}-day streak",
+            seeJourney: "Details",
         },
         quick: {
             currentStreak: "Current Streak",

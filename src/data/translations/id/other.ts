@@ -149,19 +149,16 @@ export const otherID = {
     profileAuthDesc: "Login untuk menyimpan data streak, bookmark, dan status donatur secara permanen di cloud.",
     profileAuthButton: "Login dengan Google",
     profileRoleGuest: "Sahabat Nawaetu",
-    profileStreakLabel: "Jejak Istiqomah",
     profileTotalDays: "Total Hari",
 
     // Gamification Terminology
     gamificationXpName: "Hasanah",
-    profileStreakDesc: "Hari Beruntun Misi & Ibadah Harian",
     toastRamadhanTarawehReward: "Alhamdulillah! +15 Hasanah",
     toastRamadhanKhatamanReward: "Masya Allah! +20 Hasanah",
 
     // Streak & Progress
     profileStreak: "Streak",
     profileRecord: "Rekor",
-    profileDays: "Hari",
     profileStreakMaintain: "Pertahankan istiqamahmu setiap hari!",
     profileBestAchievement: "Pencapaian istiqamah terbaikmu.",
     profileTitleCollection: "Koleksi Gelar",
