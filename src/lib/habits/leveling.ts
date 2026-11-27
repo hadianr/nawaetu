@@ -29,8 +29,8 @@ import {
     calculatePlayerStats,
 } from "@/lib/habits/progression";
 
-export { LEVEL_RULES_VERSION, LEVEL_THRESHOLDS, getRankKey } from "@/lib/habits/progression";
-export type { PlayerStats, RankKey } from "@/lib/habits/progression";
+export { LEVEL_RULES_VERSION, LEVEL_THRESHOLDS, STAGES, getStageIndex, getStageKey } from "@/lib/habits/progression";
+export type { PlayerStats, StageKey } from "@/lib/habits/progression";
 
 export function getPlayerStats(): PlayerStats {
     if (typeof window === "undefined") {

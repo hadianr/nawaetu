@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LEVEL_RULES_VERSION, advanceStreak, calculatePlayerStats, missedDaysBetween, rebuildStreakDetailed, rebuildStreakFromHistory, rebuildStreakState } from "./progression";
+import { LEVEL_RULES_VERSION, advanceStreak, calculatePlayerStats, getStageIndex, getStageKey, missedDaysBetween, rebuildStreakDetailed, rebuildStreakFromHistory, rebuildStreakState } from "./progression";
 
 describe("calculatePlayerStats", () => {
   it("handles level boundaries and progress", () => {
@@ -165,5 +165,17 @@ describe("excused days (udzur)", () => {
     expect(missedDaysBetween(day(1), day(2))).toBe(0);
     expect(missedDaysBetween(day(1), day(10), excused(2, 3, 9, 15))).toBe(5);
     expect(missedDaysBetween(day(5), day(1))).toBeLessThan(0);
+  });
+});
+
+describe("journey stages", () => {
+  it("maps levels to the seven stages at their boundaries", () => {
+    expect([1, 2, 3, 5, 6, 9, 10, 14, 15, 24, 25, 39, 40, 99].map(getStageKey)).toEqual([
+      "start", "start", "habit", "habit", "onTime", "onTime", "add", "add",
+      "deepen", "deepen", "steady", "steady", "share", "share",
+    ]);
+    expect(getStageIndex(0)).toBe(-1);
+    expect(getStageKey(0)).toBe("start");
+    expect(calculatePlayerStats(2287).stageKey).toBe("onTime");
   });
 });

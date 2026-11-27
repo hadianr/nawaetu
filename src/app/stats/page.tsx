@@ -5,14 +5,6 @@ import { useLocale } from '@/context/LocaleContext';
 import { usePlayerStats } from '@/lib/habits/leveling';
 import { getDailyActivityHistory } from '@/lib/analytics/analytics-utils';
 import { getMissionRepository } from '@/core/repositories/mission.repository';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import GlobalStatsWidget from '@/components/home/GlobalStatsWidget';
 import { useStatsInsights, InsightKey, PRAYER_SUFFIXES, DailyActivity, CompletedMission } from '@/hooks/useStatsInsights';
 import { InsightModal } from '@/components/stats/InsightModal';
@@ -24,7 +16,6 @@ import { QuranStatsCard } from '@/components/stats/QuranStatsCard';
 import { useStreak } from '@/hooks/useStreak';
 import { useUdzur } from '@/hooks/useUdzur';
 import { DateUtils } from '@/lib/utils/date';
-import { AppIcon, resolveAppIconName } from '@/components/ui/AppIcon';
 import StreakBadge from '@/components/StreakBadge';
 import { StatsMessage } from '@/components/stats/StatsMessage';
 import { prayersDue } from '@/lib/stats/message';
@@ -37,7 +28,6 @@ export default function StatsPage() {
     const [history, setHistory] = useState<DailyActivity[]>([]);
     const [completedMissions, setCompletedMissions] = useState<CompletedMission[]>([]);
     const [activeInsight, setActiveInsight] = useState<InsightKey | null>(null);
-    const [isRankModalOpen, setIsRankModalOpen] = useState(false);
     const [isStreakModalOpen, setIsStreakModalOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [totalQuranReadSeconds, setTotalQuranReadSeconds] = useState(0);
@@ -231,11 +221,8 @@ export default function StatsPage() {
         totalQuranAyat,
         nextQuranMilestone,
         avgDailyHasanah,
-        playerRank,
-        nextRank
     } = useStatsInsights({
         history,
-        playerStats,
         weeklyHasanah,
         last14Days,
         prayerMap,
@@ -249,7 +236,7 @@ export default function StatsPage() {
 
     return (
             <main className="stats-page min-h-screen bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))] pb-nav">
-                <StatsHeader t={t} playerStats={playerStats} />
+                <StatsHeader t={t} />
 
                 <StatsMessage
                     t={t}
@@ -265,15 +252,12 @@ export default function StatsPage() {
                 <StatsOverview
                     t={t}
                     playerStats={playerStats}
-                    playerRank={playerRank}
-                    nextRank={nextRank}
                     streakData={streakData}
                     recentPrayerCount={recentPrayerCount}
                     prayersDue={prayersDueRecent}
                     consistency={consistency}
                     timeRange={timeRange}
                     totalHasanah={rangeStats.totalHasanah}
-                    setIsRankModalOpen={setIsRankModalOpen}
                     setActiveInsight={setActiveInsight}
                     onStreakClick={() => setIsStreakModalOpen(true)}
                 />
@@ -313,51 +297,6 @@ export default function StatsPage() {
 
                     {/* Close on the community: what everyone keeps together, and an invite. */}
                     <GlobalStatsWidget />
-
-                    {/* Rank Details Modal */}
-                    <Dialog open={isRankModalOpen} onOpenChange={setIsRankModalOpen}>
-                        <DialogContent showCloseButton={false} className="bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] p-0 overflow-hidden max-w-[360px] rounded-2xl text-[rgb(var(--color-text-strong))]">
-                            <div className="relative p-6">
-                                <DialogHeader className="mb-6">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <div className="w-12 h-12 rounded-[20px] bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] flex items-center justify-center text-2xl shadow-[var(--shadow-card)]">
-                                            <AppIcon name={resolveAppIconName(playerRank.icon)} size="md" tone="primary" />
-                                        </div>
-                                        <div>
-                                            <DialogTitle className="text-xl font-bold text-[rgb(var(--color-text-strong))]">{playerRank.title}</DialogTitle>
-                                            <DialogDescription className="text-xs text-[rgb(var(--color-text-muted))]">{t.stats.level.rankLabel}</DialogDescription>
-                                        </div>
-                                    </div>
-                                </DialogHeader>
-
-                                <div className="space-y-4">
-                                    <div className="p-4 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl shadow-[var(--shadow-card)]">
-                                        <p className="text-xs text-[rgb(var(--color-text))] leading-relaxed italic">
-                                            &quot;{playerRank.desc}&quot;
-                                        </p>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl shadow-[var(--shadow-card)]">
-                                            <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1">{t.stats.level.currentHasanah}</p>
-                                            <p className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{playerStats.hasanah.toLocaleString()}</p>
-                                        </div>
-                                        <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl shadow-[var(--shadow-card)]">
-                                            <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1">{t.stats.level.nextLevelHasanah}</p>
-                                            <p className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{playerStats.nextLevelHasanah.toLocaleString()}</p>
-                                        </div>
-                                    </div>
-
-                                    <Button
-                                        onClick={() => setIsRankModalOpen(false)}
-                                        className="w-full h-12 rounded-2xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-strong))] font-bold text-sm border border-[rgb(var(--color-border))] transition-all shadow-[var(--shadow-card)]"
-                                    >
-                                        {t.stats.level.understand}
-                                    </Button>
-                                </div>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
 
                     {/* Detailed Insight Modal */}
                     <InsightModal

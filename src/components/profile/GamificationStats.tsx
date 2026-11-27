@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Crown, Flame, Info, Gift } from "@/components/ui/icons";
+import { Flame, Gift } from "@/components/ui/icons";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
-import { useState } from "react";
+import { StageCard } from "@/components/progress/StageCard";
 
 interface GamificationStatsProps {
     stats: {
@@ -36,105 +36,10 @@ interface GamificationStatsProps {
 export function GamificationStats({ stats }: GamificationStatsProps) {
     const { t } = useLocale();
     const translations = t as TranslationTree;
-    const [showLevelInfo, setShowLevelInfo] = useState(false);
 
     return (
         <div className="flex flex-col gap-3 mb-6">
-            {/* Level Progress */}
-            <div className={cn(
-                "rounded-2xl p-4 transition-all border shadow-[var(--shadow-card)]",
-                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
-            )}>
-                <div className="flex justify-between items-end mb-2">
-                    <div className="flex items-center gap-2">
-                        <div className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center transition-all",
-                            "bg-[rgb(var(--color-primary))]/15"
-                        )}>
-                            <Crown className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
-                        </div>
-                        <div>
-                            <div
-                                className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
-                                onClick={() => setShowLevelInfo(!showLevelInfo)}
-                            >
-                                <p className="text-xs text-[rgb(var(--color-text-muted))] font-medium">
-                                    {translations.gamificationLevelName} {stats.level}: {
-                                        stats.level <= 10 ? translations.gamificationLevelTitle_0_10 :
-                                            stats.level <= 25 ? translations.gamificationLevelTitle_11_25 :
-                                                stats.level <= 50 ? translations.gamificationLevelTitle_26_50 :
-                                                    stats.level <= 99 ? translations.gamificationLevelTitle_51_99 : translations.gamificationLevelTitle_100
-                                    }
-                                </p>
-                                <Info className="w-3 h-3 text-[rgb(var(--color-text-muted))]" />
-                            </div>
-                            <p className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{stats.hasanah} {translations.gamificationXpName}</p>
-                        </div>
-                    </div>
-                    <span className="text-xs text-[rgb(var(--color-text-muted))]">{stats.hasanah} / {stats.nextLevelHasanah} {translations.gamificationXpName}</span>
-                </div>
-                <div className={cn(
-                    "h-2.5 w-full rounded-full overflow-hidden border shadow-inner mb-2.5 transition-all",
-                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
-                )}>
-                    <div
-                        className="h-full rounded-full transition-all duration-500 shadow-[var(--shadow-card)]"
-                        style={{
-                            width: `${stats.progress}%`,
-                            background: "rgb(var(--color-primary))",
-                            boxShadow: "var(--shadow-card)"
-                        }}
-                    />
-                </div>
-
-                {showLevelInfo ? (
-                    <div className={cn(
-                        "mt-3 p-4 rounded-xl border space-y-3 animate-in fade-in slide-in-from-top-1 shadow-[var(--shadow-card)]",
-                        "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))]"
-                    )}>
-                        <div className="font-bold mb-1 text-xs text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelName} Tingkatan:</div>
-
-                        <div className="space-y-1">
-                            <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_0_10} (Lvl 1-10)</span>
-                            </div>
-                            <p className="text-xs leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_0_10}</p>
-                        </div>
-
-                        <div className="space-y-1">
-                            <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_11_25} (Lvl 11-25)</span>
-                            </div>
-                            <p className="text-xs leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_11_25}</p>
-                        </div>
-
-                        <div className="space-y-1">
-                            <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_26_50} (Lvl 26-50)</span>
-                            </div>
-                            <p className="text-xs leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_26_50}</p>
-                        </div>
-
-                        <div className="space-y-1">
-                            <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_51_99} (Lvl 51-99)</span>
-                            </div>
-                            <p className="text-xs leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_51_99}</p>
-                        </div>
-
-                        <div className="space-y-1">
-                            <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_100} (Lvl 100+)</span>
-                            </div>
-                            <p className="text-xs leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_100}</p>
-                        </div>
-                    </div>
-                ) : (
-                    <p className="text-xs text-[rgb(var(--color-text-muted))] leading-snug">
-                        {translations.profileXpDesc}
-                    </p>
-                )}
-            </div>
+            <StageCard t={translations} stats={stats} />
 
             <Link
                 href="/rewards"
@@ -160,8 +65,15 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
                 </div>
                 <div>
                     <div className="flex items-end gap-2">
-                        <span className="text-2xl font-bold leading-none text-[rgb(var(--color-text-strong))]">{stats.streak}</span>
-                        <span className="text-xs text-[rgb(var(--color-text-muted))] font-medium mb-[2px]">{translations.profileDays}</span>
+                        {stats.streak > 0 ? (
+                            <>
+                                <span className="text-2xl font-bold leading-none text-[rgb(var(--color-text-strong))]">{stats.streak}</span>
+                                <span className="text-xs text-[rgb(var(--color-text-muted))] font-medium mb-[2px]">{translations.profileDays}</span>
+                            </>
+                        ) : (
+                            // A lapsed streak reads as an invitation, not a big zero.
+                            <span className="text-lg font-bold leading-none text-[rgb(var(--color-text-strong))]">{translations.stats.journey.streakRestart}</span>
+                        )}
                     </div>
                     <div className="text-xs text-[rgb(var(--color-text-muted))] mt-1 leading-snug">{translations.profileStreakDesc}</div>
                 </div>

@@ -27,16 +27,29 @@ export const statsEN = {
             title: "Worship Statistics",
             subtitle: "Your spiritual journey"
         },
-        level: {
-            rankLabel: "Spiritual Rank",
-            totalHasanah: "Total Hasanah",
-            toNextLevel: "to Level",
-            hasanahNeeded: "Hasanah needed",
-            nextRankGoal: "Next Goal:",
-            currentHasanah: "Current Hasanah",
-            nextLevelHasanah: "Next Level Hasanah",
-            levelsRemaining: "levels remaining",
-            understand: "Understand"
+        journey: {
+            stageOf: "Stage {{n}} of {{total}}",
+            level: "Level {{level}}",
+            toNextLevel: "{{n}} Hasanah to Level {{level}}",
+            focus: "Suggested focus",
+            nextStage: "Next: {{name}} at Level {{level}}",
+            lastStage: "This is the last stage. Keep going, little but constant.",
+            howItWorks: "How levels work",
+            guideTitle: "Your journey in Nawaetu",
+            guideIntro: "Levels and stages show you where you are heading. They do not judge you.",
+            rule1: "Every act of worship you log, such as prayer, dhikr, Quran reading and intentions, adds Hasanah.",
+            rule2: "Hasanah raises your level. Every few levels you enter a new stage.",
+            rule3: "A stage describes what you are practising. Its focus is a suggestion, not a requirement.",
+            stagesTitle: "Seven stages",
+            levels: "Level {{from}}–{{to}}",
+            levelsFrom: "Level {{from}}+",
+            youAreHere: "You are here",
+            disclaimerTitle: "About Hasanah",
+            disclaimer: "Hasanah is a record of your effort in Nawaetu, not a count of reward. Only Allah knows a person's reward and rank.",
+            disclaimerQuote: "“…So do not claim yourselves to be pure; He knows best who fears Him.” Quran, An-Najm 53:32",
+            close: "Close",
+            streakRestart: "Start today",
+            streakRecord: "Record: {{days}} days",
         },
         quick: {
             currentStreak: "Current Streak",
@@ -181,63 +194,14 @@ export const statsEN = {
                 summary: "Your daily Dhikr helps maintain clarity of mind amidst busy schedules."
             }
         },
-        ranks: {
-            mubtadi: {
-                icon: "sparkles",
-                title: "Mubtadi",
-                desc: "A term for a beginner (al-mubtadi) who is just taking the first steps in the journey of self-discipline and spiritual refinement.",
-                milestone: "Focus on purifying your intention in every action.",
-                quote: "Actions are but by intentions.",
-                source: "Hadith Bukhari & Muslim"
-            },
-            seeker: {
-                icon: "compass",
-                title: "Seeker of Mercy",
-                desc: "Finding peace in the regularity of obligatory worship.",
-                milestone: "Prioritize performing prayers exactly on time.",
-                quote: "Do not despair of the mercy of Allah.",
-                source: "Quran, Az-Zumar: 53"
-            },
-            warrior: {
-                icon: "shield-check",
-                title: "Fajr Warrior",
-                desc: "Disciplined in the most challenging yet blessed time.",
-                milestone: "Maintain consistency in Fajr prayer on time.",
-                quote: "Indeed, the recitation of Fajr is witnessed.",
-                source: "Quran, Al-Isra: 78"
-            },
-            abid: {
-                icon: "mosque",
-                title: "Abid",
-                desc: "A servant who begins to taste the sweetness of worship.",
-                milestone: "Gradually incorporate Sunnah Rawatib prayers.",
-                quote: "My servant draws near with voluntary works until I love him.",
-                source: "Hadith Qudsi (Bukhari)"
-            },
-            salik: {
-                icon: "compass",
-                title: "Salik",
-                desc: "A spiritual wayfarer mindful of every single step.",
-                milestone: "Practice presence of heart (khusyuk) in prayer.",
-                quote: "If the heart is sound, the whole body is sound.",
-                source: "Hadith Bukhari & Muslim"
-            },
-            mukhlis: {
-                icon: "star",
-                title: "Mukhlis",
-                desc: "Purifying all deeds solely for the sake of Allah.",
-                milestone: "Guard your heart against seeking praise from others.",
-                quote: "Worship Allah, being sincere to Him in religion.",
-                source: "Quran, Al-Bayyinah: 5"
-            },
-            muhsin: {
-                icon: "sparkles",
-                title: "Muhsin",
-                desc: "Worshipping as if you see Him, or knowing He sees you.",
-                milestone: "Make every moment a form of remembrance and gratitude.",
-                quote: "Worship Allah as if you see Him... He sees you.",
-                source: "Hadith Jibril (Muslim)"
-            }
+        stages: {
+            start: { name: "Starting", about: "Setting your intention and starting to log daily worship.", focus: "Log a morning intention and the prayers you pray today.", reminder: "“Actions are judged by intentions.” Bukhari No. 1" },
+            habit: { name: "Building the habit", about: "Logging every day, little but constant.", focus: "Aim to log all five prayers every day, even if not perfect yet.", reminder: "“The most beloved deed to Allah is the most constant, even if it is little.” Bukhari No. 6464" },
+            onTime: { name: "Keeping the time", about: "The habit is forming. Now keep its timing.", focus: "Pray early in the time, Fajr included.", reminder: "Asked which deed Allah loves most, Prophet Muhammad SAW said: “Prayer at its time.” Bukhari No. 527" },
+            add: { name: "Adding more", about: "The obligatory is kept. Start adding sunnah.", focus: "Add one rawatib or Duha prayer, gently.", reminder: "“My servant keeps drawing near to Me with voluntary deeds until I love him.” Bukhari No. 6502" },
+            deepen: { name: "Going deeper", about: "Not only more, but deeper in meaning.", focus: "Practise focus in prayer, read Quran regularly, and keep the morning and evening dhikr.", reminder: "“Successful indeed are the believers, those who are humble in their prayer.” Quran, Al-Mu'minun 23:1–2" },
+            steady: { name: "Holding steady", about: "Keeping it all going, also when busy and tired.", focus: "Make a small plan for packed days so worship still happens.", reminder: "“Those who say, ‘Our Lord is Allah,’ and then remain steadfast, the angels descend upon them.” Quran, Fussilat 41:30" },
+            share: { name: "Spreading benefit", about: "Your good starts to reach others.", focus: "Invite family or friends, and share beneficial knowledge.", reminder: "“Whoever guides someone to goodness will have a reward like the one who does it.” Muslim No. 1893" },
         }
     }
 };

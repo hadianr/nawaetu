@@ -2,22 +2,18 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Star, Flame, Target, Info, Gift, Sparkles } from "@/components/ui/icons";
+import { ChevronLeft, Flame, Target, Info, Gift, Sparkles } from "@/components/ui/icons";
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
-import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";
+import { AppIcon } from "@/components/ui/AppIcon";
+import { StageCard } from "@/components/progress/StageCard";
 import { InsightKey } from "@/hooks/useStatsInsights";
 import type { TranslationTree } from "@/context/LocaleContext";
 import type { PlayerStats } from "@/lib/habits/leveling";
 
-type RankDetails = TranslationTree["stats"]["ranks"][keyof TranslationTree["stats"]["ranks"]];
-type NextRankDetails = RankDetails & { levelsRemaining: number };
-
 interface StatsOverviewProps {
     t: TranslationTree;
     playerStats: PlayerStats;
-    playerRank: RankDetails;
-    nextRank: NextRankDetails | null;
     streakData: { currentStreak: number; longestStreak: number };
     recentPrayerCount: number;
     /** Obligatory prayers due in those 14 days, with udzur days left out. */
@@ -25,7 +21,6 @@ interface StatsOverviewProps {
     consistency: number;
     timeRange: string;
     totalHasanah: number;
-    setIsRankModalOpen: (val: boolean) => void;
     setActiveInsight: (val: InsightKey | null) => void;
     onStreakClick: () => void;
 }
@@ -33,84 +28,18 @@ interface StatsOverviewProps {
 export function StatsOverview({
     t,
     playerStats,
-    playerRank,
-    nextRank,
     streakData,
     recentPrayerCount,
     prayersDue,
     consistency,
     timeRange,
     totalHasanah,
-    setIsRankModalOpen,
     setActiveInsight,
     onStreakClick
 }: StatsOverviewProps) {
     return (
         <div className="space-y-4 max-w-2xl mx-auto px-6">
-            {/* Level & Hasanah Card - Compact Version */}
-            <button
-                onClick={() => setIsRankModalOpen(true)}
-                className="w-full text-left relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-surface))] to-[rgb(var(--color-surface-subtle))] p-4 active:scale-[0.98] transition-all group mt-4 shadow-[var(--shadow-card)]"
-            >
-                <div className="relative z-10 flex items-center gap-4">
-                    {/* Rank Badge - Smaller & Compact */}
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] flex items-center justify-center text-2xl sm:text-3xl shadow-[var(--shadow-card)] group-hover:scale-110 transition-transform duration-500">
-                        <AppIcon name={resolveAppIconName(playerRank.icon)} size="md" tone="primary" />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                            <div className="flex items-center gap-1.5 min-w-0">
-                                <h2 className="text-base sm:text-lg font-bold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))] transition-colors truncate">
-                                    {playerRank.title}
-                                </h2>
-                                <span className="text-xs sm:text-xs font-bold tracking-wider uppercase text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/20 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/30 shrink-0">
-                                    LV. {playerStats.level}
-                                </span>
-                            </div>
-                            <div className="text-right shrink-0">
-                                <span className="text-[rgb(var(--color-primary-strong))] text-xs sm:text-xs font-bold">{playerStats.hasanah}</span>
-                                <span className="text-[rgb(var(--color-text-muted))] text-xs sm:text-xs ml-0.5">/ {playerStats.nextLevelHasanah}</span>
-                            </div>
-                        </div>
-
-                        {/* Progress Bar - Slimmer */}
-                        <div className="h-1 w-full bg-[rgb(var(--color-surface-subtle))] rounded-full overflow-hidden border border-[rgb(var(--color-border))] p-0 mb-2">
-                            <div
-                                className="h-full rounded-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-light))] transition-all duration-1000"
-                                style={{ width: `${playerStats.progress}%` }}
-                            />
-                        </div>
-
-                        {/* Next Milestone - Inline & Clearer */}
-                        {nextRank && (
-                            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-xs bg-[rgb(var(--color-surface-subtle))] rounded-xl px-2.5 py-1 sm:py-1.5 mt-1 border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
-                                <div className="flex min-w-0 items-center gap-1.5">
-                                    <span className="text-xs font-bold text-[rgb(var(--color-text-muted))] tracking-tighter shrink-0 hidden xs:inline">
-                                        {t.stats.level.nextRankGoal}
-                                    </span>
-                                    <div className="flex items-center gap-1 truncate">
-                                        <AppIcon name={resolveAppIconName(nextRank.icon)} size="sm" tone="muted" />
-                                        <span className="text-[rgb(var(--color-text))] font-bold truncate">{nextRank.title}</span>
-                                    </div>
-                                </div>
-                                <div className="shrink-0 flex items-center gap-1.5">
-                                    <div className="w-1 h-1 rounded-full bg-[rgb(var(--color-border))] hidden sm:block" />
-                                    <div className="font-bold text-[rgb(var(--color-primary-strong))]">
-                                        {nextRank.levelsRemaining} {t.stats.level.levelsRemaining}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {nextRank && (
-                            <p className="hidden sm:block text-xs text-[rgb(var(--color-text-muted))] mt-1.5 px-1 truncate italic">
-                                &quot;{nextRank.milestone}&quot;
-                            </p>
-                        )}
-                    </div>
-                </div>
-            </button>
+            <StageCard t={t} stats={playerStats} className="mt-4" />
 
             <Link
                 href="/rewards"
@@ -127,7 +56,8 @@ export function StatsOverview({
                         id: 'streak' as const,
                         icon: <Flame className="w-4 h-4 text-[rgb(var(--color-accent-strong))]" />,
                         label: t.stats.quick.currentStreak,
-                        value: `${streakData.currentStreak}`,
+                        // A lapsed streak reads as an invitation, not a big zero.
+                        value: streakData.currentStreak > 0 ? `${streakData.currentStreak}` : t.stats.journey.streakRestart,
                         sub: t.stats.quick.longestStreak.replace('{{days}}', streakData.longestStreak.toString()),
                         gradient: "",
                     },
@@ -178,7 +108,7 @@ export function StatsOverview({
     );
 }
 
-export function StatsHeader({ t, playerStats }: { t: TranslationTree; playerStats: PlayerStats }) {
+export function StatsHeader({ t }: { t: TranslationTree }) {
     return (
         <div className="sticky top-0 z-10 bg-[rgb(var(--color-surface))]/95 border-b border-[rgb(var(--color-border))]">
             <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-4">
@@ -188,10 +118,6 @@ export function StatsHeader({ t, playerStats }: { t: TranslationTree; playerStat
                 <div className="flex-1">
                     <h1 className="text-xl font-bold">{t.stats.header.title}</h1>
                     <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.stats.header.subtitle}</p>
-                </div>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 rounded-full">
-                    <Star className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
-                    <span className="text-xs font-bold text-[rgb(var(--color-primary-strong))]">Lv {playerStats.level}</span>
                 </div>
             </div>
         </div>
