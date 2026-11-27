@@ -85,7 +85,15 @@ Stage 4 starts near day 60, when habit research says the routine has formed. All
 
 ### 4.2 Screens
 
-- **StageCard** (`src/components/progress/StageCard.tsx`), used on `/stats` and in the profile: stage n of 7, stage name and meaning, level, progress bar with "N Hasanah lagi ke Level X", a suggested focus, the next stage and its level, and "Cara kerja level".
+- **Each place has one job, so nothing is shown twice:**
+
+  | Place | Job | Shows |
+  |---|---|---|
+  | Home (JourneyCard) | Today | This week's streak and today's prompt |
+  | `/stats` | The whole journey | StageCard, the streak card with record and detail, charts, the rewards link |
+  | Profile in settings | Who you are, the account | One summary row (stage, level, streak) that opens `/stats` |
+
+- **StageCard** (`src/components/progress/StageCard.tsx`), used on `/stats` only: stage n of 7, stage name and meaning, level, progress bar with "N Hasanah lagi ke Level X", a suggested focus, the next stage and its level, and "Cara kerja level".
 - **StageGuide** (`StageGuide.tsx`): three rules (every worship adds Hasanah; Hasanah raises the level; the stage names the practice and its focus is optional), all seven stages with "Kamu di sini" and the current reminder, and "Tentang Hasanah" with QS An-Najm 32.
 - Donors are called "Pendukung Nawaetu" ("Nawaetu Supporter") instead of "Muhsinin", the same virtue-title problem tied to payment. The `is_muhsinin` columns keep their names; renaming them needs a migration and changes nothing users see.
 - Removed: the rank modal on `/stats`, the duplicate "Lv" chip in its header, the profile phase list and its outdated copy, and the unused "Muhsinin Nawaetu" role label.

@@ -149,19 +149,16 @@ export const otherEN = {
     profileAuthDesc: "Login to save your streak data, bookmarks, and donor status permanently in the cloud.",
     profileAuthButton: "Login with Google",
     profileRoleGuest: "Nawaetu Companion",
-    profileStreakLabel: "Consistency Record",
     profileTotalDays: "Total Days",
 
     // Gamification Terminology
     gamificationXpName: "Hasanah",
-    profileStreakDesc: "Consecutive days of Daily Missions & Worship",
     toastRamadhanTarawehReward: "Alhamdulillah! +15 Hasanah",
     toastRamadhanKhatamanReward: "Masya Allah! +20 Hasanah",
 
     // Streak & Progress
     profileStreak: "Streak",
     profileRecord: "Record",
-    profileDays: "Days",
     profileStreakMaintain: "Maintain your commitment every day!",
     profileBestAchievement: "Your best achievement.",
     profileTitleCollection: "Title Collection",
