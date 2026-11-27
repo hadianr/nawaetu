@@ -251,10 +251,6 @@ export default function StatsPage() {
             <main className="stats-page min-h-screen bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))] pb-nav">
                 <StatsHeader t={t} playerStats={playerStats} />
 
-                <div className="w-full max-w-none mx-auto px-6 pt-5 xl:max-w-2xl">
-                    <GlobalStatsWidget />
-                </div>
-
                 <StatsMessage
                     t={t}
                     prayed={recentPrayerCount}
@@ -314,6 +310,9 @@ export default function StatsPage() {
                         maxCatCount={maxCatCount}
                         setActiveInsight={setActiveInsight}
                     />
+
+                    {/* Close on the community: what everyone keeps together, and an invite. */}
+                    <GlobalStatsWidget />
 
                     {/* Rank Details Modal */}
                     <Dialog open={isRankModalOpen} onOpenChange={setIsRankModalOpen}>

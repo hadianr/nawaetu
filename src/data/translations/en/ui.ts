@@ -26,15 +26,16 @@ export const uiEN = {
     navSettings: "Settings",
 
     // Global Impact Widget
-    globalImpactTitle: "Global Impact",
-    globalImpactLive: "Live",
-    globalImpactIntentionsToday: "Intentions Today",
-    globalImpactPrayers: "Prayers",
-    globalImpactCountries: "Countries",
-    globalImpactUsers: "Users",
-    globalImpactMissions: "Missions completed",
-    globalImpactStreakDays: "Active worship days",
-    globalImpactTagline: "Uniting the Ummah, one intention at a time.",
+    globalImpactTitle: "Worship Together",
+    globalImpactPrayers: "prayers kept",
+    globalImpactIntentions: "intentions set",
+    globalImpactActiveWeek: "worshipping this week",
+    globalImpactMessage: "Every prayer and intention you log adds to these numbers. You are not worshipping alone.",
+    globalImpactHadith: "\u201cWhoever guides someone to goodness will have a reward like the one who does it.\u201d",
+    globalImpactHadithSource: "Muslim No. 1893",
+    globalImpactShare: "Invite a friend",
+    globalImpactShareText: "Let's keep our prayers and intentions together on Nawaetu.",
+    globalImpactShareFailed: "Failed to share",
 
     // Undo
     habitUndoTitle: "Habit undone",

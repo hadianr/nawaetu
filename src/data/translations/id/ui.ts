@@ -26,15 +26,16 @@ export const uiID = {
     navSettings: "Atur",
 
     // Global Impact Widget
-    globalImpactTitle: "Dampak Global",
-    globalImpactLive: "Live",
-    globalImpactIntentionsToday: "Niat Hari Ini",
-    globalImpactPrayers: "Sholat",
-    globalImpactCountries: "Negara",
-    globalImpactUsers: "Pengguna",
-    globalImpactMissions: "Misi selesai",
-    globalImpactStreakDays: "Hari ibadah aktif",
-    globalImpactTagline: "Menyatukan Ummah, satu niat setiap saat.",
+    globalImpactTitle: "Ibadah Bersama",
+    globalImpactPrayers: "sholat dijaga",
+    globalImpactIntentions: "niat diikrarkan",
+    globalImpactActiveWeek: "beribadah minggu ini",
+    globalImpactMessage: "Setiap sholat dan niat yang kamu catat ikut menambah angka ini. Kamu tidak beribadah sendirian.",
+    globalImpactHadith: "\u201cBarangsiapa menunjukkan kepada kebaikan, maka baginya pahala seperti pelakunya.\u201d",
+    globalImpactHadithSource: "HR. Muslim No. 1893",
+    globalImpactShare: "Ajak teman beribadah",
+    globalImpactShareText: "Yuk jaga sholat dan niat bersama di Nawaetu.",
+    globalImpactShareFailed: "Gagal membagikan",
 
     // Undo
     habitUndoTitle: "Habit dibatalkan",
