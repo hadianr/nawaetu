@@ -101,13 +101,15 @@ Nawaetu starts with Indonesian and English speakers, the largest Muslim-majority
 
 ## Product
 
-Real screenshots of the live app at [nawaetu.com](https://nawaetu.com) (phone size). Five themes are available; Daylight is the default and Emerald is the dark theme.
+Real screenshots of the live app at [nawaetu.com](https://nawaetu.com) (phone size, 27 November 2026, with a demo profile). Five themes are available; Daylight is the default and Emerald is the dark theme.
 
 | Home: intention and prayer times | Quran with audio | Sirah in three formats |
 | :---: | :---: | :---: |
 | <img src="public/images/readme/home.png" width="240" alt="Home with the intention journal and today's prayer times"> | <img src="public/images/readme/quran.png" width="240" alt="Quran reader showing Al-Fatihah with transliteration and translation"> | <img src="public/images/readme/sirah.png" width="240" alt="Sirah hub with concise, complete and timeline formats"> |
 | **Hadith with attribution and grade** | **Hijri calendar and fasting days** | **Tasbih (Emerald dark theme)** |
 | <img src="public/images/readme/hadith.png" width="240" alt="Hadith library with collection numbers and grades"> | <img src="public/images/readme/hijri-calendar.png" width="240" alt="Hijri calendar marking recommended fasting days"> | <img src="public/images/readme/tasbih-emerald.png" width="240" alt="Digital tasbih counter in the dark Emerald theme"> |
+| **Stats: a personal note and the journey stage** | **How levels work: seven stages** | **Udzur mode during haid** |
+| <img src="public/images/readme/stats.png" width="240" alt="Stats page with a personal note naming the prayer missed most, and the Keeping the time stage at level 7"> | <img src="public/images/readme/stage-guide.png" width="240" alt="Guide listing the seven journey stages with the current stage marked and its hadith reminder"> | <img src="public/images/readme/udzur.png" width="240" alt="Prayer check-in in udzur mode with all five prayers marked excused on day 3"> |
 
 ---
 

@@ -101,13 +101,15 @@ Nawaetu dimulai dari pengguna berbahasa Indonesia dan Inggris, pasar mayoritas M
 
 ## ✨ Produk
 
-Tangkapan layar asli dari aplikasi di [nawaetu.com](https://nawaetu.com) (ukuran HP). Tersedia lima tema; Daylight adalah tema bawaan dan Emerald adalah tema gelap.
+Tangkapan layar asli dari aplikasi di [nawaetu.com](https://nawaetu.com) (ukuran HP, 27 November 2026, dengan profil demo). Tersedia lima tema; Daylight adalah tema bawaan dan Emerald adalah tema gelap.
 
 | Beranda: niat dan jadwal sholat | Al-Qur'an dengan audio | Sirah dalam tiga format |
 | :---: | :---: | :---: |
 | <img src="public/images/readme/home.png" width="240" alt="Beranda dengan jurnal niat dan jadwal sholat hari ini"> | <img src="public/images/readme/quran.png" width="240" alt="Pembaca Al-Qur'an menampilkan Al-Fatihah"> | <img src="public/images/readme/sirah.png" width="240" alt="Halaman Sirah dengan format ringkas, lengkap, dan linimasa"> |
 | **Hadits dengan perawi dan derajat** | **Kalender Hijriah dan hari puasa** | **Tasbih (tema gelap Emerald)** |
 | <img src="public/images/readme/hadith.png" width="240" alt="Perpustakaan hadits dengan nomor dan derajat"> | <img src="public/images/readme/hijri-calendar.png" width="240" alt="Kalender Hijriah dengan penanda puasa sunnah"> | <img src="public/images/readme/tasbih-emerald.png" width="240" alt="Penghitung tasbih digital dengan tema gelap Emerald"> |
+| **Statistik: pesan personal dan tahap perjalanan** | **Cara kerja level: tujuh tahap** | **Mode udzur saat haid** |
+| <img src="public/images/readme/stats.png" width="240" alt="Halaman statistik dengan pesan personal yang menyebut sholat paling sering terlewat, dan tahap Menjaga Waktu di level 7"> | <img src="public/images/readme/stage-guide.png" width="240" alt="Panduan tujuh tahap perjalanan dengan tahap saat ini ditandai beserta pengingat haditsnya"> | <img src="public/images/readme/udzur.png" width="240" alt="Check-in sholat dalam mode udzur dengan kelima sholat ditandai terhalang pada hari ke-3"> |
 
 ---
 
