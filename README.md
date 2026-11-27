@@ -101,7 +101,7 @@ Nawaetu starts with Indonesian and English speakers, the largest Muslim-majority
 
 ## Product
 
-Real screenshots of the live app at [nawaetu.com](https://nawaetu.com) (phone size, 27 November 2026, with a demo profile). Five themes are available; Daylight is the default and Emerald is the dark theme.
+Real screenshots of the app at [nawaetu.com](https://nawaetu.com) (small phone, 300 px wide, 27 November 2026, with a demo profile). Five themes are available; Daylight is the default and Emerald is the dark theme.
 
 | Home: intention and prayer times | Quran with audio | Sirah in three formats |
 | :---: | :---: | :---: |
